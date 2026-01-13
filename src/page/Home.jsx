@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './home.css';
+import CardDetailModal from '../components/CardDetailModal';
 
 // Icons as SVG components
 const WalletIcon = () => (
@@ -31,6 +32,7 @@ const VirtualCardIcon = () => (
 
 function Home({ onNavigate }) {
     const [balance, setBalance] = useState(970.00);
+    const [selectedCard, setSelectedCard] = useState(null);
 
     const cards = [
         {
@@ -42,6 +44,16 @@ function Home({ onNavigate }) {
             expires: 'Jan 20, 2026'
         }
     ];
+
+    // If a card is selected, show the modal
+    if (selectedCard) {
+        return (
+            <CardDetailModal
+                card={selectedCard}
+                onClose={() => setSelectedCard(null)}
+            />
+        );
+    }
 
     return (
         <div className="home-container">
@@ -80,7 +92,12 @@ function Home({ onNavigate }) {
                 {/* Virtual Cards List */}
                 <div className="cards-list">
                     {cards.map(card => (
-                        <div key={card.id} className="virtual-card">
+                        <div
+                            key={card.id}
+                            className="virtual-card"
+                            onClick={() => setSelectedCard(card)}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <div className="card-top">
                                 <div className="card-icon-wrapper">
                                     <VirtualCardIcon />
@@ -109,4 +126,5 @@ function Home({ onNavigate }) {
 }
 
 export default Home;
+
 
