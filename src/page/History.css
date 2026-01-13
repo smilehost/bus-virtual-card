@@ -1,0 +1,140 @@
+.history-page {
+    padding: 20px;
+    color: #fff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #000;
+    /* Assuming black background from image */
+}
+
+.history-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.history-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #fff;
+}
+
+.tabs-container {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 14px;
+    padding: 10px 12px;
+    cursor: pointer;
+    position: relative;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.tab-button.active {
+    color: #22E5E5;
+    /* Cyan color matching the image */
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    /* Align with border-bottom of container */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #22E5E5;
+    box-shadow: 0 0 8px rgba(34, 229, 229, 0.5);
+}
+
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    padding-bottom: 80px;
+    /* Space for bottom nav */
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* Align top mostly */
+}
+
+.transaction-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.transaction-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.transaction-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.transaction-date {
+    font-size: 12px;
+    color: #666;
+}
+
+.transaction-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.transaction-amount {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.transaction-amount.positive {
+    color: #00FF9D;
+    /* Bright green */
+}
+
+.transaction-type {
+    font-size: 11px;
+    color: #666;
+    text-transform: lowercase;
+}
