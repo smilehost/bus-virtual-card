@@ -85,10 +85,10 @@ const History = () => {
                 <div className="header-icon">
                     {/* Blue Wallet Icon */}
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="24" height="24" rx="8" fill="#3B82F6" />
-                        <path d="M16 12H18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M6 8C6 6.89543 6.89543 6 8 6H18C19.1046 6 20 6.89543 20 8V16C20 17.1046 19.1046 18 18 18H8C6.89543 18 6 17.1046 6 16V8Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M21 12V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19H21" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M21 12H16C14.8954 12 14 12.8954 14 14V17C14 18.1046 14.8954 19 16 19H21V12Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
+
                 </div>
                 <h1>History</h1>
             </header>
@@ -108,36 +108,60 @@ const History = () => {
             </div>
 
             <div className="transactions-list">
-                {filteredTransactions.map((t) => (
-                    <div key={t.id} className="transaction-item">
-                        <div className="transaction-left">
-                            <IconWrapper type={t.rawType}>
-                                {t.rawType === 'purchase' ? (
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M20 7H4C3.4 7 3 7.4 3 8V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V8C21 7.4 20.6 7 20 7Z" stroke="#D8B4FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M16 7V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V7" stroke="#D8B4FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                        <circle cx="12" cy="14" r="2" stroke="#D8B4FE" strokeWidth="2" />
-                                    </svg>
-                                ) : (
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M17 7L7 17" stroke="#00E599" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M17 17H7V7" stroke="#00E599" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                )}
-                            </IconWrapper>
-                            <div className="transaction-info">
-                                <div className="transaction-title">{t.title}</div>
-                                <div className="transaction-date">{t.date}</div>
-                            </div>
+                {filteredTransactions.length === 0 ? (
+                    <div style={{
+                        textAlign: 'center',
+                        padding: '60px 20px',
+                        color: 'rgba(255, 255, 255, 0.5)'
+                    }}>
+                        <div style={{
+                            fontSize: '48px',
+                            marginBottom: '16px'
+                        }}>📭</div>
+                        <div style={{
+                            fontSize: '16px',
+                            fontWeight: '500',
+                            marginBottom: '8px',
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }}>
+                            No transactions yet
                         </div>
-                        <div className="transaction-right">
-                            <div className={`transaction-amount ${t.rawType === 'topup' ? 'positive' : ''}`}>
-                                {t.amount}
-                            </div>
-                            <div className="transaction-type">{t.type}</div>
+                        <div style={{ fontSize: '14px' }}>
+                            Your {activeTab.toLowerCase()} will appear here
                         </div>
                     </div>
-                ))}
+                ) : (
+                    filteredTransactions.map((t) => (
+                        <div key={t.id} className="transaction-item">
+                            <div className="transaction-left">
+                                <IconWrapper type={t.rawType}>
+                                    {t.rawType === 'purchase' ? (
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M20 7H4C3.4 7 3 7.4 3 8V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V8C21 7.4 20.6 7 20 7Z" stroke="#D8B4FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M16 7V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V7" stroke="#D8B4FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            <circle cx="12" cy="14" r="2" stroke="#D8B4FE" strokeWidth="2" />
+                                        </svg>
+                                    ) : (
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M17 7L7 17" stroke="#00E599" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M17 17H7V7" stroke="#00E599" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    )}
+                                </IconWrapper>
+                                <div className="transaction-info">
+                                    <div className="transaction-title">{t.title}</div>
+                                    <div className="transaction-date">{t.date}</div>
+                                </div>
+                            </div>
+                            <div className="transaction-right">
+                                <div className={`transaction-amount ${t.rawType === 'topup' ? 'positive' : ''}`}>
+                                    {t.amount}
+                                </div>
+                                <div className="transaction-type">{t.type}</div>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         </div>
     );
