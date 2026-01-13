@@ -1,0 +1,259 @@
+/* Top Up Page Styles */
+
+.topup-container {
+    min-height: 100vh;
+    background-color: #0b0e12;
+    color: #ffffff;
+    padding: 20px;
+    padding-bottom: 100px;
+    max-width: 430px;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.topup-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.btn-back {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Amount Section */
+.amount-section {
+    margin-bottom: 24px;
+}
+
+.input-label {
+    display: block;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.amount-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.currency-symbol {
+    font-size: 32px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.amount-input {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: 600;
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+}
+
+.amount-input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+/* Presets */
+.presets-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.preset-btn {
+    background: #151a21;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    padding: 12px 0;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.preset-btn:hover {
+    background: #1e242e;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.preset-btn.active {
+    background: #1e242e;
+    border-color: #00d9ff;
+    color: #00d9ff;
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.1);
+}
+
+/* Payment Section */
+.section-label {
+    display: block;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: auto;
+}
+
+.payment-option {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.payment-option.active {
+    background: linear-gradient(135deg, rgba(8, 30, 41, 0.5) 0%, rgba(5, 15, 21, 0.5) 100%);
+    border-color: #00d9ff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.option-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.option-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.option-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.option-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.option-sub {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.option-radio {
+    width: 12px;
+    height: 12px;
+    background: #00d9ff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00d9ff;
+}
+
+/* Pay Button */
+.btn-pay {
+    background: linear-gradient(90deg, #0099b2 0%, #006b99 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: auto;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 153, 178, 0.3);
+    transition: transform 0.2s;
+}
+
+.btn-pay:hover {
+    transform: translateY(-2px);
+}
+
+/* Success State */
+.success-state {
+    align-items: center;
+    text-align: center;
+}
+
+.success-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: -60px;
+    /* Offset for header */
+}
+
+.success-circle {
+    width: 80px;
+    height: 80px;
+    background: rgba(2, 219, 136, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    animation: scaleIn 0.3s ease-out;
+}
+
+.success-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    color: #fff;
+}
+
+.success-desc {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 15px;
+    max-width: 200px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

@@ -1,0 +1,310 @@
+/* Home Page Styles - Digital Wallet Dark Theme */
+
+.home-container {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #0a0e14 0%, #0d1117 100%);
+    color: #ffffff;
+    padding: 20px;
+    padding-bottom: 100px;
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header */
+.home-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #00d9ff 0%, #0066ff 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #ffffff;
+}
+
+/* Balance Card */
+.balance-card {
+    background: linear-gradient(135deg, #0d2233 0%, #0a1a28 50%, #061520 100%);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0, 217, 255, 0.1);
+}
+
+.balance-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 70% 30%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 30% 70%, rgba(0, 102, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.balance-content {
+    position: relative;
+    z-index: 1;
+}
+
+.balance-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.balance-amount {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    color: #ffffff;
+    letter-spacing: -1px;
+}
+
+.balance-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-topup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #00c9e0 0%, #00a8c5 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-topup:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 201, 224, 0.3);
+}
+
+.btn-buycard {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-buycard:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Cards Section */
+.cards-section {
+    margin-bottom: 24px;
+}
+
+.cards-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.cards-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #ffffff;
+}
+
+.btn-new-card {
+    background: transparent;
+    color: #00d9ff;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.btn-new-card:hover {
+    color: #00f0ff;
+}
+
+/* Virtual Card */
+.cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.virtual-card {
+    background: linear-gradient(135deg, #111b24 0%, #0d151c 100%);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.virtual-card:hover {
+    border-color: rgba(0, 217, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.card-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #0d2838 0%, #071520 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 217, 255, 0.2);
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.card-type {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 2px;
+}
+
+.card-bottom {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-balance,
+.card-expires {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-balance-label,
+.card-expires-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 4px;
+}
+
+.card-balance-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.card-expires-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.card-expires {
+    text-align: right;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: linear-gradient(180deg, rgba(15, 20, 25, 0.95) 0%, #0a0e14 100%);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: color 0.2s;
+}
+
+.nav-item:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-item.active {
+    color: #00d9ff;
+}
+
+.nav-item.active span {
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 380px) {
+    .home-container {
+        padding: 16px;
+        padding-bottom: 90px;
+    }
+
+    .balance-amount {
+        font-size: 30px;
+    }
+
+    .balance-actions {
+        flex-direction: column;
+    }
+
+    .btn-topup,
+    .btn-buycard {
+        justify-content: center;
+    }
+}
