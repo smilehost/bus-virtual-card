@@ -268,3 +268,81 @@
         justify-content: center;
     }
 }
+
+/* Loading State */
+.cards-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.cards-loading .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(0, 217, 255, 0.2);
+    border-top-color: #00d9ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error State */
+.cards-error {
+    text-align: center;
+    padding: 30px 20px;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Empty State */
+.cards-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 16px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+}
+
+.cards-empty .btn-buycard {
+    background: linear-gradient(135deg, #00c9e0 0%, #00a8c5 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Money Card Variant */
+.virtual-card.money-card {
+    border-color: rgba(0, 255, 163, 0.2);
+}
+
+.virtual-card.money-card:hover {
+    border-color: rgba(0, 255, 163, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
+}
+
+.virtual-card.money-card .card-balance-value {
+    color: #00ffa3;
+}
+
+/* Round Card Variant */
+.virtual-card.round-card .card-balance-value {
+    color: #00d9ff;
+}

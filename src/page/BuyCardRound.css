@@ -359,3 +359,149 @@
     font-size: 12px;
     color: rgba(255, 255, 255, 0.4);
 }
+
+/* Dropdown Styles */
+.dropdown-container {
+    position: relative;
+}
+
+.dropdown-trigger {
+    width: 100%;
+    background: #151a21;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.2s;
+}
+
+.dropdown-trigger:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-trigger:focus {
+    border-color: #00d9ff;
+    outline: none;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1a1f26;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    margin-top: 4px;
+    z-index: 100;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.dropdown-item {
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background: rgba(0, 217, 255, 0.05);
+}
+
+.dropdown-item.active {
+    background: rgba(0, 217, 255, 0.1);
+}
+
+.dropdown-item-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.dropdown-item-info {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Rounds Display */
+.rounds-display {
+    display: flex;
+    gap: 10px;
+}
+
+.rounds-display .round-btn {
+    min-width: 80px;
+}
+
+/* Loading State */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.loading-state .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(0, 217, 255, 0.2);
+    border-top-color: #00d9ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error State */
+.error-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #ef4444;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 13px;
+    margin-bottom: 12px;
+    padding: 10px;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* Confirm Button States */
+.btn-confirm:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Quantity Fixed Display */
+.quantity-selector span {
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+    padding: 10px 20px;
+}

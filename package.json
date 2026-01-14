@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@line/liff": "^2.27.3",
+    "qrcode": "^1.5.4",
+    "qrcode.react": "^4.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
