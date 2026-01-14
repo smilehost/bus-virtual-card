@@ -1,7 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLiff } from '../context/LiffContext';
 import './Profile.css';
 
 const Profile = () => {
+    const { profile, isLoggedIn, logout, isLoading } = useLiff();
+
+    // Log LINE userId
+    useEffect(() => {
+        if (profile?.userId) {
+            console.log('LINE User ID:', profile.userId);
+        }
+    }, [profile]);
+
+    // Loading state
+    if (isLoading) {
+        return (
+            <div className="profile-page">
+                <div className="loading-container">
+                    <div className="loading-spinner"></div>
+                    <p>กำลังโหลด...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="profile-page">
             <header className="profile-header">
@@ -17,16 +39,23 @@ const Profile = () => {
             <div className="profile-content">
                 <div className="user-section">
                     <div className="avatar-container">
-                        <div className="avatar">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M12 17C14.2091 17 16 15.2091 16 13C16 10.7909 14.2091 9 12 9C9.79086 9 8 10.7909 8 13C8 15.2091 9.79086 17 12 17Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </div>
+                        {profile?.pictureUrl ? (
+                            <img
+                                src={profile.pictureUrl}
+                                alt={profile.displayName || 'Profile'}
+                                className="avatar-image"
+                            />
+                        ) : (
+                            <div className="avatar">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 21C20 19.6044 20 18.9067 19.8278 18.3389C19.44 17.0605 18.4395 16.06 17.1611 15.6722C16.5933 15.5 15.8956 15.5 14.5 15.5H9.5C8.10444 15.5 7.40665 15.5 6.83886 15.6722C5.56045 16.06 4.56004 17.0605 4.17224 18.3389C4 18.9067 4 19.6044 4 21M16.5 7.5C16.5 9.98528 14.4853 12 12 12C9.51472 12 7.5 9.98528 7.5 7.5C7.5 5.01472 9.51472 3 12 3C14.4853 3 16.5 5.01472 16.5 7.5Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </div>
+                        )}
                     </div>
                     <div className="user-info">
-                        <h2>Guest User</h2>
-                        <p>Member since Jan 13, 2026</p>
+                        <h2>{profile?.displayName || 'Guest User'}</h2>
+                        <p>{profile?.statusMessage || 'LINE User'}</p>
                     </div>
                 </div>
 

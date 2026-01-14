@@ -1,12 +1,16 @@
-/* Main Layout Styles */
+/* Main Layout Styles - LIFF Compatible */
 
 .main-layout {
     min-height: 100vh;
+    min-height: 100dvh;
+    /* Dynamic viewport for LIFF */
     background: linear-gradient(180deg, #0a0e14 0%, #0d1117 100%);
     width: 100%;
     margin: 0 auto;
     position: relative;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
 }
 
 /* For larger screens, keep the mobile app feel */
@@ -18,23 +22,30 @@
 }
 
 .main-content {
-    padding-bottom: 90px;
+    flex: 1;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    /* Account for bottom nav + safe area */
     width: 100%;
     overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Bottom Navigation */
+/* Bottom Navigation - LIFF Safe Area */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    background: rgba(10, 14, 20, 0.95);
+    background: rgba(10, 14, 20, 0.98);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     display: flex;
     justify-content: space-around;
-    padding: 12px 0 24px 0;
+    padding: 12px 0;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    /* Safe area for home indicator */
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     z-index: 1000;
 }

@@ -76,6 +76,69 @@
     font-size: 12px;
     color: #9ca3af;
     margin: 0;
+    margin-bottom: 12px;
+}
+
+/* LINE Profile Image */
+.avatar-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid #00D1FF;
+    object-fit: cover;
+    box-shadow: 0 0 20px rgba(0, 209, 255, 0.3);
+}
+
+/* Logout Button */
+.btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+}
+
+.btn-logout:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+.btn-logout:active {
+    transform: scale(0.98);
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(0, 209, 255, 0.2);
+    border-top-color: #00D1FF;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Loyalty Card */

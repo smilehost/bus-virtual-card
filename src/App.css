@@ -1,16 +1,39 @@
+/* LIFF-Compatible Base Styles */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
 #root {
   width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Dynamic viewport height for mobile browsers */
   margin: 0;
   padding: 0;
 }
 
+html {
+  height: 100%;
+  height: -webkit-fill-available;
+}
+
 html,
 body {
+  margin: 0;
   padding: 0;
   width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
   background-color: #0a0e14;
-  /* Match app background */
   overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  /* Safe area padding for notch devices */
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 .logo {
