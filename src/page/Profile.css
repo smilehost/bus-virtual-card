@@ -1,0 +1,274 @@
+.profile-page {
+    background-color: #000;
+    min-height: 100vh;
+    color: white;
+    padding-bottom: 80px;
+    /* Space for bottom nav */
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 15px;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    background: #0088CC;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.profile-content {
+    padding: 20px;
+}
+
+/* User Section */
+.user-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.avatar-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 2px solid #00D1FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(0, 209, 255, 0.2);
+}
+
+.user-info {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-info h2 {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 5px 0;
+}
+
+.user-info p {
+    font-size: 12px;
+    color: #9ca3af;
+    margin: 0;
+}
+
+/* Loyalty Card */
+.loyalty-card {
+    background: linear-gradient(135deg, #6b21a8 0%, #3b82f6 100%);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loyalty-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.points-display {
+    margin-bottom: 30px;
+}
+
+.points-display .points {
+    font-size: 48px;
+    font-weight: 700;
+    margin-right: 8px;
+}
+
+.points-display .unit {
+    font-size: 18px;
+    opacity: 0.8;
+}
+
+.progress-section {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #fbbf24;
+    border-radius: 4px;
+}
+
+.helper-text {
+    font-size: 10px;
+    text-align: center;
+    opacity: 0.7;
+    margin: 0;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Member Points */
+.member-points-section h3 {
+    font-size: 16px;
+    margin: 0 0 15px 0;
+}
+
+.member-point-card {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 15px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.point-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.point-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.point-name {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.point-type {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.balance-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.balance-info .label {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.balance-info .amount {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.expiry-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    gap: 4px;
+}
+
+.expiry-info .label {
+    font-size: 12px;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.expiry-info .date {
+    font-size: 14px;
+    color: #fff;
+}
