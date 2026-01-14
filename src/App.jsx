@@ -6,6 +6,7 @@ import TopUp from './page/TopUp';
 import History from './page/History';
 import './App.css';
 import BuyCardRound from './page/BuyCardRound';
+import Profile from './page/Profile';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -24,6 +25,8 @@ function App() {
         return <BuyCardRound onNavigate={handleTabChange} />;
       case 'history':
         return <History />;
+      case 'profile':
+        return <Profile />;
       default:
         return <Home onNavigate={handleTabChange} />;
     }
