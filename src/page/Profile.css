@@ -331,7 +331,102 @@
     gap: 4px;
 }
 
-.expiry-info .date {
-    font-size: 14px;
+/* All Cards Section */
+.all-cards-section {
+    margin-top: 30px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 6px;
+    background: #111;
+    padding: 3px;
+    border-radius: 10px;
+    border: 1px solid #333;
+}
+
+.filter-tab {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.filter-tab:hover {
     color: #fff;
+}
+
+.filter-tab.active {
+    background: #333;
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.status-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-left: 8px;
+    text-transform: uppercase;
+}
+
+.status-badge.active {
+    background: rgba(0, 255, 163, 0.1);
+    color: #00FFA3;
+    border: 1px solid rgba(0, 255, 163, 0.2);
+}
+
+.status-badge.expired {
+    background: rgba(255, 77, 77, 0.1);
+    color: #ff4d4d;
+    border: 1px solid rgba(255, 77, 77, 0.2);
+}
+
+/* Expired Status Styling */
+.member-point-card.expired {
+    opacity: 0.7;
+    filter: grayscale(0.8);
+    background: #151515;
+    border-color: #222;
+}
+
+.point-icon.grayscale {
+    background: #222;
+    filter: grayscale(1);
+}
+
+.no-cards-placeholder {
+    text-align: center;
+    padding: 40px;
+    color: #444;
+    font-size: 14px;
+    border: 2px dashed #222;
+    border-radius: 16px;
 }

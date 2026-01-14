@@ -39,24 +39,35 @@ const BoxIcon = () => (
 );
 
 const BuyCardRound = ({ onBack, onBuySuccess }) => {
-    const [cardName, setCardName] = useState('My Virtual Card');
-    const [rounds, setRounds] = useState(10);
+    const [cardGroup, setCardGroup] = useState('Student');
+    const [rounds, setRounds] = useState(30);
     const [quantity, setQuantity] = useState(1);
-    const [validity, setValidity] = useState(7);
+    const [expiryDate, setExpiryDate] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
-    const [totalCost, setTotalCost] = useState(50.00);
+    const [totalCost, setTotalCost] = useState(0);
     const [cardType, setCardType] = useState('round'); // round | money
 
-    const validityOptions = [
-        { label: '1 Day', value: 1 },
-        { label: '7 Days', value: 7 },
-        { label: '30 Days', value: 30 }
-    ];
+    // Fixed round options
+    const roundOptions = [30, 40, 50, 60];
+
+    // Card groups
+    const cardGroups = ['Student', 'Adult', 'Senior'];
 
     useEffect(() => {
-        // Simple calculation logic simulation
-        const basePrice = 5; // Price per round
-        setTotalCost((rounds * basePrice * quantity).toFixed(2));
+        // Calculate expiry date (Today + 30 days)
+        const date = new Date();
+        date.setDate(date.getDate() + 30);
+        setExpiryDate(date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        }));
+
+        // Calculate cost
+        // Pricing logic: Base price varies by group? 
+        // For now assuming: 5 THB per round for everyone, generic logic
+        const pricePerRound = 5;
+        setTotalCost((rounds * pricePerRound * quantity).toFixed(2));
     }, [rounds, quantity]);
 
     const handleSuccessClose = () => {
@@ -65,13 +76,12 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
     };
 
     const handleConfirm = () => {
-        // Call parent handler if it exists to add the card
         if (onBuySuccess) {
             onBuySuccess({
-                name: cardName,
+                name: `${cardGroup} Card`,
                 type: cardType,
-                balance: `฿{rounds} Rounds`,
-                expires: `${validity} Days`
+                balance: `${rounds} Rounds`,
+                expires: expiryDate
             });
         }
         setIsSuccess(true);
@@ -84,7 +94,7 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                 onClose={handleSuccessClose}
                 message="Purchase Successful!"
                 subMessage="You have purchased"
-                amount={`${quantity} x ${cardName}`}
+                amount={`${quantity} x ${cardGroup} Card (${rounds} rounds)`}
             />
 
             <header className="buy-card-header">
@@ -95,106 +105,82 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
             </header>
 
             <div className="buy-card-content">
-                <div className="card-type-label">Card Type</div>
-                <div className="card-type-toggle">
-                    <button
-                        className={`type-btn ${cardType === 'round' ? 'active' : ''}`}
-                        onClick={() => setCardType('round')}
-                    >
-                        <RefreshIcon />
-                        <span>Round Based</span>
-                    </button>
-                    <button
-                        className={`type-btn ${cardType === 'money' ? 'active' : ''}`}
-                        onClick={() => setCardType('money')}
-                    >
-                        <DollarIcon />
-                        <span>Money Based</span>
-                    </button>
-                </div>
-                <div className="type-desc">
-                    Pay per use. Perfect for gym entries, coffee shops, or event access.
-                </div>
-
-                <div className="form-group">
-                    <label>Card Name</label>
-                    <input
-                        type="text"
-                        value={cardName}
-                        onChange={(e) => setCardName(e.target.value)}
-                        className="input-field"
-                    />
-                </div>
-
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Number of Rounds</label>
-                        <input
-                            type="number"
-                            value={rounds}
-                            onChange={(e) => setRounds(parseInt(e.target.value) || 0)}
-                            className="input-field"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Quantity</label>
-                        <div className="input-with-icon">
-                            <BoxIcon />
-                            <input
-                                type="number"
-                                value={quantity}
-                                onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                                className="input-field pl-icon"
-                            />
+                {cardType === 'round' ? (
+                    <>
+                        <div className="form-group">
+                            <label>Card Group</label>
+                            <div className="card-group-selector">
+                                {cardGroups.map(group => (
+                                    <button
+                                        key={group}
+                                        className={`group-btn ${cardGroup === group ? 'active' : ''}`}
+                                        onClick={() => setCardGroup(group)}
+                                    >
+                                        {group}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div className="form-group">
-                    <label className="label-with-icon">
-                        <ClockIcon /> Validity Period
-                    </label>
-                    <div className="validity-options">
-                        {validityOptions.map((opt) => (
-                            <button
-                                key={opt.value}
-                                className={`validity-btn ${validity === opt.value ? 'active' : ''}`}
-                                onClick={() => setValidity(opt.value)}
-                            >
-                                {opt.label}
-                            </button>
-                        ))}
+                        <div className="form-group">
+                            <label>Select Rounds</label>
+                            <div className="rounds-grid">
+                                {roundOptions.map(opt => (
+                                    <button
+                                        key={opt}
+                                        className={`round-btn ${rounds === opt ? 'active' : ''}`}
+                                        onClick={() => setRounds(opt)}
+                                    >
+                                        <span className="round-val">{opt}</span>
+                                        <span className="round-label">Rounds</span>
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="expiry-hint">
+                                <ClockIcon /> Valid until {expiryDate} (30 Days)
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Quantity</label>
+                            <div className="quantity-selector">
+                                <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
+                                <span>{quantity}</span>
+                                <button onClick={() => setQuantity(quantity + 1)}>+</button>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <div className="money-placeholder">
+                        <p>Money based card options...</p>
                     </div>
-                </div>
+                )}
 
                 <div className="order-summary">
                     <h3 className="summary-title">Order Summary</h3>
                     <div className="summary-row">
-                        <span>Item</span>
-                        <span>{quantity} x {cardType === 'round' ? 'Round' : 'Money'} Card</span>
+                        <span>Card Type</span>
+                        <span>{cardGroup} ({cardType === 'round' ? 'Round' : 'Money'})</span>
                     </div>
                     <div className="summary-row">
-                        <span>Value per card</span>
-                        <span>{rounds} Rounds</span>
+                        <span>Details</span>
+                        <span>{quantity} x {rounds} Rounds</span>
                     </div>
                     <div className="summary-row">
-                        <span>Duration</span>
-                        <span>{validity} Days</span>
+                        <span>Expires</span>
+                        <span>{expiryDate}</span>
                     </div>
 
                     <div className="summary-divider"></div>
 
                     <div className="total-row">
                         <span>Total Cost</span>
-                        <span className="total-amount">${totalCost}</span>
+                        <span className="total-amount">฿{totalCost}</span>
                     </div>
 
                     <button className="btn-confirm" onClick={handleConfirm}>
                         Confirm Purchase
                     </button>
-                    <div className="balance-info">
-                        Current Balance: $1,070.00
-                    </div>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLiff } from '../context/LiffContext';
 import './Profile.css';
 
@@ -23,6 +23,19 @@ const Profile = () => {
             </div>
         );
     }
+    const [filter, setFilter] = useState('all');
+
+    const mockCards = [
+        { id: 1, type: 'Student', balance: '10 Rounds', expires: 'Jan 20, 2026', status: 'active' },
+        { id: 2, type: 'Adult', balance: '5 Rounds', expires: 'Feb 15, 2026', status: 'active' },
+        { id: 3, type: 'Senior', balance: '0 Rounds', expires: 'Dec 10, 2025', status: 'expired' },
+        { id: 4, type: 'Student', balance: '30 Rounds', expires: 'Nov 01, 2025', status: 'expired' },
+    ];
+
+    const filteredCards = mockCards.filter(card => {
+        if (filter === 'all') return true;
+        return card.status === filter;
+    });
 
     return (
         <div className="profile-page">
@@ -137,6 +150,71 @@ const Profile = () => {
                                 <span className="date">Jan 20, 2026</span>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {/* All Cards Section with Filters */}
+                <div className="all-cards-section">
+                    <div className="section-header">
+                        <h3>My Cards</h3>
+                        <div className="filter-tabs">
+                            <button
+                                className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
+                                onClick={() => setFilter('all')}
+                            >
+                                All
+                            </button>
+                            <button
+                                className={`filter-tab ${filter === 'active' ? 'active' : ''}`}
+                                onClick={() => setFilter('active')}
+                            >
+                                Active
+                            </button>
+                            <button
+                                className={`filter-tab ${filter === 'expired' ? 'active' : ''}`}
+                                onClick={() => setFilter('expired')}
+                            >
+                                Expired
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="cards-list">
+                        {filteredCards.map(card => (
+                            <div key={card.id} className={`member-point-card ${card.status === 'expired' ? 'expired' : ''}`}>
+                                <div className="card-header">
+                                    <div className={`point-icon ${card.status === 'expired' ? 'grayscale' : ''}`}>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect x="2" y="5" width="20" height="14" rx="2" stroke="white" strokeWidth="2" />
+                                            <line x1="2" y1="10" x2="22" y2="10" stroke="white" strokeWidth="2" />
+                                        </svg>
+                                    </div>
+                                    <div className="point-details">
+                                        <span className="point-name">{card.type} Card</span>
+                                        <span className="point-type">
+                                            <span className={`status-badge ${card.status}`}>
+                                                {card.status === 'active' ? 'Active' : 'Expired'}
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="card-footer">
+                                    <div className="balance-info">
+                                        <span className="label">Balance</span>
+                                        <span className="amount">{card.balance}</span>
+                                    </div>
+                                    <div className="expiry-info">
+                                        <span className="label">Expires</span>
+                                        <span className="date">{card.expires}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        {filteredCards.length === 0 && (
+                            <div className="no-cards-placeholder">
+                                No {filter} cards found.
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
