@@ -1,7 +1,16 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  padding: 0;
+  width: 100%;
+  background-color: #0a0e14;
+  /* Match app background */
+  overflow-x: hidden;
 }
 
 .logo {
