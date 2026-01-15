@@ -1,7 +1,7 @@
 import liff from '@line/liff';
 
 // Replace this with your actual LIFF ID from LINE Developers Console
-const LIFF_ID = import.meta.env.VITE_LIFF_ID || '2008887930-BL7SdNl3';
+const LIFF_ID = import.meta.env.VITE_LIFF_ID;
 
 export const initializeLiff = async () => {
     try {

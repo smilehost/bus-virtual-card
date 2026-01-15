@@ -1,5 +1,5 @@
 // Base API Configuration
-const BASE_URL = 'https://api-testmass.lab.bussing.app/api';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 /**
  * Base fetch wrapper with error handling
@@ -42,8 +42,8 @@ export const apiRequest = async (endpoint, options = {}) => {
  * @param {string} endpoint - API endpoint
  * @returns {Promise<any>} Response data
  */
-export const get = (endpoint) => {
-    return apiRequest(endpoint, { method: 'GET' });
+export const get = (endpoint, options = {}) => {
+    return apiRequest(endpoint, { ...options, method: 'GET' });
 };
 
 /**
