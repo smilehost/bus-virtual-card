@@ -3,7 +3,7 @@ import './SuccessModal.css';
 
 const CheckIcon = () => (
     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20 6L9 17L4 12" stroke="#02db88" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M20 6L9 17L4 12" stroke="#4CAF50" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
 

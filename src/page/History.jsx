@@ -69,8 +69,9 @@ const History = () => {
     // Topup: Green Arrow pointing down-left.
 
     const IconWrapper = ({ type, children }) => {
-        const bgColor = type === 'purchase' ? 'rgba(147, 51, 234, 0.1)' : 'rgba(16, 185, 129, 0.1)';
-        const borderColor = type === 'purchase' ? 'rgba(147, 51, 234, 0.2)' : 'rgba(16, 185, 129, 0.2)';
+        // Use theme standard background colors instead of arbitrary rgba
+        const bgColor = type === 'purchase' ? '#F3E8FF' : '#E6FFFA'; // Light Purple / Light Green
+        const borderColor = type === 'purchase' ? '#E9D5FF' : '#B2F5EA';
 
         return (
             <div className="icon-wrapper" style={{ backgroundColor: bgColor, border: `1px solid ${borderColor}` }}>
@@ -103,30 +104,16 @@ const History = () => {
                         {tab}
                     </button>
                 ))}
-                {/* Animated underline could be done with CSS or inline styles, 
-            but simple border-bottom on active class is easier and cleaner. */}
             </div>
 
             <div className="transactions-list">
                 {filteredTransactions.length === 0 ? (
-                    <div style={{
-                        textAlign: 'center',
-                        padding: '60px 20px',
-                        color: 'rgba(255, 255, 255, 0.5)'
-                    }}>
-                        <div style={{
-                            fontSize: '48px',
-                            marginBottom: '16px'
-                        }}>📭</div>
-                        <div style={{
-                            fontSize: '16px',
-                            fontWeight: '500',
-                            marginBottom: '8px',
-                            color: 'rgba(255, 255, 255, 0.7)'
-                        }}>
+                    <div className="empty-state">
+                        <span className="empty-icon">📭</span>
+                        <div className="empty-title">
                             No transactions yet
                         </div>
-                        <div style={{ fontSize: '14px' }}>
+                        <div className="empty-subtitle">
                             Your {activeTab.toLowerCase()} will appear here
                         </div>
                     </div>
@@ -137,14 +124,14 @@ const History = () => {
                                 <IconWrapper type={t.rawType}>
                                     {t.rawType === 'purchase' ? (
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M20 7H4C3.4 7 3 7.4 3 8V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V8C21 7.4 20.6 7 20 7Z" stroke="#D8B4FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            <path d="M16 7V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V7" stroke="#D8B4FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            <circle cx="12" cy="14" r="2" stroke="#D8B4FE" strokeWidth="2" />
+                                            <path d="M20 7H4C3.4 7 3 7.4 3 8V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V8C21 7.4 20.6 7 20 7Z" stroke="#9333EA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M16 7V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V7" stroke="#9333EA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            <circle cx="12" cy="14" r="2" stroke="#9333EA" strokeWidth="2" />
                                         </svg>
                                     ) : (
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M17 7L7 17" stroke="#00E599" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            <path d="M17 17H7V7" stroke="#00E599" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M17 7L7 17" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M17 17H7V7" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
                                     )}
                                 </IconWrapper>

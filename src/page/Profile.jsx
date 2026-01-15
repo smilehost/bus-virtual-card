@@ -57,10 +57,12 @@ const getCardStatus = (card) => {
 };
 
 import { getMemberByUserId } from '../services/memberService';
+import { useTheme } from '../context/ThemeContext';
 
 const Profile = () => {
     const { profile, isLoggedIn, logout, isLoading: liffLoading } = useLiff();
     const { cards, isLoading: cardsLoading, fetchCardsByUuid } = useCardStore();
+    const { theme, toggleTheme } = useTheme();
     const [filter, setFilter] = useState('all');
     const [memberData, setMemberData] = useState(null);
 
@@ -103,6 +105,9 @@ const Profile = () => {
                     </svg>
                 </div>
                 <h1>My Profile</h1>
+                <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle Theme">
+                    {theme === 'dark' ? '☀️' : '🌙'}
+                </button>
             </header>
 
             <div className="profile-content">
@@ -117,7 +122,7 @@ const Profile = () => {
                         ) : (
                             <div className="avatar">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M20 21C20 19.6044 20 18.9067 19.8278 18.3389C19.44 17.0605 18.4395 16.06 17.1611 15.6722C16.5933 15.5 15.8956 15.5 14.5 15.5H9.5C8.10444 15.5 7.40665 15.5 6.83886 15.6722C5.56045 16.06 4.56004 17.0605 4.17224 18.3389C4 18.9067 4 19.6044 4 21M16.5 7.5C16.5 9.98528 14.4853 12 12 12C9.51472 12 7.5 9.98528 7.5 7.5C7.5 5.01472 9.51472 3 12 3C14.4853 3 16.5 5.01472 16.5 7.5Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M20 21C20 19.6044 20 18.9067 19.8278 18.3389C19.44 17.0605 18.4395 16.06 17.1611 15.6722C16.5933 15.5 15.8956 15.5 14.5 15.5H9.5C8.10444 15.5 7.40665 15.5 6.83886 15.6722C5.56045 16.06 4.56004 17.0605 4.17224 18.3389C4 18.9067 4 19.6044 4 21M16.5 7.5C16.5 9.98528 14.4853 12 12 12C9.51472 12 7.5 9.98528 7.5 7.5C7.5 5.01472 9.51472 3 12 3C14.4853 3 16.5 5.01472 16.5 7.5Z" stroke="#E0E0E0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </div>
                         )}
@@ -153,8 +158,8 @@ const Profile = () => {
                     <div className="stat-card">
                         <div className="stat-icon graph-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M23 6L13.5 15.5L8.5 10.5L1 18" stroke="#00D1FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M17 6H23V12" stroke="#00D1FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M23 6L13.5 15.5L8.5 10.5L1 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M17 6H23V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         </div>
                         <span className="stat-label">Wallet Balance</span>
@@ -163,8 +168,8 @@ const Profile = () => {
                     <div className="stat-card">
                         <div className="stat-icon card-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="2" y="5" width="20" height="14" rx="2" stroke="#00FFA3" strokeWidth="2" />
-                                <line x1="2" y1="10" x2="22" y2="10" stroke="#00FFA3" strokeWidth="2" />
+                                <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2" />
+                                <line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" strokeWidth="2" />
                             </svg>
                         </div>
                         <span className="stat-label">Cards Bought</span>
@@ -178,9 +183,9 @@ const Profile = () => {
                         <div className="card-header">
                             <div className="point-icon">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M21 16V8C20.9996 7.64927 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64927 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M3.27002 6.96002L12 12.01L20.73 6.96002" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M12 22.08V12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M21 16V8C20.9996 7.64927 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64927 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M3.27002 6.96002L12 12.01L20.73 6.96002" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M12 22.08V12" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </div>
                             <div className="point-details">
@@ -249,8 +254,8 @@ const Profile = () => {
                                         <div className="card-header">
                                             <div className={`point-icon ${status === 'expired' ? 'grayscale' : ''}`}>
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <rect x="2" y="5" width="20" height="14" rx="2" stroke="white" strokeWidth="2" />
-                                                    <line x1="2" y1="10" x2="22" y2="10" stroke="white" strokeWidth="2" />
+                                                    <rect x="2" y="5" width="20" height="14" rx="2" stroke="#4CAF50" strokeWidth="2" />
+                                                    <line x1="2" y1="10" x2="22" y2="10" stroke="#4CAF50" strokeWidth="2" />
                                                 </svg>
                                             </div>
                                             <div className="point-details">

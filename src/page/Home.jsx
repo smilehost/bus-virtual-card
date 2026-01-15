@@ -21,16 +21,17 @@ const PlusIcon = () => (
 
 const VirtualCardIcon = ({ type }) => (
     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="4" width="20" height="16" rx="3" fill={type === 1 ? "url(#moneyGradient)" : "url(#roundGradient)"} stroke={type === 1 ? "#00ffa3" : "#00d9ff"} strokeWidth="1" />
-        <path d="M2 10H22" stroke={type === 1 ? "#00ffa3" : "#00d9ff"} strokeWidth="1" />
+        <rect x="2" y="4" width="20" height="16" rx="3" fill={type === 1 ? "url(#moneyGradient)" : "url(#roundGradient)"} stroke="none" />
+        <path d="M2 10H22" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+        <circle cx="19" cy="16" r="2" fill="rgba(255,255,255,0.5)" />
         <defs>
             <linearGradient id="moneyGradient" x1="2" y1="4" x2="22" y2="20" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#1a4a3a" />
-                <stop offset="1" stopColor="#0a2015" />
+                <stop stopColor="#4CAF50" />
+                <stop offset="1" stopColor="#2E7D32" />
             </linearGradient>
             <linearGradient id="roundGradient" x1="2" y1="4" x2="22" y2="20" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#1a3a4a" />
-                <stop offset="1" stopColor="#0a1520" />
+                <stop stopColor="#03A9F4" />
+                <stop offset="1" stopColor="#01579B" />
             </linearGradient>
         </defs>
     </svg>
