@@ -8,7 +8,11 @@ import { get } from './api';
  */
 export const checkCardByUuid = async (uuid) => {
     try {
-        const response = await get(`/card/check-card/${uuid}`);
+        const response = await get(`/card/check-card/${uuid}`, {
+            headers: {
+                com_id: 1
+            }
+        });
         return response;
     } catch (error) {
         console.error('Error checking card:', error);
