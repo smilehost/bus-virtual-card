@@ -83,9 +83,12 @@ const formatBalance = (balance, cardType) => {
     return `฿${balance.toLocaleString()}`;
 };
 
+import { getMemberByUserId } from '../services/memberService';
+
 function Home({ onNavigate }) {
     const [selectedCard, setSelectedCard] = useState(null);
     const [filter, setFilter] = useState('all');
+    const [memberData, setMemberData] = useState(null);
 
     // Get LIFF profile
     const { profile, isLoading: liffLoading } = useLiff();
@@ -99,11 +102,19 @@ function Home({ onNavigate }) {
         error
     } = useCardStore();
 
-    // Fetch cards when profile is loaded
+    // Fetch cards and member data when profile is loaded
     useEffect(() => {
         if (profile?.userId) {
             console.log('Fetching cards for user:', profile.userId);
             fetchCardsByUuid(profile.userId);
+
+            getMemberByUserId(profile.userId)
+                .then(response => {
+                    if (response?.data) {
+                        setMemberData(response.data);
+                    }
+                })
+                .catch(err => console.error('Failed to fetch member data:', err));
         }
     }, [profile?.userId, fetchCardsByUuid]);
 
@@ -148,7 +159,7 @@ function Home({ onNavigate }) {
                 <div className="balance-content">
                     <span className="balance-label">Total Balance</span>
                     <h2 className="balance-amount">
-                        {isLoading ? '...' : `฿${totalBalance.toLocaleString()}`}
+                        {isLoading || !memberData ? '...' : `฿${(memberData.member_wallet || 0).toLocaleString()}`}
                     </h2>
                     <div className="balance-actions">
                         <button className="btn-topup" onClick={() => onNavigate('topup')}>

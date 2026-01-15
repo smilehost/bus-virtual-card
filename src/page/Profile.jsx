@@ -56,10 +56,13 @@ const getCardStatus = (card) => {
     return 'active';
 };
 
+import { getMemberByUserId } from '../services/memberService';
+
 const Profile = () => {
     const { profile, isLoggedIn, logout, isLoading: liffLoading } = useLiff();
     const { cards, isLoading: cardsLoading, fetchCardsByUuid } = useCardStore();
     const [filter, setFilter] = useState('all');
+    const [memberData, setMemberData] = useState(null);
 
     // Fetch cards when profile is loaded
     useEffect(() => {
@@ -68,10 +71,17 @@ const Profile = () => {
         }
     }, [profile?.userId, fetchCardsByUuid]);
 
-    // Log LINE userId
+    // Log LINE userId and fetch member data
     useEffect(() => {
         if (profile?.userId) {
             console.log('LINE User ID:', profile.userId);
+            getMemberByUserId(profile.userId)
+                .then(response => {
+                    if (response?.data) {
+                        setMemberData(response.data);
+                    }
+                })
+                .catch(err => console.error('Failed to fetch member data:', err));
         }
     }, [profile]);
 
@@ -124,7 +134,7 @@ const Profile = () => {
                         <span>Loyalty Points</span>
                     </div>
                     <div className="points-display">
-                        <span className="points">10</span>
+                        <span className="points">{memberData?.member_point || 0}</span>
                         <span className="unit">pts</span>
                     </div>
                     <div className="progress-section">
@@ -147,8 +157,8 @@ const Profile = () => {
                                 <path d="M17 6H23V12" stroke="#00D1FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         </div>
-                        <span className="stat-label">Total Spent</span>
-                        <span className="stat-value">$0.00</span>
+                        <span className="stat-label">Wallet Balance</span>
+                        <span className="stat-value">฿{(memberData?.member_wallet || 0).toLocaleString()}</span>
                     </div>
                     <div className="stat-card">
                         <div className="stat-icon card-icon">
