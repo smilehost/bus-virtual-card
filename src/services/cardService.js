@@ -1,5 +1,5 @@
 // Card Service - API calls related to cards
-import { get } from './api';
+import { get, post } from './api';
 
 /**
  * Check cards by user UUID (LINE User ID)
@@ -20,7 +20,22 @@ export const checkCardByUuid = async (uuid) => {
     }
 };
 
-export default {
-    checkCardByUuid,
+/**
+ * Use card (Simulate Scan)
+ * @param {object} data - Transaction data
+ * @returns {Promise<{status: string, message: string, data: object}>} Transaction result
+ */
+export const useCard = async (data) => {
+    try {
+        const response = await post('/card/use', data);
+        return response;
+    } catch (error) {
+        console.error('Error using card:', error);
+        throw error;
+    }
 };
 
+export default {
+    checkCardByUuid,
+    useCard,
+};

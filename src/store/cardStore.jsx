@@ -25,15 +25,15 @@ export const CardProvider = ({ children }) => {
 
         try {
             const response = await checkCardByUuid(uuid);
-            
-            if (response.status === 'exist' && response.card) {
+
+            if (response.status === 'success' && response.card) {
                 setCards(response.card);
                 console.log('Cards fetched successfully:', response.card.length, 'cards');
             } else {
                 setCards([]);
                 console.log('No cards found for user');
             }
-            
+
             setLastFetched(new Date());
         } catch (err) {
             console.error('Error fetching cards:', err);
@@ -106,12 +106,12 @@ export const CardProvider = ({ children }) => {
         isLoading,
         error,
         lastFetched,
-        
+
         // Actions
         fetchCardsByUuid,
         refreshCards,
         clearCards,
-        
+
         // Getters
         getCardsByType,
         getRoundCards,

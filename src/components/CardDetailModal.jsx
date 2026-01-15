@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import './CardDetailModal.css';
+import { useCard } from '../services/cardService';
+import ScanSuccessModal from './ScanSuccessModal';
+import { useCardStore } from '../store/cardStore';
 
 // Back Arrow Icon
 const BackIcon = () => (
@@ -62,6 +65,12 @@ const formatExpiry = (expireHours) => {
 function CardDetailModal({ card, onClose }) {
     const [remainingBalance, setRemainingBalance] = useState(card.card_balance || 0);
     const [usageHistory, setUsageHistory] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [successData, setSuccessData] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    // Get actions to refresh cards
+    const { fetchCardsByUuid } = useCardStore();
 
     // Get the card hash for QR code
     const cardHash = card.card_hash || '4b1a97a120061ffac3f3b77abdd3c0ae842981ab84928a11572a5e8341280a7c';
@@ -69,28 +78,66 @@ function CardDetailModal({ card, onClose }) {
     // Deduction amount based on card type
     const deductionAmount = getDeductionAmount(card.card_type);
 
-    const handleSimulateScan = () => {
-        if (remainingBalance >= deductionAmount) {
-            setRemainingBalance(prev => prev - deductionAmount);
-            setUsageHistory(prev => [
-                {
-                    id: Date.now(),
-                    amount: -deductionAmount,
-                    date: new Date().toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }),
-                    type: 'Bus Ride'
-                },
-                ...prev
-            ]);
+    const handleSimulateScan = async () => {
+        if (remainingBalance < deductionAmount) return;
+
+        setIsLoading(true);
+        try {
+            // Payload as requested
+            const payload = {
+                hashed_input: card.card_hash || cardHash, // Use real hash if available
+                used_amount: 1, // Fixed 1 as per request
+                bus_id: 1,
+                busround_id: 3132,
+                card_transaction_lat: "16.4085321",
+                card_transaction_long: "102.842083"
+            };
+
+            const response = await useCard(payload);
+
+            if (response.status === 'success') {
+                setSuccessData(response.data);
+                setRemainingBalance(response.data.remaining_balance);
+                setShowSuccess(true);
+
+                // Add to local history
+                setUsageHistory(prev => [
+                    {
+                        id: Date.now(),
+                        amount: -deductionAmount,
+                        date: new Date().toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }),
+                        type: 'Bus Ride'
+                    },
+                    ...prev
+                ]);
+
+                // Refresh parent data if user ID is available
+                // We don't have user ID directly here but we could pass it or fetch it from context
+                // For now local update is good enough for simulation
+            } else {
+                alert('Scan Failed: ' + (response.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Scan Error:', error);
+            alert('Scan Error: ' + error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    // Card name based on type
+    const handleCloseSuccess = () => {
+        setShowSuccess(false);
+        // Maybe close modal too? Or keep it open.
+        // User didn't specify, but usually we stay on card detail.
+    };
+
+    // Card name based on card type
     const cardName = card.card_type === 1 ? 'Money Card' : 'Round Card';
 
     return (
@@ -119,10 +166,18 @@ function CardDetailModal({ card, onClose }) {
                     </div>
                     <span className="qr-label">Scan to redeem</span>
                 </div>
-                <button className="simulate-btn" onClick={handleSimulateScan}>
-                    <ScanIcon />
+                <button
+                    className="simulate-btn"
+                    onClick={handleSimulateScan}
+                    disabled={isLoading || remainingBalance < deductionAmount}
+                >
+                    {isLoading ? (
+                        <div className="loading-spinner-small" style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+                    ) : (
+                        <ScanIcon />
+                    )}
                     <span>
-                        Simulate Scan ( -{card.card_type === 0 ? `${deductionAmount} Round` : `$${deductionAmount.toFixed(2)}`} )
+                        {isLoading ? 'Scanning...' : `Simulate Scan ( -${card.card_type === 0 ? `${deductionAmount} Round` : `$${deductionAmount.toFixed(2)}`} )`}
                     </span>
                 </button>
             </div>
@@ -167,8 +222,16 @@ function CardDetailModal({ card, onClose }) {
                     )}
                 </div>
             </div>
+
+            <ScanSuccessModal
+                isOpen={showSuccess}
+                onClose={handleCloseSuccess}
+                data={successData}
+            />
         </div>
     );
 }
 
 export default CardDetailModal;
+
+
