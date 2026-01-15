@@ -1,5 +1,5 @@
-/* Card Detail Modal - Clean Receipt Style */
-.card-detail-overlay {
+/* Transaction Detail Modal - Friendly Light Theme */
+.transaction-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -8,6 +8,7 @@
     background-color: rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: flex-end;
+    /* Bottom sheet style on mobile */
     justify-content: center;
     z-index: 1000;
     backdrop-filter: blur(4px);
@@ -16,12 +17,12 @@
 }
 
 @media (min-width: 480px) {
-    .card-detail-overlay {
+    .transaction-modal-overlay {
         align-items: center;
     }
 }
 
-.card-detail-content {
+.transaction-modal-content {
     background: var(--card-bg);
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
@@ -34,11 +35,10 @@
     animation: slideUp 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
     max-height: 90vh;
     overflow-y: auto;
-    position: relative;
 }
 
 @media (min-width: 480px) {
-    .card-detail-content {
+    .transaction-modal-content {
         border-radius: 24px;
         box-shadow: var(--card-shadow);
         width: 90%;
@@ -46,15 +46,10 @@
     }
 }
 
-/* Header */
-.card-modal-header {
+.transaction-modal-header {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 8px;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 10;
 }
 
 .btn-close-modal {
@@ -76,38 +71,33 @@
     color: var(--text-primary);
 }
 
-/* QR Section */
-.qr-display-section {
+.transaction-icon-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 24px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    margin-top: 10px;
-    margin-bottom: 24px;
+    justify-content: center;
+    margin: 0 auto 20px;
 }
 
-.qr-wrapper {
-    background: white;
-    padding: 16px;
-    border-radius: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    margin-bottom: 16px;
-}
-
-.card-title-large {
-    font-size: 20px;
-    font-weight: 700;
+.transaction-amount-large {
+    font-size: 32px;
+    font-weight: 800;
+    text-align: center;
     color: var(--text-primary);
-    margin-bottom: 4px;
+    margin-bottom: 8px;
 }
 
-.card-subtitle {
-    font-size: 14px;
+.transaction-title-large {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
     color: var(--text-secondary);
+    margin-bottom: 32px;
 }
 
-/* Info List */
-.card-details-list {
+.transaction-details-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -124,7 +114,6 @@
 
 .detail-row:last-child {
     border-bottom: none;
-    padding-bottom: 0;
 }
 
 .detail-label {
@@ -137,63 +126,13 @@
     font-size: 14px;
     font-weight: 600;
     color: var(--text-primary);
-    text-align: right;
 }
 
-.status-badge {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 8px;
-}
-
-.status-badge.active {
+.status-valid {
     color: var(--success-color);
     background: rgba(76, 175, 80, 0.1);
-}
-
-.status-badge.new {
-    color: #F06292;
-    background: rgba(233, 30, 99, 0.1);
-}
-
-.status-badge.expired {
-    color: var(--danger-color);
-    background: rgba(239, 68, 68, 0.1);
-}
-
-/* Action Buttons */
-.card-actions {
-    margin-top: auto;
-}
-
-.btn-scan {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: var(--primary-gradient);
-    color: white;
-    border: none;
-    padding: 14px;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s;
-    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
-}
-
-.btn-scan:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    background: var(--text-secondary);
-    box-shadow: none;
-}
-
-.btn-scan:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 152, 0, 0.4);
+    padding: 4px 10px;
+    border-radius: 8px;
 }
 
 @keyframes slideUp {
@@ -203,27 +142,5 @@
 
     to {
         transform: translateY(0);
-    }
-}
-
-@keyframes scaleUp {
-    from {
-        transform: scale(0.95);
-        opacity: 0;
-    }
-
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
     }
 }

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import SuccessModal from '../components/SuccessModal';
+import CountdownModal from '../components/CountdownModal';
 import { getVirtualCardGroups, createCardByLine } from '../services/cardGroupService';
 import { useLiff } from '../context/LiffContext';
+import { useCardStore } from '../store/cardStore';
 import './BuyCardRound.css';
 
 const BackIcon = () => (
@@ -50,10 +52,12 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isCountdownOpen, setIsCountdownOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     // Get user profile from LIFF
     const { profile } = useLiff();
+    const { fetchCardsByUuid } = useCardStore(); // Import fetch function from store
 
     // Fetch card groups on mount
     useEffect(() => {
@@ -86,7 +90,12 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
 
     const handleSuccessClose = () => {
         setIsSuccess(false);
-        if (onBack) onBack();
+        // Do not navigate back immediately, let user decide or auto-redirect after countdown
+    };
+
+    const handleCountdownComplete = () => {
+        setIsCountdownOpen(false);
+        if (onBack) onBack(); // Go back to Home/Previous screen after countdown
     };
 
     const handleConfirm = async () => {
@@ -119,7 +128,14 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                         expires: calculateExpiryDate(selectedCardGroup.card_group_expire)
                     });
                 }
+
+                // Fetch latest cards immediately
+                if (profile?.userId) {
+                    fetchCardsByUuid(profile.userId);
+                }
+
                 setIsSuccess(true);
+                setIsCountdownOpen(true); // Open countdown modal
             } else {
                 setError(response.message || 'Failed to create card');
             }
@@ -139,12 +155,17 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
 
     return (
         <div className="buy-card-container">
-            <SuccessModal
-                isOpen={isSuccess}
-                onClose={handleSuccessClose}
-                message="Purchase Successful!"
-                subMessage="You have purchased"
-                amount={`${selectedCardGroup?.card_group_name} Card (${rounds} rounds)`}
+            {/* Reusing CountdownModal as the main Success Display Modal */}
+            <CountdownModal
+                isOpen={isCountdownOpen}
+                onClose={() => {
+                    setIsCountdownOpen(false);
+                    if (onBack) onBack(); // Navigate back on close
+                }}
+                purchaseDetails={selectedCardGroup ? {
+                    name: selectedCardGroup.card_group_name,
+                    balance: `${rounds} Rounds`
+                } : null}
             />
 
             <header className="buy-card-header">

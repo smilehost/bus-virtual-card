@@ -40,6 +40,33 @@ const formatExpiry = (card) => {
     return 'No expiry';
 };
 
+// Virtual Card Icon Component
+const VirtualCardIcon = ({ type }) => (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="4" width="20" height="16" rx="3" fill={type === 1 ? "url(#moneyGradient)" : "url(#roundGradient)"} stroke="none" />
+        <path d="M2 10H22" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+        <circle cx="19" cy="16" r="2" fill="rgba(255,255,255,0.5)" />
+        <defs>
+            <linearGradient id="moneyGradient" x1="2" y1="4" x2="22" y2="20" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#4CAF50" />
+                <stop offset="1" stopColor="#2E7D32" />
+            </linearGradient>
+            <linearGradient id="roundGradient" x1="2" y1="4" x2="22" y2="20" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#03A9F4" />
+                <stop offset="1" stopColor="#01579B" />
+            </linearGradient>
+        </defs>
+    </svg>
+);
+
+// Format card balance display
+const formatBalance = (balance, cardType) => {
+    if (cardType === 0) {
+        return `${balance} Round${balance > 1 ? 's' : ''}`;
+    }
+    return `฿${balance.toLocaleString()}`;
+};
+
 // Get card status based on expiry
 const getCardStatus = (card) => {
     // Round cards with 0 balance are considered expired
@@ -58,8 +85,9 @@ const getCardStatus = (card) => {
 
 import { getMemberByUserId } from '../services/memberService';
 import { useTheme } from '../context/ThemeContext';
+import CardDetailModal from '../components/CardDetailModal'; // Import modal
 
-const Profile = () => {
+const Profile = ({ onNavigate }) => {
     const { profile, isLoggedIn, logout, isLoading: liffLoading } = useLiff();
     const { cards, isLoading: cardsLoading, fetchCardsByUuid } = useCardStore();
     const { theme, toggleTheme } = useTheme();
@@ -89,11 +117,20 @@ const Profile = () => {
 
     const isLoading = liffLoading || cardsLoading;
 
+    // State for selected card detail
+    const [selectedCard, setSelectedCard] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
     // Filter cards based on status
     const filteredCards = cards.filter(card => {
         if (filter === 'all') return true;
         return getCardStatus(card) === filter;
     });
+
+    const handleCardClick = (card) => {
+        setSelectedCard(card);
+        setIsDetailModalOpen(true);
+    };
 
     return (
         <div className="profile-page">
@@ -244,46 +281,48 @@ const Profile = () => {
                         {isLoading ? (
                             <div className="loading-container">
                                 <div className="loading-spinner"></div>
-                                <p>กำลังโหลด...</p>
+                                <p>Loading...</p>
                             </div>
                         ) : filteredCards.length > 0 ? (
                             filteredCards.map(card => {
                                 const status = getCardStatus(card);
                                 return (
-                                    <div key={card.card_id} className={`member-point-card ${status === 'expired' ? 'expired' : ''}`}>
-                                        <div className="card-header">
-                                            <div className={`point-icon ${status === 'expired' ? 'grayscale' : ''}`}>
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <rect x="2" y="5" width="20" height="14" rx="2" stroke="#4CAF50" strokeWidth="2" />
-                                                    <line x1="2" y1="10" x2="22" y2="10" stroke="#4CAF50" strokeWidth="2" />
-                                                </svg>
+                                    <div
+                                        key={card.card_id}
+                                        className={`virtual-card ${card.card_type === 1 ? 'money-card' : 'round-card'} ${status === 'expired' ? 'expired' : ''}`}
+                                        onClick={() => handleCardClick(card)}
+                                    >
+                                        <div className="card-top">
+                                            <div className="card-icon-wrapper">
+                                                <VirtualCardIcon type={card.card_type} />
                                             </div>
-                                            <div className="point-details">
-                                                <span className="point-name">
+                                            <div className="card-info">
+                                                <span className="card-name">
                                                     {card.card_type === 1 ? 'Money Card' : 'Round Card'}
                                                 </span>
-                                                <span className="point-type">
-                                                    <span className={`status-badge ${status}`}>
-                                                        {status === 'active' ? 'Active' : 'Expired'}
-                                                    </span>
+                                                <span className="card-type">
+                                                    {card.card_type === 1 ? 'money' : 'round'} · Virtual
                                                 </span>
                                             </div>
-                                            {!card.card_firstuse && (
+                                            {!card.card_firstuse && status !== 'expired' && (
                                                 <span className="new-badge">New</span>
                                             )}
+                                            {status === 'expired' && (
+                                                <span className="card-status-badge expired" style={{ marginLeft: 'auto' }}>Expired</span>
+                                            )}
                                         </div>
-                                        <div className="card-footer">
-                                            <div className="balance-info">
-                                                <span className="label">Balance</span>
-                                                <span className="amount">
-                                                    {card.card_type === 1
-                                                        ? `฿${card.card_balance.toLocaleString()}`
-                                                        : `${card.card_balance} Round${card.card_balance > 1 ? 's' : ''}`}
+                                        <div className="card-bottom">
+                                            <div className="card-balance">
+                                                <span className="card-balance-label">Balance</span>
+                                                <span className="card-balance-value">
+                                                    {formatBalance(card.card_balance, card.card_type)}
                                                 </span>
                                             </div>
-                                            <div className="expiry-info">
-                                                <span className="label">Expires</span>
-                                                <span className="date">{formatExpiry(card)}</span>
+                                            <div className="card-expires">
+                                                <span className="card-expires-label">Expires</span>
+                                                <span className="card-expires-value">
+                                                    {status === 'expired' ? 'Expired' : formatExpiry(card)}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -297,8 +336,16 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
+
+            {selectedCard && (
+                <CardDetailModal
+                    isOpen={isDetailModalOpen}
+                    onClose={() => setIsDetailModalOpen(false)}
+                    card={selectedCard}
+                    onScanSuccess={() => onNavigate && onNavigate('home')}
+                />
+            )}
         </div>
     );
 };
-
 export default Profile;

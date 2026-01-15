@@ -9,7 +9,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
  */
 export const apiRequest = async (endpoint, options = {}) => {
     const url = `${BASE_URL}${endpoint}`;
-    
+
     const defaultHeaders = {
         'Content-Type': 'application/json',
     };
@@ -24,11 +24,21 @@ export const apiRequest = async (endpoint, options = {}) => {
 
     try {
         const response = await fetch(url, config);
-        
+
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            let errorData;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                // If body is not JSON, ignore
+            }
+
+            const error = new Error(errorData?.message || `HTTP error! status: ${response.status}`);
+            error.status = response.status;
+            error.data = errorData;
+            throw error;
         }
-        
+
         const data = await response.json();
         return data;
     } catch (error) {

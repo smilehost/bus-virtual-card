@@ -133,15 +133,8 @@ function Home({ onNavigate }) {
         return true;
     });
 
-    // If a card is selected, show the modal
-    if (selectedCard) {
-        return (
-            <CardDetailModal
-                card={selectedCard}
-                onClose={() => setSelectedCard(null)}
-            />
-        );
-    }
+    // If a card is selected, show the modal - logic moved to render
+    // early return removed to allow overlay style
 
     const isLoading = liffLoading || cardsLoading;
 
@@ -275,6 +268,15 @@ function Home({ onNavigate }) {
                     </div>
                 )}
             </div>
+
+            {/* Detail Modal */}
+            {selectedCard && (
+                <CardDetailModal
+                    card={selectedCard}
+                    onClose={() => setSelectedCard(null)}
+                    isOpen={!!selectedCard}
+                />
+            )}
         </div>
     );
 }

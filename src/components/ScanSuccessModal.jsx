@@ -34,31 +34,20 @@ const ScanSuccessModal = ({ isOpen, onClose, data }) => {
                 </div>
                 <h2 className="success-title">Successfully</h2>
 
-                <div className="success-details" style={{ marginTop: '1rem', textAlign: 'left', background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '12px' }}>
-                    <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ color: '#aaa' }}>Remaining Balance:</span>
-                        <span style={{ color: '#fff', fontWeight: 'bold' }}>{remaining_balance} Rounds</span>
+                <div className="success-details-box">
+                    <div className="detail-row">
+                        <span className="detail-label">Remaining Balance:</span>
+                        <span className="detail-value">{remaining_balance} Rounds</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ color: '#aaa' }}>Expires On:</span>
-                        <span style={{ color: '#fff', fontWeight: 'bold' }}>{formattedDate}</span>
+                    <div className="detail-row">
+                        <span className="detail-label">Expires On:</span>
+                        <span className="detail-value">{formattedDate}</span>
                     </div>
                 </div>
 
                 <button
                     onClick={onClose}
-                    style={{
-                        marginTop: '1.5rem',
-                        background: '#4CAF50',
-                        color: 'white',
-                        border: 'none',
-                        padding: '12px 24px',
-                        borderRadius: '25px',
-                        width: '100%',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        cursor: 'pointer'
-                    }}
+                    className="btn-success-close"
                 >
                     Close
                 </button>

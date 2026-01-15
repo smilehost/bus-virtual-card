@@ -391,7 +391,7 @@
     justify-content: flex-end;
 }
 
-/* All Cards Section */
+/* All Cards List Section */
 .all-cards-section {
     margin-top: 32px;
 }
@@ -435,38 +435,120 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+/* Card List Layout (History Style) */
 .cards-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
+    padding-bottom: 20px;
 }
 
-.status-badge {
-    font-size: 10px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-weight: 700;
-    margin-left: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.card-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s, background-color 0.2s;
+    cursor: pointer;
 }
 
-.status-badge.active {
-    background: rgba(76, 175, 80, 0.1);
-    color: var(--success-color);
+.card-list-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-.status-badge.expired {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--danger-color);
-}
-
-/* Expired Status Styling */
-.member-point-card.expired {
+.card-list-item.expired {
     opacity: 0.7;
     background: var(--bg-secondary);
 }
 
+.card-item-left {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.card-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    /* Purple for purchase styles */
+    background: #F3E8FF;
+    border: 1px solid #E9D5FF;
+    color: #9333EA;
+}
+
+.card-icon-wrapper.expired-icon {
+    /* Gray for expired */
+    background: #E5E7EB;
+    border: 1px solid #D1D5DB;
+    color: #6B7280;
+}
+
+.card-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.card-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.card-item-subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.card-item-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+}
+
+.card-item-amount {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.card-status-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.card-status-badge.active {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.card-status-badge.expired {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+}
+
+.card-status-badge.new {
+    background: rgba(233, 30, 99, 0.1);
+    color: var(--danger-color);
+}
+
+
+/* Empty/Loading States */
 .no-cards-placeholder {
     text-align: center;
     padding: 40px;
@@ -477,12 +559,173 @@
     background: var(--bg-secondary);
 }
 
-/* Loading State */
 .loading-container {
     color: var(--text-secondary);
+    text-align: center;
+    padding: 20px;
 }
 
 .loading-spinner {
     border: 3px solid rgba(0, 0, 0, 0.1);
     border-top-color: var(--primary-color);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Virtual Card (Home Style) */
+.virtual-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.virtual-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.virtual-card .card-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.virtual-card .card-icon-wrapper {
+    /* Override list style if needed */
+    width: 48px;
+    height: 48px;
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    color: inherit;
+}
+
+.virtual-card .card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.virtual-card .card-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.virtual-card .card-type {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: 2px 8px;
+    border-radius: 4px;
+    align-self: flex-start;
+}
+
+.virtual-card .card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.virtual-card .card-balance,
+.virtual-card .card-expires {
+    display: flex;
+    flex-direction: column;
+}
+
+.virtual-card .card-balance-label,
+.virtual-card .card-expires-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.virtual-card .card-balance-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.virtual-card .card-expires-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.virtual-card .card-expires {
+    text-align: right;
+}
+
+/* Money Card Variant */
+.virtual-card.money-card {
+    border-left: 4px solid var(--success-color);
+}
+
+.virtual-card.money-card:hover {
+    box-shadow: 0 8px 24px rgba(76, 175, 80, 0.15);
+}
+
+.virtual-card.money-card .card-balance-value {
+    color: var(--success-color);
+}
+
+/* Round Card Variant */
+.virtual-card.round-card {
+    border-left: 4px solid var(--secondary-color);
+}
+
+.virtual-card.round-card .card-balance-value {
+    color: var(--secondary-color);
+}
+
+.virtual-card.expired {
+    opacity: 0.8;
+    filter: grayscale(1);
+}
+
+/* New Badge for virtual card */
+.virtual-card .new-badge {
+    background: var(--danger-color);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: auto;
+    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
+    animation: pulse-new 2s ease-in-out infinite;
+}
+
+@keyframes pulse-new {
+
+    0%,
+    100% {
+        box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 2px 16px rgba(233, 30, 99, 0.5);
+    }
 }

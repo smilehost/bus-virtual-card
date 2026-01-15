@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import TransactionDetailModal from '../components/TransactionDetailModal';
 import './History.css';
 
 const History = () => {
@@ -80,6 +80,14 @@ const History = () => {
         );
     };
 
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+    const handleTransactionClick = (transaction) => {
+        setSelectedTransaction(transaction);
+        setIsDetailModalOpen(true);
+    };
+
     return (
         <div className="history-page">
             <header className="history-header">
@@ -119,7 +127,12 @@ const History = () => {
                     </div>
                 ) : (
                     filteredTransactions.map((t) => (
-                        <div key={t.id} className="transaction-item">
+                        <div
+                            key={t.id}
+                            className="transaction-item"
+                            onClick={() => handleTransactionClick(t)}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <div className="transaction-left">
                                 <IconWrapper type={t.rawType}>
                                     {t.rawType === 'purchase' ? (
@@ -150,6 +163,12 @@ const History = () => {
                     ))
                 )}
             </div>
+
+            <TransactionDetailModal
+                isOpen={isDetailModalOpen}
+                onClose={() => setIsDetailModalOpen(false)}
+                transaction={selectedTransaction}
+            />
         </div>
     );
 };

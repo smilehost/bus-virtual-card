@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import MainLayout from './layout/Mainlayout';
-import Home from './page/Home';
+import Home from './page/home';
 import TopUp from './page/TopUp';
 import History from './page/History';
 import './App.css';
@@ -26,7 +26,7 @@ function App() {
       case 'history':
         return <History />;
       case 'profile':
-        return <Profile />;
+        return <Profile onNavigate={handleTabChange} />;
       default:
         return <Home onNavigate={handleTabChange} />;
     }
