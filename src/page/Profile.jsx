@@ -1,9 +1,72 @@
 import React, { useEffect, useState } from 'react';
 import { useLiff } from '../context/LiffContext';
+import { useCardStore } from '../store/cardStore';
 import './Profile.css';
 
+// Format card expiry display (same logic as Home.jsx)
+const formatExpiry = (card) => {
+    // Card has been used - show actual expiry date
+    if (card.card_firstuse && card.card_expire_date) {
+        const expiryDate = new Date(card.card_expire_date);
+        const now = new Date();
+
+        // Check if expired
+        if (expiryDate < now) {
+            return `Expired: ${expiryDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            })}`;
+        }
+
+        // Return formatted date
+        return expiryDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+
+    // Card NOT used yet - show days left before first use
+    if (card.card_expire) {
+        const hours = parseInt(card.card_expire);
+        if (hours >= 24) {
+            const days = Math.floor(hours / 24);
+            return `${days} days before first use`;
+        }
+        return `${hours} hours before first use`;
+    }
+
+    return 'No expiry';
+};
+
+// Get card status based on expiry
+const getCardStatus = (card) => {
+    // Round cards with 0 balance are considered expired
+    if (card.card_type === 0 && card.card_balance === 0) {
+        return 'expired';
+    }
+
+    if (card.card_firstuse && card.card_expire_date) {
+        const expiryDate = new Date(card.card_expire_date);
+        const now = new Date();
+        return expiryDate < now ? 'expired' : 'active';
+    }
+    // Card not used yet is still active
+    return 'active';
+};
+
 const Profile = () => {
-    const { profile, isLoggedIn, logout, isLoading } = useLiff();
+    const { profile, isLoggedIn, logout, isLoading: liffLoading } = useLiff();
+    const { cards, isLoading: cardsLoading, fetchCardsByUuid } = useCardStore();
+    const [filter, setFilter] = useState('all');
+
+    // Fetch cards when profile is loaded
+    useEffect(() => {
+        if (profile?.userId) {
+            fetchCardsByUuid(profile.userId);
+        }
+    }, [profile?.userId, fetchCardsByUuid]);
 
     // Log LINE userId
     useEffect(() => {
@@ -12,29 +75,12 @@ const Profile = () => {
         }
     }, [profile]);
 
-    // Loading state
-    if (isLoading) {
-        return (
-            <div className="profile-page">
-                <div className="loading-container">
-                    <div className="loading-spinner"></div>
-                    <p>กำลังโหลด...</p>
-                </div>
-            </div>
-        );
-    }
-    const [filter, setFilter] = useState('all');
+    const isLoading = liffLoading || cardsLoading;
 
-    const mockCards = [
-        { id: 1, type: 'Student', balance: '10 Rounds', expires: 'Jan 20, 2026', status: 'active' },
-        { id: 2, type: 'Adult', balance: '5 Rounds', expires: 'Feb 15, 2026', status: 'active' },
-        { id: 3, type: 'Senior', balance: '0 Rounds', expires: 'Dec 10, 2025', status: 'expired' },
-        { id: 4, type: 'Student', balance: '30 Rounds', expires: 'Nov 01, 2025', status: 'expired' },
-    ];
-
-    const filteredCards = mockCards.filter(card => {
+    // Filter cards based on status
+    const filteredCards = cards.filter(card => {
         if (filter === 'all') return true;
-        return card.status === filter;
+        return getCardStatus(card) === filter;
     });
 
     return (
@@ -180,37 +226,55 @@ const Profile = () => {
                     </div>
 
                     <div className="cards-list">
-                        {filteredCards.map(card => (
-                            <div key={card.id} className={`member-point-card ${card.status === 'expired' ? 'expired' : ''}`}>
-                                <div className="card-header">
-                                    <div className={`point-icon ${card.status === 'expired' ? 'grayscale' : ''}`}>
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="2" y="5" width="20" height="14" rx="2" stroke="white" strokeWidth="2" />
-                                            <line x1="2" y1="10" x2="22" y2="10" stroke="white" strokeWidth="2" />
-                                        </svg>
-                                    </div>
-                                    <div className="point-details">
-                                        <span className="point-name">{card.type} Card</span>
-                                        <span className="point-type">
-                                            <span className={`status-badge ${card.status}`}>
-                                                {card.status === 'active' ? 'Active' : 'Expired'}
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="card-footer">
-                                    <div className="balance-info">
-                                        <span className="label">Balance</span>
-                                        <span className="amount">{card.balance}</span>
-                                    </div>
-                                    <div className="expiry-info">
-                                        <span className="label">Expires</span>
-                                        <span className="date">{card.expires}</span>
-                                    </div>
-                                </div>
+                        {isLoading ? (
+                            <div className="loading-container">
+                                <div className="loading-spinner"></div>
+                                <p>กำลังโหลด...</p>
                             </div>
-                        ))}
-                        {filteredCards.length === 0 && (
+                        ) : filteredCards.length > 0 ? (
+                            filteredCards.map(card => {
+                                const status = getCardStatus(card);
+                                return (
+                                    <div key={card.card_id} className={`member-point-card ${status === 'expired' ? 'expired' : ''}`}>
+                                        <div className="card-header">
+                                            <div className={`point-icon ${status === 'expired' ? 'grayscale' : ''}`}>
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <rect x="2" y="5" width="20" height="14" rx="2" stroke="white" strokeWidth="2" />
+                                                    <line x1="2" y1="10" x2="22" y2="10" stroke="white" strokeWidth="2" />
+                                                </svg>
+                                            </div>
+                                            <div className="point-details">
+                                                <span className="point-name">
+                                                    {card.card_type === 1 ? 'Money Card' : 'Round Card'}
+                                                </span>
+                                                <span className="point-type">
+                                                    <span className={`status-badge ${status}`}>
+                                                        {status === 'active' ? 'Active' : 'Expired'}
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            {!card.card_firstuse && (
+                                                <span className="new-badge">New</span>
+                                            )}
+                                        </div>
+                                        <div className="card-footer">
+                                            <div className="balance-info">
+                                                <span className="label">Balance</span>
+                                                <span className="amount">
+                                                    {card.card_type === 1
+                                                        ? `฿${card.card_balance.toLocaleString()}`
+                                                        : `${card.card_balance} Round${card.card_balance > 1 ? 's' : ''}`}
+                                                </span>
+                                            </div>
+                                            <div className="expiry-info">
+                                                <span className="label">Expires</span>
+                                                <span className="date">{formatExpiry(card)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        ) : (
                             <div className="no-cards-placeholder">
                                 No {filter} cards found.
                             </div>

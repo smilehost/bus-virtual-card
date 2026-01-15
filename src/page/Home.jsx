@@ -37,14 +37,42 @@ const VirtualCardIcon = ({ type }) => (
 );
 
 // Format card expiry display
-const formatExpiry = (expireHours) => {
-    if (!expireHours) return 'No expiry';
-    const hours = parseInt(expireHours);
-    if (hours >= 24) {
-        const days = Math.floor(hours / 24);
-        return `${days} day${days > 1 ? 's' : ''} left`;
+// If card has been used (card_firstuse exists), show actual expiry date
+// If card has NOT been used, show "X Days left before first use"
+const formatExpiry = (card) => {
+    // Card has been used - show actual expiry date
+    if (card.card_firstuse && card.card_expire_date) {
+        const expiryDate = new Date(card.card_expire_date);
+        const now = new Date();
+
+        // Check if expired
+        if (expiryDate < now) {
+            return `Expired: ${expiryDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            })}`;
+        }
+
+        // Return formatted date
+        return expiryDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
     }
-    return `${hours} hour${hours > 1 ? 's' : ''} left`;
+
+    // Card NOT used yet - show days left before first use
+    if (card.card_expire) {
+        const hours = parseInt(card.card_expire);
+        if (hours >= 24) {
+            const days = Math.floor(hours / 24);
+            return `${days} days before first use`;
+        }
+        return `${hours} hours before first use`;
+    }
+
+    return 'No expiry';
 };
 
 // Format card balance display
@@ -57,6 +85,7 @@ const formatBalance = (balance, cardType) => {
 
 function Home({ onNavigate }) {
     const [selectedCard, setSelectedCard] = useState(null);
+    const [filter, setFilter] = useState('all');
 
     // Get LIFF profile
     const { profile, isLoading: liffLoading } = useLiff();
@@ -80,6 +109,17 @@ function Home({ onNavigate }) {
 
     // Calculate total balance from money cards
     const totalBalance = getTotalBalance();
+
+    // Filter cards based on selection and existing logic
+    const filteredCards = cards.filter(card => {
+        // First Apply existing Logic: Hide 0 round cards
+        if (card.card_type === 0 && card.card_balance === 0) return false;
+
+        // Apply UI Filter
+        if (filter === 'new') return !card.card_firstuse;
+        if (filter === 'active') return card.card_firstuse;
+        return true;
+    });
 
     // If a card is selected, show the modal
     if (selectedCard) {
@@ -124,40 +164,62 @@ function Home({ onNavigate }) {
 
             {/* My Cards Section */}
             <div className="cards-section">
-                <div className="cards-header">
-                    <h3 className="cards-title">My Cards</h3>
-                    <button className="btn-new-card" onClick={() => onNavigate('buycard')}>+ New Card</button>
+                <div className="cards-header-row">
+                    <div className="cards-header-top">
+                        <h3 className="cards-title">My Cards</h3>
+                        <button className="btn-new-card" onClick={() => onNavigate('buycard')}>+ New Card</button>
+                    </div>
+                    <div className="home-filter-tabs">
+                        <button
+                            className={`home-filter-tab ${filter === 'all' ? 'active' : ''}`}
+                            onClick={() => setFilter('all')}
+                        >
+                            All
+                        </button>
+                        <button
+                            className={`home-filter-tab ${filter === 'new' ? 'active' : ''}`}
+                            onClick={() => setFilter('new')}
+                        >
+                            New
+                        </button>
+                        <button
+                            className={`home-filter-tab ${filter === 'active' ? 'active' : ''}`}
+                            onClick={() => setFilter('active')}
+                        >
+                            In Use
+                        </button>
+                    </div>
                 </div>
 
                 {/* Loading State */}
                 {isLoading && (
                     <div className="cards-loading">
                         <div className="loading-spinner"></div>
-                        <p>กำลังโหลดบัตร...</p>
+                        <p>Loading cards...</p>
                     </div>
                 )}
 
                 {/* Error State */}
                 {error && !isLoading && (
                     <div className="cards-error">
-                        <p>เกิดข้อผิดพลาด: {error}</p>
+                        <p>Error: {error}</p>
                     </div>
                 )}
 
                 {/* Empty State */}
                 {!isLoading && !error && cards.length === 0 && (
                     <div className="cards-empty">
-                        <p>ยังไม่มีบัตร</p>
+                        <p>No cards found</p>
                         <button className="btn-buycard" onClick={() => onNavigate('buycard')}>
-                            ซื้อบัตรใหม่
+                            Buy New Card
                         </button>
                     </div>
                 )}
 
                 {/* Virtual Cards List */}
-                {!isLoading && cards.length > 0 && (
+                {!isLoading && filteredCards.length > 0 && (
                     <div className="cards-list">
-                        {[...cards]
+                        {[...filteredCards]
                             .sort((a, b) => new Date(b.card_create) - new Date(a.card_create))
                             .map(card => (
                                 <div
@@ -178,6 +240,9 @@ function Home({ onNavigate }) {
                                                 {card.card_type === 1 ? 'money' : 'round'} · Virtual
                                             </span>
                                         </div>
+                                        {!card.card_firstuse && (
+                                            <span className="new-badge">New</span>
+                                        )}
                                     </div>
                                     <div className="card-bottom">
                                         <div className="card-balance">
@@ -189,7 +254,7 @@ function Home({ onNavigate }) {
                                         <div className="card-expires">
                                             <span className="card-expires-label">Expires</span>
                                             <span className="card-expires-value">
-                                                {formatExpiry(card.card_expire)}
+                                                {formatExpiry(card)}
                                             </span>
                                         </div>
                                     </div>

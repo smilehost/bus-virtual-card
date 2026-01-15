@@ -160,6 +160,46 @@
     color: #00f0ff;
 }
 
+.cards-header-row {
+    margin-bottom: 16px;
+}
+
+.cards-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.home-filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    /* For scrollbar breathing room if needed */
+    -webkit-overflow-scrolling: touch;
+}
+
+.home-filter-tab {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.home-filter-tab.active {
+    background: rgba(0, 217, 255, 0.15);
+    border-color: rgba(0, 217, 255, 0.4);
+    color: #00d9ff;
+    font-weight: 500;
+}
+
 /* Virtual Card */
 .cards-list {
     display: flex;
@@ -345,4 +385,31 @@
 /* Round Card Variant */
 .virtual-card.round-card .card-balance-value {
     color: #00d9ff;
+}
+
+/* New Badge for unused cards */
+.new-badge {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: auto;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+    animation: pulse-new 2s ease-in-out infinite;
+}
+
+@keyframes pulse-new {
+
+    0%,
+    100% {
+        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 2px 16px rgba(255, 107, 107, 0.6);
+    }
 }
