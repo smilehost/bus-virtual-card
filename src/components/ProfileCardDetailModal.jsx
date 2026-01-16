@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import './CardDetailModal.css';
-import { useCard } from '../services/cardService';
-import ScanSuccessModal from './ScanSuccessModal';
-import CooldownModal from './CooldownModal';
 import { useCardStore } from '../store/cardStore';
 import { useLiff } from '../context/LiffContext';
 import { useTranslation } from 'react-i18next';
@@ -15,30 +12,12 @@ const BackIcon = () => (
     </svg>
 );
 
-// Refresh/Scan Icon
-const ScanIcon = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M23 4V1H20M1 4V1H4M23 20V23H20M1 20V23H4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <rect x="6" y="6" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="2" />
-    </svg>
-);
-
 // Format balance display
 const formatBalance = (balance, cardType, t) => {
     if (cardType === 0) {
         return `${balance} ${balance > 1 ? t('card_detail.rounds_plural') : t('card_detail.rounds_singular')}`;
     }
     return `$${balance.toFixed(2)}`;
-};
-
-// Format balance unit
-const formatBalanceUnit = (cardType, t) => {
-    return cardType === 0 ? t('card_detail.rounds_plural') : t('card_detail.credit');
-};
-
-// Calculate deduction amount
-const getDeductionAmount = (cardType) => {
-    return cardType === 0 ? 1 : 10;
 };
 
 // Calculate days left until expiry
@@ -81,19 +60,12 @@ const getCardStatus = (card, remainingBalance) => {
     return 'new';
 };
 
-function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
+function ProfileCardDetailModal({ card, onClose, isOpen }) {
     const { t } = useTranslation();
     const { fetchCardsByUuid } = useCardStore();
     const { profile } = useLiff();
 
     const [remainingBalance, setRemainingBalance] = useState(card?.card_balance || 0);
-    const [usageHistory, setUsageHistory] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [successData, setSuccessData] = useState(null);
-    const [showSuccess, setShowSuccess] = useState(false);
-
-    const [showCooldown, setShowCooldown] = useState(false);
-    const [cooldownMinutes, setCooldownMinutes] = useState(5);
 
     // Sync state with card prop
     useEffect(() => {
@@ -105,63 +77,9 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
     if (isOpen === false || !card) return null;
 
     const cardHash = card.card_hash || '4b1a97a120061ffac3f3b77abdd3c0ae842981ab84928a11572a5e8341280a7c';
-    const deductionAmount = getDeductionAmount(card.card_type);
 
     // Determine status
     const status = getCardStatus(card, remainingBalance);
-
-    const handleSimulateScan = async () => {
-        if (remainingBalance < deductionAmount) return;
-
-        setIsLoading(true);
-        try {
-            const payload = {
-                hashed_input: card.card_hash || cardHash,
-                used_amount: 1,
-                bus_id: 1,
-                busround_id: 3132,
-                card_transaction_lat: "16.4085321",
-                card_transaction_long: "102.842083"
-            };
-
-            const response = await useCard(payload);
-
-            if (response.status === 'success') {
-                setSuccessData(response.data);
-                setRemainingBalance(response.data.remaining_balance);
-                setShowSuccess(true);
-
-                // Add to history
-                setUsageHistory(prev => [{
-                    id: Date.now(),
-                    amount: -deductionAmount,
-                    date: new Date().toLocaleDateString('en-US', {
-                        month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
-                    }),
-                    type: t('card_detail.bus_ride')
-                }, ...prev]);
-            } else {
-                alert(t('card_detail.scan_failed') + ': ' + (response.message || t('common.unknown_error')));
-            }
-        } catch (error) {
-            console.error('Scan Error:', error);
-            if (error.status === 403) {
-                setCooldownMinutes(5);
-                setShowCooldown(true);
-            } else {
-                alert(t('card_detail.scan_error') + ': ' + (error.message || t('common.something_wrong')));
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleCloseSuccess = () => {
-        setShowSuccess(false);
-        if (profile?.userId) fetchCardsByUuid(profile.userId);
-        onClose();
-        if (onScanSuccess) onScanSuccess();
-    };
 
     const cardName = card.card_type === 1 ? t('home.money_card') : t('home.round_card');
 
@@ -233,50 +151,10 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
                             )}
                         </>
                     )}
-
-                    {usageHistory.length > 0 && (
-                        <div className="detail-row">
-                            <span className="detail-label">{t('card_detail.recent_usage')}</span>
-                            <span className="detail-value">{usageHistory[0].date.split(',')[0]}</span>
-                        </div>
-                    )}
                 </div>
-
-                {/* Scan Action */}
-                <div className="card-actions">
-                    <button
-                        className="btn-scan"
-                        onClick={handleSimulateScan}
-                        disabled={isLoading || remainingBalance < deductionAmount}
-                    >
-                        {isLoading ? (
-                            <div className="loading-spinner-small" style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
-                        ) : (
-                            <ScanIcon />
-                        )}
-                        <span>
-                            {isLoading ? t('card_detail.scanning') : `${t('card_detail.simulate_scan')} (-${card.card_type === 0 ? `${deductionAmount}` : `$${deductionAmount}`})`}
-                        </span>
-                    </button>
-                </div>
-
-                {/* Modals */}
-                <ScanSuccessModal
-                    isOpen={showSuccess}
-                    onClose={handleCloseSuccess}
-                    data={successData}
-                />
-
-                <CooldownModal
-                    isOpen={showCooldown}
-                    onClose={() => setShowCooldown(false)}
-                    minutes={cooldownMinutes}
-                />
             </div>
         </div>
     );
 }
 
-export default CardDetailModal;
-
-
+export default ProfileCardDetailModal;

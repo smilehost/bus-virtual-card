@@ -88,7 +88,7 @@ const getCardStatus = (card) => {
 
 import { getMemberByUserId } from '../services/memberService';
 import { useTheme } from '../context/ThemeContext';
-import CardDetailModal from '../components/CardDetailModal'; // Import modal
+import ProfileCardDetailModal from '../components/ProfileCardDetailModal'; // Import modal
 
 const Profile = ({ onNavigate }) => {
     const { t, i18n } = useTranslation();
@@ -351,11 +351,10 @@ const Profile = ({ onNavigate }) => {
             </div>
 
             {selectedCard && (
-                <CardDetailModal
+                <ProfileCardDetailModal
                     isOpen={isDetailModalOpen}
                     onClose={() => setIsDetailModalOpen(false)}
                     card={selectedCard}
-                    onScanSuccess={() => onNavigate && onNavigate('home')}
                 />
             )}
         </div>
