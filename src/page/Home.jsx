@@ -3,6 +3,7 @@ import './home.css';
 import CardDetailModal from '../components/CardDetailModal';
 import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
+import { useTranslation } from 'react-i18next';
 
 // Icons as SVG components
 const WalletIcon = () => (
@@ -40,7 +41,7 @@ const VirtualCardIcon = ({ type }) => (
 // Format card expiry display
 // If card has been used (card_firstuse exists), show actual expiry date
 // If card has NOT been used, show "X Days left before first use"
-const formatExpiry = (card) => {
+const formatExpiry = (card, t) => {
     // Card has been used - show actual expiry date
     if (card.card_firstuse && card.card_expire_date) {
         const expiryDate = new Date(card.card_expire_date);
@@ -48,11 +49,13 @@ const formatExpiry = (card) => {
 
         // Check if expired
         if (expiryDate < now) {
-            return `Expired: ${expiryDate.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            })}`;
+            return t('home.expired', {
+                date: expiryDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                })
+            });
         }
 
         // Return formatted date
@@ -68,12 +71,12 @@ const formatExpiry = (card) => {
         const hours = parseInt(card.card_expire);
         if (hours >= 24) {
             const days = Math.floor(hours / 24);
-            return `${days} days before first use`;
+            return t('home.days_before_use', { days });
         }
-        return `${hours} hours before first use`;
+        return t('home.hours_before_use', { hours });
     }
 
-    return 'No expiry';
+    return t('home.no_expiry');
 };
 
 // Format card balance display
@@ -87,6 +90,7 @@ const formatBalance = (balance, cardType) => {
 import { getMemberByUserId } from '../services/memberService';
 
 function Home({ onNavigate }) {
+    const { t } = useTranslation();
     const [selectedCard, setSelectedCard] = useState(null);
     const [filter, setFilter] = useState('all');
     const [memberData, setMemberData] = useState(null);
@@ -111,11 +115,22 @@ function Home({ onNavigate }) {
 
             getMemberByUserId(profile.userId)
                 .then(response => {
-                    if (response?.data) {
+                    if (response?.status === 'error' || !response?.data) {
+                        // User not found or error, redirect to register
+                        // console.log('User not found, redirecting to register');
+                        onNavigate('register');
+                    } else if (response?.data) {
                         setMemberData(response.data);
                     }
                 })
-                .catch(err => console.error('Failed to fetch member data:', err));
+                .catch(err => {
+                    console.error('Failed to fetch member data:', err);
+                    // Check if error message indicates not found (depending on how axios/fetch wraps it)
+                    // If the API returns 404 or specific error for not found, handle here
+                    if (err.status === 404 || err.message?.includes('ไม่พบข้อมูลสมาชิก')) {
+                        onNavigate('register');
+                    }
+                });
         }
     }, [profile?.userId, fetchCardsByUuid]);
 
@@ -145,23 +160,29 @@ function Home({ onNavigate }) {
                 <div className="header-icon">
                     <WalletIcon />
                 </div>
-                <h1 className="header-title">Digital Wallet</h1>
+                <h1 className="header-title">{t('home.title')}</h1>
             </header>
 
             {/* Balance Card */}
             <div className="balance-card">
                 <div className="balance-content">
-                    <span className="balance-label">Total Balance</span>
+                    <span className="balance-label">{t('home.total_balance')}</span>
                     <h2 className="balance-amount">
                         {isLoading || !memberData ? '...' : `฿${(memberData.member_wallet || 0).toLocaleString()}`}
                     </h2>
+                    <div className="balance-points">
+                        <span className="points-label">{t('home.points')}:</span>
+                        <span className="points-value">
+                            {isLoading || !memberData ? '...' : (memberData.member_point || 0).toLocaleString()}
+                        </span>
+                    </div>
                     <div className="balance-actions">
                         <button className="btn-topup" onClick={() => onNavigate('topup')}>
                             <PlusIcon />
-                            <span>Top Up</span>
+                            <span>{t('home.top_up')}</span>
                         </button>
                         <button className="btn-buycard" onClick={() => onNavigate('buycard')}>
-                            <span>Buy Card</span>
+                            <span>{t('home.buy_card')}</span>
                         </button>
                     </div>
                 </div>
@@ -171,27 +192,27 @@ function Home({ onNavigate }) {
             <div className="cards-section">
                 <div className="cards-header-row">
                     <div className="cards-header-top">
-                        <h3 className="cards-title">My Cards</h3>
-                        <button className="btn-new-card" onClick={() => onNavigate('buycard')}>+ New Card</button>
+                        <h3 className="cards-title">{t('home.my_cards')}</h3>
+                        <button className="btn-new-card" onClick={() => onNavigate('buycard')}>+ {t('home.new_card')}</button>
                     </div>
                     <div className="home-filter-tabs">
                         <button
                             className={`home-filter-tab ${filter === 'all' ? 'active' : ''}`}
                             onClick={() => setFilter('all')}
                         >
-                            All
+                            {t('home.filter_all')}
                         </button>
                         <button
                             className={`home-filter-tab ${filter === 'new' ? 'active' : ''}`}
                             onClick={() => setFilter('new')}
                         >
-                            New
+                            {t('home.filter_new')}
                         </button>
                         <button
                             className={`home-filter-tab ${filter === 'active' ? 'active' : ''}`}
                             onClick={() => setFilter('active')}
                         >
-                            In Use
+                            {t('home.filter_in_use')}
                         </button>
                     </div>
                 </div>
@@ -200,23 +221,23 @@ function Home({ onNavigate }) {
                 {isLoading && (
                     <div className="cards-loading">
                         <div className="loading-spinner"></div>
-                        <p>Loading cards...</p>
+                        <p>{t('common.loading')}</p>
                     </div>
                 )}
 
                 {/* Error State */}
                 {error && !isLoading && (
                     <div className="cards-error">
-                        <p>Error: {error}</p>
+                        <p>{t('common.error')}: {error}</p>
                     </div>
                 )}
 
                 {/* Empty State */}
                 {!isLoading && !error && cards.length === 0 && (
                     <div className="cards-empty">
-                        <p>No cards found</p>
+                        <p>{t('home.no_cards')}</p>
                         <button className="btn-buycard" onClick={() => onNavigate('buycard')}>
-                            Buy New Card
+                            {t('home.buy_new_card')}
                         </button>
                     </div>
                 )}
@@ -239,27 +260,27 @@ function Home({ onNavigate }) {
                                         </div>
                                         <div className="card-info">
                                             <span className="card-name">
-                                                {card.card_type === 1 ? 'Money Card' : 'Round Card'}
+                                                {card.card_type === 1 ? t('home.money_card') : t('home.round_card')}
                                             </span>
                                             <span className="card-type">
-                                                {card.card_type === 1 ? 'money' : 'round'} · Virtual
+                                                {card.card_type === 1 ? 'money' : 'round'} · {t('home.virtual')}
                                             </span>
                                         </div>
                                         {!card.card_firstuse && (
-                                            <span className="new-badge">New</span>
+                                            <span className="new-badge">{t('home.filter_new')}</span>
                                         )}
                                     </div>
                                     <div className="card-bottom">
                                         <div className="card-balance">
-                                            <span className="card-balance-label">Balance</span>
+                                            <span className="card-balance-label">{t('home.balance')}</span>
                                             <span className="card-balance-value">
                                                 {formatBalance(card.card_balance, card.card_type)}
                                             </span>
                                         </div>
                                         <div className="card-expires">
-                                            <span className="card-expires-label">Expires</span>
+                                            <span className="card-expires-label">{t('home.expires')}</span>
                                             <span className="card-expires-value">
-                                                {formatExpiry(card)}
+                                                {formatExpiry(card, t)}
                                             </span>
                                         </div>
                                     </div>

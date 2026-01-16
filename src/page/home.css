@@ -101,6 +101,31 @@
     margin: 0 0 24px 0;
     color: var(--text-primary);
     letter-spacing: -1px;
+    margin-bottom: 12px;
+}
+
+.balance-points {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 6px 14px;
+    border-radius: 20px;
+    width: fit-content;
+    backdrop-filter: blur(5px);
+}
+
+.points-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.points-value {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--primary-color);
 }
 
 .balance-actions {

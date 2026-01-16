@@ -5,6 +5,8 @@ import { useCard } from '../services/cardService';
 import ScanSuccessModal from './ScanSuccessModal';
 import CooldownModal from './CooldownModal';
 import { useCardStore } from '../store/cardStore';
+import { useLiff } from '../context/LiffContext';
+import { useTranslation } from 'react-i18next';
 
 // Back Arrow Icon
 const BackIcon = () => (
@@ -22,16 +24,16 @@ const ScanIcon = () => (
 );
 
 // Format balance display
-const formatBalance = (balance, cardType) => {
+const formatBalance = (balance, cardType, t) => {
     if (cardType === 0) {
-        return `${balance} Round${balance > 1 ? 's' : ''}`;
+        return `${balance} ${balance > 1 ? t('card_detail.rounds_plural') : t('card_detail.rounds_singular')}`;
     }
     return `$${balance.toFixed(2)}`;
 };
 
 // Format balance unit
-const formatBalanceUnit = (cardType) => {
-    return cardType === 0 ? 'Rounds' : 'Credit';
+const formatBalanceUnit = (cardType, t) => {
+    return cardType === 0 ? t('card_detail.rounds_plural') : t('card_detail.credit');
 };
 
 // Calculate deduction amount
@@ -40,21 +42,17 @@ const getDeductionAmount = (cardType) => {
 };
 
 // Calculate days left until expiry
-const calculateDaysLeft = (expireHours) => {
-    if (!expireHours) return 'No expiry';
+const calculateDaysLeft = (expireHours, t) => {
+    if (!expireHours) return t('home.no_expiry');
     const hours = parseInt(expireHours);
     if (hours >= 24) {
         const days = Math.floor(hours / 24);
-        return `${days} day${days > 1 ? 's' : ''} left`;
+        return `${days} ${days > 1 ? t('home.days_plural') : t('home.days_singular')} ${t('card_detail.left')}`;
     }
-    return `${hours} hour${hours > 1 ? 's' : ''} left`;
+    return `${hours} ${hours > 1 ? t('home.hours_plural') : t('home.hours_singular')} ${t('card_detail.left')}`;
 };
 
 // Format expiry display
-import { useLiff } from '../context/LiffContext'; // Import Liff
-
-// ... existing code ...
-
 const formatExpiry = (expireHours) => {
     if (!expireHours) return 'N/A';
     const now = new Date();
@@ -84,6 +82,8 @@ const getCardStatus = (card, remainingBalance) => {
 };
 
 function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
+    const { t } = useTranslation();
+
     if (isOpen === false) return null;
 
     const [remainingBalance, setRemainingBalance] = useState(card.card_balance || 0);
@@ -132,10 +132,10 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
                     date: new Date().toLocaleDateString('en-US', {
                         month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
                     }),
-                    type: 'Bus Ride'
+                    type: t('card_detail.bus_ride')
                 }, ...prev]);
             } else {
-                alert('Scan Failed: ' + (response.message || 'Unknown error'));
+                alert(t('card_detail.scan_failed') + ': ' + (response.message || t('common.unknown_error')));
             }
         } catch (error) {
             console.error('Scan Error:', error);
@@ -143,7 +143,7 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
                 setCooldownMinutes(5);
                 setShowCooldown(true);
             } else {
-                alert('Scan Error: ' + (error.message || 'Something went wrong'));
+                alert(t('card_detail.scan_error') + ': ' + (error.message || t('common.something_wrong')));
             }
         } finally {
             setIsLoading(false);
@@ -157,7 +157,7 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
         if (onScanSuccess) onScanSuccess();
     };
 
-    const cardName = card.card_type === 1 ? 'Money Card' : 'Round Card';
+    const cardName = card.card_type === 1 ? t('home.money_card') : t('home.round_card');
 
     const handleBackClick = () => {
         if (profile?.userId) fetchCardsByUuid(profile.userId);
@@ -181,30 +181,30 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
                         <QRCodeSVG value={cardHash} size={180} level="M" includeMargin={false} bgColor="#ffffff" fgColor="#000000" />
                     </div>
                     <div className="card-title-large">{cardName}</div>
-                    <div className="card-subtitle">Scan to use card</div>
+                    <div className="card-subtitle">{t('card_detail.scan_to_use')}</div>
                 </div>
 
                 <div className="card-details-list">
                     <div className="detail-row">
-                        <span className="detail-label">Balance</span>
+                        <span className="detail-label">{t('card_detail.balance')}</span>
                         <span className="detail-value" style={{ fontSize: '18px', color: 'var(--primary-color)' }}>
-                            {formatBalance(remainingBalance, card.card_type)}
+                            {formatBalance(remainingBalance, card.card_type, t)}
                         </span>
                     </div>
 
                     <div className="detail-row">
-                        <span className="detail-label">Status</span>
+                        <span className="detail-label">{t('card_detail.status')}</span>
                         <span className={`status-badge ${status}`}>
-                            {status === 'active' ? 'Active' : status === 'new' ? 'New' : 'Expired'}
+                            {status === 'active' ? t('card_detail.active') : status === 'new' ? t('card_detail.new') : t('card_detail.expired')}
                         </span>
                     </div>
 
                     {/* Status specific details */}
                     {status === 'new' && (
                         <div className="detail-row">
-                            <span className="detail-label">Validity</span>
+                            <span className="detail-label">{t('card_detail.validity')}</span>
                             <span className="detail-value">
-                                Starts on first use ({card.card_expire} hours)
+                                {t('card_detail.starts_on_first_use', { hours: card.card_expire })}
                             </span>
                         </div>
                     )}
@@ -212,16 +212,16 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
                     {status !== 'new' && (
                         <>
                             <div className="detail-row">
-                                <span className="detail-label">Expires On</span>
+                                <span className="detail-label">{t('card_detail.expires_on')}</span>
                                 <span className="detail-value">
                                     {formatExpiry(card.card_expire)}
                                 </span>
                             </div>
                             {status === 'active' && (
                                 <div className="detail-row">
-                                    <span className="detail-label">Time Remaining</span>
+                                    <span className="detail-label">{t('card_detail.time_remaining')}</span>
                                     <span className="detail-value">
-                                        {calculateDaysLeft(card.card_expire)}
+                                        {calculateDaysLeft(card.card_expire, t)}
                                     </span>
                                 </div>
                             )}
@@ -230,7 +230,7 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
 
                     {usageHistory.length > 0 && (
                         <div className="detail-row">
-                            <span className="detail-label">Recent Usage</span>
+                            <span className="detail-label">{t('card_detail.recent_usage')}</span>
                             <span className="detail-value">{usageHistory[0].date.split(',')[0]}</span>
                         </div>
                     )}
@@ -249,7 +249,7 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
                             <ScanIcon />
                         )}
                         <span>
-                            {isLoading ? 'Scanning...' : `Simulate Scan (-${card.card_type === 0 ? `${deductionAmount}` : `$${deductionAmount}`})`}
+                            {isLoading ? t('card_detail.scanning') : `${t('card_detail.simulate_scan')} (-${card.card_type === 0 ? `${deductionAmount}` : `$${deductionAmount}`})`}
                         </span>
                     </button>
                 </div>

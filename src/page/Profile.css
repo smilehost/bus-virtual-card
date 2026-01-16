@@ -52,8 +52,14 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.theme-toggle-btn {
+.header-actions {
     margin-left: auto;
+    display: flex;
+    gap: 8px;
+}
+
+.lang-btn,
+.theme-toggle-btn {
     width: 40px;
     height: 40px;
     border-radius: 12px;
@@ -66,11 +72,17 @@
     cursor: pointer;
     backdrop-filter: blur(10px);
     transition: background 0.2s;
-    font-size: 20px;
+    font-size: 14px;
+    font-weight: 700;
 }
 
+.lang-btn:hover,
 .theme-toggle-btn:hover {
     background: rgba(255, 255, 255, 0.3);
+}
+
+.theme-toggle-btn {
+    font-size: 20px;
 }
 
 .profile-content {

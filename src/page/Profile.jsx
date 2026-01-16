@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
+import { useTranslation } from 'react-i18next';
 import './Profile.css';
 
 // Format card expiry display (same logic as Home.jsx)
-const formatExpiry = (card) => {
+const formatExpiry = (card, t) => {
     // Card has been used - show actual expiry date
     if (card.card_firstuse && card.card_expire_date) {
         const expiryDate = new Date(card.card_expire_date);
@@ -12,11 +13,13 @@ const formatExpiry = (card) => {
 
         // Check if expired
         if (expiryDate < now) {
-            return `Expired: ${expiryDate.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            })}`;
+            return t('home.expired', {
+                date: expiryDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                })
+            });
         }
 
         // Return formatted date
@@ -32,12 +35,12 @@ const formatExpiry = (card) => {
         const hours = parseInt(card.card_expire);
         if (hours >= 24) {
             const days = Math.floor(hours / 24);
-            return `${days} days before first use`;
+            return t('home.days_before_use', { days });
         }
-        return `${hours} hours before first use`;
+        return t('home.hours_before_use', { hours });
     }
 
-    return 'No expiry';
+    return t('home.no_expiry');
 };
 
 // Virtual Card Icon Component
@@ -88,7 +91,8 @@ import { useTheme } from '../context/ThemeContext';
 import CardDetailModal from '../components/CardDetailModal'; // Import modal
 
 const Profile = ({ onNavigate }) => {
-    const { profile, isLoggedIn, logout, isLoading: liffLoading } = useLiff();
+    const { t, i18n } = useTranslation();
+    const { profile, isLoading: liffLoading } = useLiff();
     const { cards, isLoading: cardsLoading, fetchCardsByUuid } = useCardStore();
     const { theme, toggleTheme } = useTheme();
     const [filter, setFilter] = useState('all');
@@ -132,6 +136,10 @@ const Profile = ({ onNavigate }) => {
         setIsDetailModalOpen(true);
     };
 
+    const changeLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+    };
+
     return (
         <div className="profile-page">
             <header className="profile-header">
@@ -141,10 +149,15 @@ const Profile = ({ onNavigate }) => {
                         <path d="M2 10H22" stroke="white" strokeWidth="2" />
                     </svg>
                 </div>
-                <h1>My Profile</h1>
-                <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle Theme">
-                    {theme === 'dark' ? '☀️' : '🌙'}
-                </button>
+                <h1>{t('profile.title')}</h1>
+                <div className="header-actions">
+                    <button className="lang-btn" onClick={() => changeLanguage(i18n.language === 'en' ? 'th' : 'en')}>
+                        {i18n.language === 'en' ? 'TH' : 'EN'}
+                    </button>
+                    <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle Theme">
+                        {theme === 'dark' ? '☀️' : '🌙'}
+                    </button>
+                </div>
             </header>
 
             <div className="profile-content">
@@ -215,7 +228,7 @@ const Profile = ({ onNavigate }) => {
                 </div>
 
                 <div className="member-points-section">
-                    <h3>My Member point</h3>
+                    <h3>{t('home.points')}</h3>
                     <div className="member-point-card">
                         <div className="card-header">
                             <div className="point-icon">
@@ -254,25 +267,25 @@ const Profile = ({ onNavigate }) => {
                 {/* All Cards Section with Filters */}
                 <div className="all-cards-section">
                     <div className="section-header">
-                        <h3>My Cards</h3>
+                        <h3>{t('home.my_cards')}</h3>
                         <div className="filter-tabs">
                             <button
                                 className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
                                 onClick={() => setFilter('all')}
                             >
-                                All
+                                {t('home.filter_all')}
                             </button>
                             <button
                                 className={`filter-tab ${filter === 'active' ? 'active' : ''}`}
                                 onClick={() => setFilter('active')}
                             >
-                                Active
+                                {t('home.filter_in_use')}
                             </button>
                             <button
                                 className={`filter-tab ${filter === 'expired' ? 'active' : ''}`}
                                 onClick={() => setFilter('expired')}
                             >
-                                Expired
+                                {t('home.expires')}
                             </button>
                         </div>
                     </div>
@@ -281,7 +294,7 @@ const Profile = ({ onNavigate }) => {
                         {isLoading ? (
                             <div className="loading-container">
                                 <div className="loading-spinner"></div>
-                                <p>Loading...</p>
+                                <p>{t('common.loading')}</p>
                             </div>
                         ) : filteredCards.length > 0 ? (
                             filteredCards.map(card => {
@@ -298,30 +311,30 @@ const Profile = ({ onNavigate }) => {
                                             </div>
                                             <div className="card-info">
                                                 <span className="card-name">
-                                                    {card.card_type === 1 ? 'Money Card' : 'Round Card'}
+                                                    {card.card_type === 1 ? t('home.money_card') : t('home.round_card')}
                                                 </span>
                                                 <span className="card-type">
-                                                    {card.card_type === 1 ? 'money' : 'round'} · Virtual
+                                                    {card.card_type === 1 ? 'money' : 'round'} · {t('home.virtual')}
                                                 </span>
                                             </div>
                                             {!card.card_firstuse && status !== 'expired' && (
-                                                <span className="new-badge">New</span>
+                                                <span className="new-badge">{t('home.filter_new')}</span>
                                             )}
                                             {status === 'expired' && (
-                                                <span className="card-status-badge expired" style={{ marginLeft: 'auto' }}>Expired</span>
+                                                <span className="card-status-badge expired" style={{ marginLeft: 'auto' }}>{t('home.expires')}</span>
                                             )}
                                         </div>
                                         <div className="card-bottom">
                                             <div className="card-balance">
-                                                <span className="card-balance-label">Balance</span>
+                                                <span className="card-balance-label">{t('home.balance')}</span>
                                                 <span className="card-balance-value">
                                                     {formatBalance(card.card_balance, card.card_type)}
                                                 </span>
                                             </div>
                                             <div className="card-expires">
-                                                <span className="card-expires-label">Expires</span>
+                                                <span className="card-expires-label">{t('home.expires')}</span>
                                                 <span className="card-expires-value">
-                                                    {status === 'expired' ? 'Expired' : formatExpiry(card)}
+                                                    {status === 'expired' ? t('home.expires') : formatExpiry(card, t)}
                                                 </span>
                                             </div>
                                         </div>
@@ -330,7 +343,7 @@ const Profile = ({ onNavigate }) => {
                             })
                         ) : (
                             <div className="no-cards-placeholder">
-                                No {filter} cards found.
+                                {t('home.no_cards')}
                             </div>
                         )}
                     </div>

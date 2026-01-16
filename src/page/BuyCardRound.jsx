@@ -4,6 +4,7 @@ import CountdownModal from '../components/CountdownModal';
 import { getVirtualCardGroups, createCardByLine } from '../services/cardGroupService';
 import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
+import { useTranslation } from 'react-i18next';
 import './BuyCardRound.css';
 
 const BackIcon = () => (
@@ -26,11 +27,15 @@ const ChevronDownIcon = () => (
 );
 
 // Format expiry hours to days
-const formatExpiryDays = (expireHours) => {
-    if (!expireHours) return 'No expiry';
+const formatExpiryDays = (expireHours, t) => {
+    if (!expireHours) return t('home.no_expiry');
     const hours = parseInt(expireHours);
     const days = Math.floor(hours / 24);
-    return `${days} Day${days > 1 ? 's' : ''}`;
+    return `${days} ${days > 1 ? t('home.days_plural') : t('home.days_singular')}`; // Assuming new keys or reuse 'home.days_before_use' partially
+    // Since home.days_before_use is "{days} days before first use", let's make new keys or use valid until structure
+    // Let's stick to simple "Day(s)" for now, maybe add to common?
+    // Using string interpolation for now based on English structure: "Day(s)"
+    // Better: t('buy_card.days', { count: days })
 };
 
 // Calculate expiry date from hours
@@ -46,6 +51,7 @@ const calculateExpiryDate = (expireHours) => {
 };
 
 const BuyCardRound = ({ onBack, onBuySuccess }) => {
+    const { t } = useTranslation();
     const [cardGroups, setCardGroups] = useState([]);
     const [selectedCardGroup, setSelectedCardGroup] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -74,14 +80,14 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                 }
             } catch (err) {
                 console.error('Error fetching card groups:', err);
-                setError('Failed to load card groups');
+                setError(t('buy_card.error_fetch'));
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchCardGroups();
-    }, []);
+    }, [t]);
 
     const handleSelectCardGroup = (cardGroup) => {
         setSelectedCardGroup(cardGroup);
@@ -100,7 +106,7 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
 
     const handleConfirm = async () => {
         if (!selectedCardGroup || !profile?.userId) {
-            setError('Missing required information');
+            setError(t('buy_card.error_missing_info'));
             return;
         }
 
@@ -124,7 +130,7 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                     onBuySuccess({
                         name: selectedCardGroup.card_group_name,
                         type: 'round',
-                        balance: `${selectedCardGroup.card_group_balance} Rounds`,
+                        balance: `${selectedCardGroup.card_group_balance} ${t('buy_card.rounds')}`,
                         expires: calculateExpiryDate(selectedCardGroup.card_group_expire)
                     });
                 }
@@ -137,11 +143,11 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                 setIsSuccess(true);
                 setIsCountdownOpen(true); // Open countdown modal
             } else {
-                setError(response.message || 'Failed to create card');
+                setError(response.message || t('buy_card.error_create'));
             }
         } catch (err) {
             console.error('Error creating card:', err);
-            setError('Failed to create card. Please try again.');
+            setError(t('buy_card.error_create_retry'));
         } finally {
             setIsSubmitting(false);
         }
@@ -149,7 +155,7 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
 
     // Derived values from selected card group
     const rounds = selectedCardGroup?.card_group_balance || 0;
-    const expiryDays = formatExpiryDays(selectedCardGroup?.card_group_expire);
+    // const expiryDays = formatExpiryDays(selectedCardGroup?.card_group_expire, t);
     const expiryDate = calculateExpiryDate(selectedCardGroup?.card_group_expire);
     const totalCost = selectedCardGroup?.card_group_price || 0;
 
@@ -164,7 +170,7 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                 }}
                 purchaseDetails={selectedCardGroup ? {
                     name: selectedCardGroup.card_group_name,
-                    balance: `${rounds} Rounds`
+                    balance: `${rounds} ${t('buy_card.rounds')}`
                 } : null}
             />
 
@@ -172,14 +178,14 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                 <button className="btn-back" onClick={onBack}>
                     <BackIcon />
                 </button>
-                <h1 className="header-title">Buy Virtual Card</h1>
+                <h1 className="header-title">{t('buy_card.title')}</h1>
             </header>
 
             <div className="buy-card-content">
                 {isLoading ? (
                     <div className="loading-state">
                         <div className="loading-spinner"></div>
-                        <p>Loading card groups...</p>
+                        <p>{t('common.loading')}</p>
                     </div>
                 ) : error && cardGroups.length === 0 ? (
                     <div className="error-state">
@@ -189,13 +195,13 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                     <>
                         {/* Card Group Dropdown */}
                         <div className="form-group">
-                            <label>Card Group</label>
+                            <label>{t('buy_card.card_group')}</label>
                             <div className="dropdown-container">
                                 <button
                                     className="dropdown-trigger"
                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                 >
-                                    <span>{selectedCardGroup?.card_group_name || 'Select Card Group'}</span>
+                                    <span>{selectedCardGroup?.card_group_name || t('buy_card.select_group')}</span>
                                     <ChevronDownIcon />
                                 </button>
                                 {isDropdownOpen && (
@@ -208,7 +214,7 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                                             >
                                                 <span className="dropdown-item-name">{group.card_group_name}</span>
                                                 <span className="dropdown-item-info">
-                                                    {group.card_group_balance} Rounds · ฿{group.card_group_price}
+                                                    {group.card_group_balance} {t('buy_card.rounds')} · ฿{group.card_group_price}
                                                 </span>
                                             </div>
                                         ))}
@@ -219,22 +225,22 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
 
                         {/* Select Rounds - Display only */}
                         <div className="form-group">
-                            <label>Select Rounds</label>
+                            <label>{t('buy_card.select_rounds')}</label>
                             <div className="rounds-display">
                                 <div className="round-btn active">
                                     <span className="round-val">{rounds}</span>
-                                    <span className="round-label">Rounds</span>
+                                    <span className="round-label">{t('buy_card.rounds')}</span>
                                 </div>
                             </div>
                             <div className="expiry-hint">
                                 <ClockIcon />
-                                Valid until {expiryDate} ({expiryDays})
+                                {t('buy_card.valid_until', { date: expiryDate })}
                             </div>
                         </div>
 
                         {/* Quantity - Fixed at 1 */}
                         <div className="form-group">
-                            <label>Quantity</label>
+                            <label>{t('buy_card.quantity')}</label>
                             <div className="quantity-selector">
                                 <span>1</span>
                             </div>
@@ -242,24 +248,24 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
 
                         {/* Order Summary */}
                         <div className="order-summary">
-                            <h3 className="summary-title">Order Summary</h3>
+                            <h3 className="summary-title">{t('buy_card.order_summary')}</h3>
                             <div className="summary-row">
-                                <span>Card Type</span>
-                                <span>{selectedCardGroup?.card_group_name || '-'} (Round)</span>
+                                <span>{t('buy_card.card_type')}</span>
+                                <span>{selectedCardGroup?.card_group_name || '-'} ({t('home.round_card')})</span>
                             </div>
                             <div className="summary-row">
-                                <span>Details</span>
-                                <span>1 x {rounds} Rounds</span>
+                                <span>{t('buy_card.details')}</span>
+                                <span>1 x {rounds} {t('buy_card.rounds')}</span>
                             </div>
                             <div className="summary-row">
-                                <span>Expires</span>
+                                <span>{t('home.expires')}</span>
                                 <span>{expiryDate}</span>
                             </div>
 
                             <div className="summary-divider"></div>
 
                             <div className="total-row">
-                                <span>Total Cost</span>
+                                <span>{t('buy_card.total_cost')}</span>
                                 <span className="total-amount">฿{totalCost}</span>
                             </div>
 
@@ -274,7 +280,7 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                                 onClick={handleConfirm}
                                 disabled={isSubmitting || !selectedCardGroup}
                             >
-                                {isSubmitting ? 'Processing...' : 'Confirm Purchase'}
+                                {isSubmitting ? t('buy_card.processing') : t('buy_card.confirm_purchase')}
                             </button>
                         </div>
                     </>

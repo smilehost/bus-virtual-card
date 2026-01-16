@@ -1,7 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './TransactionDetailModal.css';
 
 const TransactionDetailModal = ({ isOpen, onClose, transaction }) => {
+    const { t } = useTranslation();
+
     if (!isOpen || !transaction) return null;
 
     // Helper to get formatted date
@@ -50,19 +53,19 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction }) => {
 
                 <div className="transaction-details-list">
                     <div className="detail-row">
-                        <span className="detail-label">Status</span>
-                        <span className="detail-value status-valid">Successful</span>
+                        <span className="detail-label">{t('transaction_detail.status')}</span>
+                        <span className="detail-value status-valid">{t('transaction_detail.successful')}</span>
                     </div>
                     <div className="detail-row">
-                        <span className="detail-label">Date & Time</span>
+                        <span className="detail-label">{t('transaction_detail.date_time')}</span>
                         <span className="detail-value">{formatDate(transaction.date)}</span>
                     </div>
                     <div className="detail-row">
-                        <span className="detail-label">Transaction ID</span>
+                        <span className="detail-label">{t('transaction_detail.transaction_id')}</span>
                         <span className="detail-value">#{String(transaction.id).padStart(8, '0')}</span>
                     </div>
                     <div className="detail-row">
-                        <span className="detail-label">Type</span>
+                        <span className="detail-label">{t('transaction_detail.type')}</span>
                         <span className="detail-value" style={{ textTransform: 'capitalize' }}>{transaction.type}</span>
                     </div>
                 </div>

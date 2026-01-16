@@ -7,6 +7,7 @@ import History from './page/History';
 import './App.css';
 import BuyCardRound from './page/BuyCardRound';
 import Profile from './page/Profile';
+import Register from './page/Register';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -27,6 +28,8 @@ function App() {
         return <History />;
       case 'profile':
         return <Profile onNavigate={handleTabChange} />;
+      case 'register':
+        return <Register onNavigate={handleTabChange} />;
       default:
         return <Home onNavigate={handleTabChange} />;
     }

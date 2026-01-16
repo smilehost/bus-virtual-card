@@ -1,0 +1,161 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "error": "Error",
+        "save": "Save",
+        "cancel": "Cancel",
+        "close": "Close",
+        "confirm": "Confirm",
+        "success": "Success",
+        "purchase": "Purchase",
+        "topup": "Top Up",
+        "minutes": "minutes",
+        "unknown_error": "Unknown Error",
+        "something_wrong": "Something went wrong"
+    },
+    "home": {
+        "title": "Digital Wallet",
+        "total_balance": "Total Balance",
+        "top_up": "Top Up",
+        "buy_card": "Buy Card",
+        "my_cards": "My Cards",
+        "new_card": "New Card",
+        "filter_all": "All",
+        "filter_new": "New",
+        "filter_in_use": "In Use",
+        "no_cards": "No cards found",
+        "buy_new_card": "Buy New Card",
+        "money_card": "Money Card",
+        "round_card": "Round Card",
+        "virtual": "Virtual",
+        "balance": "Balance",
+        "expires": "Expires",
+        "points": "Points",
+        "days_before_use": "{{days}} days before first use",
+        "hours_before_use": "{{hours}} hours before first use",
+        "no_expiry": "No expiry",
+        "expired": "Expired: {{date}}",
+        "days_plural": "Days",
+        "days_singular": "Day",
+        "hours_plural": "Hours",
+        "hours_singular": "Hour"
+    },
+    "register": {
+        "welcome": "Welcome",
+        "subtitle": "Register to get started with your Digital Wallet",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "birth_year": "Birth Year (B.E.)",
+        "birth_year_placeholder": "e.g. 2540",
+        "submit": "Complete Registration",
+        "registering": "Registering...",
+        "error_birth_year": "Please enter your birth year",
+        "failed": "Failed to register. Please try again."
+    },
+    "profile": {
+        "title": "Profile",
+        "settings": "Settings",
+        "language": "Language",
+        "logout": "Logout",
+        "edit_profile": "Edit Profile",
+        "save_changes": "Save Changes"
+    },
+    "topup": {
+        "title": "Top Up Wallet",
+        "enter_amount": "Enter Amount",
+        "payment_method": "Payment Method",
+        "credit_card": "Credit Card",
+        "mobile_banking": "Mobile Banking",
+        "pay_button": "Pay ฿{{amount}}"
+    },
+    "history": {
+        "title": "History",
+        "purchased_money_card": "Purchased {{count}} Money Card(s)",
+        "purchased_round_card": "Purchased {{count}} Round Card(s)",
+        "topup_credit_card": "Top up via Credit Card",
+        "tab_all": "All",
+        "tab_topups": "Top Ups",
+        "tab_purchases": "Purchases",
+        "tab_usage": "Usage",
+        "no_transactions": "No transactions yet",
+        "no_transactions_subtitle": "Your {{tab}} will appear here"
+    },
+    "buy_card": {
+        "title": "Buy Virtual Card",
+        "card_group": "Card Group",
+        "select_group": "Select Card Group",
+        "rounds": "Rounds",
+        "select_rounds": "Select Rounds",
+        "quantity": "Quantity",
+        "valid_until": "Valid until {{date}}",
+        "order_summary": "Order Summary",
+        "card_type": "Card Type",
+        "details": "Details",
+        "total_cost": "Total Cost",
+        "confirm_purchase": "Confirm Purchase",
+        "processing": "Processing...",
+        "error_fetch": "Failed to load card groups",
+        "error_missing_info": "Missing required information",
+        "error_create": "Failed to create card",
+        "error_create_retry": "Failed to create card. Please try again."
+    },
+    "card_detail": {
+        "scan_to_use": "Scan to use card",
+        "balance": "Balance",
+        "status": "Status",
+        "active": "Active",
+        "new": "New",
+        "expired": "Expired",
+        "validity": "Validity",
+        "starts_on_first_use": "Starts on first use ({{hours}} hours)",
+        "expires_on": "Expires On",
+        "time_remaining": "Time Remaining",
+        "recent_usage": "Recent Usage",
+        "scanning": "Scanning...",
+        "simulate_scan": "Simulate Scan",
+        "rounds_plural": "Rounds",
+        "rounds_singular": "Round",
+        "credit": "Credit",
+        "left": "left",
+        "bus_ride": "Bus Ride",
+        "scan_failed": "Scan Failed",
+        "scan_error": "Scan Error"
+    },
+    "success_modal": {
+        "title": "Top Up Successful!",
+        "sub_message": "Your wallet has been funded with"
+    },
+    "scan_success": {
+        "title": "Successfully",
+        "remaining_balance": "Remaining Balance:",
+        "expires_on": "Expires On:"
+    },
+    "countdown_modal": {
+        "title": "Purchase Successful!",
+        "item": "Item",
+        "balance": "Balance",
+        "desc": "Your card is ready to use."
+    },
+    "cooldown_modal": {
+        "title": "Please Wait",
+        "scanned_recently": "You have scanned recently.",
+        "please_wait": "Please wait",
+        "before_scanning_again": "before scanning again."
+    },
+    "transaction_detail": {
+        "status": "Status",
+        "successful": "Successful",
+        "date_time": "Date & Time",
+        "transaction_id": "Transaction ID",
+        "type": "Type"
+    },
+    "menu": {
+        "home": "Home",
+        "history": "History",
+        "scan": "Scan",
+        "topup": "Top Up",
+        "profile": "Profile"
+    }
+}

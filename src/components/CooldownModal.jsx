@@ -1,7 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './CountdownModal.css'; // Reusing countdown styles for consistency
 
 const CooldownModal = ({ isOpen, onClose, minutes = 5 }) => {
+    const { t } = useTranslation();
+
     if (!isOpen) return null;
 
     return (
@@ -14,17 +17,17 @@ const CooldownModal = ({ isOpen, onClose, minutes = 5 }) => {
                     </svg>
                 </div>
 
-                <h2 className="countdown-title">Please Wait</h2>
+                <h2 className="countdown-title">{t('cooldown_modal.title')}</h2>
 
                 <p className="countdown-desc" style={{ marginBottom: '8px' }}>
-                    You have scanned recently.
+                    {t('cooldown_modal.scanned_recently')}
                 </p>
                 <p className="countdown-desc">
-                    Please wait <strong style={{ color: '#EF4444' }}>{minutes} minutes</strong> before scanning again.
+                    {t('cooldown_modal.please_wait')} <strong style={{ color: '#EF4444' }}>{minutes} {t('common.minutes')}</strong> {t('cooldown_modal.before_scanning_again')}
                 </p>
 
                 <button className="btn-close-countdown" onClick={onClose} style={{ marginTop: '16px' }}>
-                    Close
+                    {t('common.close')}
                 </button>
             </div>
         </div>

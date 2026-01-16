@@ -1,8 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './CountdownModal.css';
 
 const CountdownModal = ({ isOpen, onClose, purchaseDetails }) => {
-    // Timer logic removed as per request
+    const { t } = useTranslation();
 
     if (!isOpen) return null;
 
@@ -15,27 +16,27 @@ const CountdownModal = ({ isOpen, onClose, purchaseDetails }) => {
                     </svg>
                 </div>
 
-                <h2 className="countdown-title">Purchase Successful!</h2>
+                <h2 className="countdown-title">{t('countdown_modal.title')}</h2>
 
                 {purchaseDetails && (
                     <div className="countdown-details" style={{ marginBottom: '16px', background: 'var(--bg-secondary)', padding: '12px', borderRadius: '12px', width: '100%', textAlign: 'left', boxSizing: 'border-box' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Item:</span>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('countdown_modal.item')}:</span>
                             <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>{purchaseDetails.name}</span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Balance:</span>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{t('countdown_modal.balance')}:</span>
                             <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>{purchaseDetails.balance}</span>
                         </div>
                     </div>
                 )}
 
                 <p className="countdown-desc" style={{ marginBottom: '24px' }}>
-                    Your card is ready to use.
+                    {t('countdown_modal.desc')}
                 </p>
 
                 <button className="btn-close-countdown" onClick={onClose}>
-                    Close
+                    {t('common.close')}
                 </button>
             </div>
         </div>

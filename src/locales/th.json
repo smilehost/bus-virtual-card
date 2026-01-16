@@ -1,0 +1,161 @@
+{
+    "common": {
+        "loading": "กำลังโหลด...",
+        "error": "ข้อผิดพลาด",
+        "save": "บันทึก",
+        "cancel": "ยกเลิก",
+        "close": "ปิด",
+        "confirm": "ยืนยัน",
+        "success": "สำเร็จ",
+        "purchase": "ซื้อสินค้า",
+        "topup": "เติมเงิน",
+        "minutes": "นาที",
+        "unknown_error": "ข้อผิดพลาดที่ไม่ทราบสาเหตุ",
+        "something_wrong": "เกิดข้อผิดพลาดบางอย่าง"
+    },
+    "home": {
+        "title": "กระเป๋าเงินดิจิทัล",
+        "total_balance": "ยอดเงินรวม",
+        "top_up": "เติมเงิน",
+        "buy_card": "ซื้อบัตร",
+        "my_cards": "บัตรของฉัน",
+        "new_card": "บัตรใหม่",
+        "filter_all": "ทั้งหมด",
+        "filter_new": "ใหม่",
+        "filter_in_use": "กำลังใช้งาน",
+        "no_cards": "ไม่พบบัตร",
+        "buy_new_card": "ซื้อบัตรใหม่",
+        "money_card": "บัตรเงินสด",
+        "round_card": "บัตรเที่ยว",
+        "virtual": "เสมือน",
+        "balance": "คงเหลือ",
+        "expires": "หมดอายุ",
+        "points": "คะแนนสะสม",
+        "days_before_use": "อีก {{days}} วันก่อนเริ่มใช้งาน",
+        "hours_before_use": "อีก {{hours}} ชั่วโมงก่อนเริ่มใช้งาน",
+        "no_expiry": "ไม่มีวันหมดอายุ",
+        "expired": "หมดอายุ: {{date}}",
+        "days_plural": "วัน",
+        "days_singular": "วัน",
+        "hours_plural": "ชั่วโมง",
+        "hours_singular": "ชั่วโมง"
+    },
+    "register": {
+        "welcome": "ยินดีต้อนรับ",
+        "subtitle": "ลงทะเบียนเพื่อเริ่มต้นใช้งานกระเป๋าเงินดิจิทัล",
+        "gender": "เพศ",
+        "male": "ชาย",
+        "female": "หญิง",
+        "other": "อื่นๆ",
+        "birth_year": "ปีเกิด (พ.ศ.)",
+        "birth_year_placeholder": "ตัวอย่าง 2540",
+        "submit": "ลงทะเบียน",
+        "registering": "กำลังลงทะเบียน...",
+        "error_birth_year": "กรุณากรอกปีเกิด",
+        "failed": "ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่อีกครั้ง"
+    },
+    "profile": {
+        "title": "โปรไฟล์",
+        "settings": "การตั้งค่า",
+        "language": "ภาษา",
+        "logout": "ออกจากระบบ",
+        "edit_profile": "แก้ไขโปรไฟล์",
+        "save_changes": "บันทึกการเปลี่ยนแปลง"
+    },
+    "topup": {
+        "title": "เติมเงินเข้ากระเป๋า",
+        "enter_amount": "ระบุจำนวนเงิน",
+        "payment_method": "ช่องทางการชำระเงิน",
+        "credit_card": "บัตรเครดิต",
+        "mobile_banking": "โมบายแบงก์กิ้ง",
+        "pay_button": "ชำระเงิน ฿{{amount}}"
+    },
+    "history": {
+        "title": "ประวัติการใช้งาน",
+        "purchased_money_card": "ซื้อบัตรเงินสด {{count}} ใบ",
+        "purchased_round_card": "ซื้อบัตรเที่ยว {{count}} ใบ",
+        "topup_credit_card": "เติมเงินผ่านบัตรเครดิต",
+        "tab_all": "ทั้งหมด",
+        "tab_topups": "การเติมเงิน",
+        "tab_purchases": "การซื้อ",
+        "tab_usage": "การใช้งาน",
+        "no_transactions": "ยังไม่มีรายการ",
+        "no_transactions_subtitle": "รายการ{{tab}}ของคุณจะปรากฏที่นี่"
+    },
+    "buy_card": {
+        "title": "ซื้อบัตรเสมือน",
+        "card_group": "กลุ่มบัตร",
+        "select_group": "เลือกกลุ่มบัตร",
+        "rounds": "เที่ยว",
+        "select_rounds": "เลือกจำนวนเที่ยว",
+        "quantity": "จำนวน",
+        "valid_until": "ใช้ได้ถึง {{date}}",
+        "order_summary": "สรุปคำสั่งซื้อ",
+        "card_type": "ประเภทบัตร",
+        "details": "รายละเอียด",
+        "total_cost": "ราคารวม",
+        "confirm_purchase": "ยืนยันการซื้อ",
+        "processing": "กำลังดำเนินการ...",
+        "error_fetch": "ไม่สามารถโหลดข้อมูลกลุ่มบัตรได้",
+        "error_missing_info": "ข้อมูลไม่ครบถ้วน",
+        "error_create": "ไม่สามารถสร้างบัตรได้",
+        "error_create_retry": "สร้างบัตรไม่สำเร็จ กรุณาลองใหม่อีกครั้ง"
+    },
+    "card_detail": {
+        "scan_to_use": "สแกนเพื่อใช้งาน",
+        "balance": "คงเหลือ",
+        "status": "สถานะ",
+        "active": "ใช้งานได้",
+        "new": "ใหม่",
+        "expired": "หมดอายุ",
+        "validity": "อายุการใช้งาน",
+        "starts_on_first_use": "เริ่มนับเมื่อใช้งานครั้งแรก ({{hours}} ชั่วโมง)",
+        "expires_on": "หมดอายุวันที่",
+        "time_remaining": "เวลาที่เหลือ",
+        "recent_usage": "ใช้งานล่าสุด",
+        "scanning": "กำลังสแกน...",
+        "simulate_scan": "จำลองการสแกน",
+        "rounds_plural": "เที่ยว",
+        "rounds_singular": "เที่ยว",
+        "credit": "เครดิต",
+        "left": "ที่เหลือ",
+        "bus_ride": "ค่าโดยสารรถประจำทาง",
+        "scan_failed": "สแกนไม่สำเร็จ",
+        "scan_error": "เกิดข้อผิดพลาดในการสแกน"
+    },
+    "success_modal": {
+        "title": "เติมเงินสำเร็จ!",
+        "sub_message": "กระเป๋าเงินของคุณได้รับเงินจำนวน"
+    },
+    "scan_success": {
+        "title": "ทำรายการสำเร็จ",
+        "remaining_balance": "ยอดคงเหลือ:",
+        "expires_on": "หมดอายุวันที่:"
+    },
+    "countdown_modal": {
+        "title": "ซื้อบัตรสำเร็จ!",
+        "item": "รายการ",
+        "balance": "คงเหลือ",
+        "desc": "บัตรของคุณพร้อมใช้งานแล้ว"
+    },
+    "cooldown_modal": {
+        "title": "กรุณารอสักครู่",
+        "scanned_recently": "คุณเพิ่งทำการสแกนไป",
+        "please_wait": "กรุณารอ",
+        "before_scanning_again": "ก่อนสแกนใหม่อีกครั้ง"
+    },
+    "transaction_detail": {
+        "status": "สถานะ",
+        "successful": "สำเร็จ",
+        "date_time": "วันและเวลา",
+        "transaction_id": "เลขที่ธุรกรรม",
+        "type": "ประเภท"
+    },
+    "menu": {
+        "home": "หน้าหลัก",
+        "history": "ประวัติ",
+        "scan": "สแกน",
+        "topup": "เติมเงิน",
+        "profile": "โปรไฟล์"
+    }
+}

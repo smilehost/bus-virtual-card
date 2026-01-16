@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './SuccessModal.css';
 
 const CheckIcon = () => (
@@ -7,7 +8,11 @@ const CheckIcon = () => (
     </svg>
 );
 
-const SuccessModal = ({ isOpen, onClose, amount, message = "Top Up Successful!", subMessage = "Your wallet has been funded with" }) => {
+const SuccessModal = ({ isOpen, onClose, amount, message, subMessage }) => {
+    const { t } = useTranslation();
+    const defaultMessage = t('success_modal.title');
+    const defaultSubMessage = t('success_modal.sub_message');
+
     useEffect(() => {
         if (isOpen) {
             const timer = setTimeout(() => {
@@ -25,9 +30,9 @@ const SuccessModal = ({ isOpen, onClose, amount, message = "Top Up Successful!",
                 <div className="success-circle">
                     <CheckIcon />
                 </div>
-                <h2 className="success-title">{message}</h2>
+                <h2 className="success-title">{message || defaultMessage}</h2>
                 <p className="success-desc">
-                    {subMessage} ฿ {amount}.
+                    {subMessage || defaultSubMessage} ฿ {amount}.
                 </p>
             </div>
         </div>

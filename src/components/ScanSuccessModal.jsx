@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './SuccessModal.css';
 
 const ScanSuccessModal = ({ isOpen, onClose, data }) => {
+    const { t } = useTranslation();
+
     useEffect(() => {
         if (isOpen) {
             // Auto close after 3 seconds or keep it open? User said "message Successfully", "remaining", "expire".
@@ -32,15 +35,15 @@ const ScanSuccessModal = ({ isOpen, onClose, data }) => {
                         <path d="M20 6L9 17L4 12" stroke="#4CAF50" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 </div>
-                <h2 className="success-title">Successfully</h2>
+                <h2 className="success-title">{t('scan_success.title')}</h2>
 
                 <div className="success-details-box">
                     <div className="detail-row">
-                        <span className="detail-label">Remaining Balance:</span>
-                        <span className="detail-value">{remaining_balance} Rounds</span>
+                        <span className="detail-label">{t('scan_success.remaining_balance')}</span>
+                        <span className="detail-value">{remaining_balance} {t('buy_card.rounds')}</span>
                     </div>
                     <div className="detail-row">
-                        <span className="detail-label">Expires On:</span>
+                        <span className="detail-label">{t('scan_success.expires_on')}</span>
                         <span className="detail-value">{formattedDate}</span>
                     </div>
                 </div>
@@ -49,7 +52,7 @@ const ScanSuccessModal = ({ isOpen, onClose, data }) => {
                     onClick={onClose}
                     className="btn-success-close"
                 >
-                    Close
+                    {t('common.close')}
                 </button>
             </div>
         </div>

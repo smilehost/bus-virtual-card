@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import SuccessModal from '../components/SuccessModal';
+import { useTranslation } from 'react-i18next';
 import './TopUp.css';
 
 const BackIcon = () => (
@@ -30,6 +31,7 @@ const PhoneIcon = () => (
 );
 
 const TopUp = ({ onBack, onPaymentSuccess }) => {
+    const { t } = useTranslation();
     const [amount, setAmount] = useState('');
     const [selectedPreset, setSelectedPreset] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState('credit_card');
@@ -75,12 +77,12 @@ const TopUp = ({ onBack, onPaymentSuccess }) => {
                 <button className="btn-back" onClick={onBack}>
                     <BackIcon />
                 </button>
-                <h1 className="header-title">Top Up Wallet</h1>
+                <h1 className="header-title">{t('topup.title')}</h1>
             </header>
 
             <div className="topup-content">
                 <div className="amount-section">
-                    <label className="input-label">Enter Amount</label>
+                    <label className="input-label">{t('topup.enter_amount')}</label>
                     <div className="amount-input-wrapper">
                         <span className="currency-symbol">฿</span>
                         <input
@@ -106,7 +108,7 @@ const TopUp = ({ onBack, onPaymentSuccess }) => {
                 </div>
 
                 <div className="payment-section">
-                    <label className="section-label">Payment Method</label>
+                    <label className="section-label">{t('topup.payment_method')}</label>
                     <div className="payment-options">
                         <div
                             className={`payment-option ${paymentMethod === 'credit_card' ? 'active' : ''}`}
@@ -117,7 +119,7 @@ const TopUp = ({ onBack, onPaymentSuccess }) => {
                                     <CardIcon />
                                 </div>
                                 <div className="option-info">
-                                    <span className="option-name">Credit Card</span>
+                                    <span className="option-name">{t('topup.credit_card')}</span>
                                     <span className="option-sub">**** 4242</span>
                                 </div>
                             </div>
@@ -134,7 +136,7 @@ const TopUp = ({ onBack, onPaymentSuccess }) => {
                                 <div className="option-icon">
                                     <PhoneIcon />
                                 </div>
-                                <span className="option-name">Apple Pay</span>
+                                <span className="option-name">{t('topup.mobile_banking')}</span>
                             </div>
                         </div>
                     </div>
@@ -142,7 +144,7 @@ const TopUp = ({ onBack, onPaymentSuccess }) => {
             </div>
 
             <button className="btn-pay" onClick={handlePay}>
-                Pay ฿{amount || '0.00'}
+                {t('topup.pay_button', { amount: amount || '0.00' })}
             </button>
         </div>
     );
