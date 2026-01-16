@@ -23,7 +23,7 @@ function App() {
       case 'topup':
         return <TopUp onBack={() => setActiveTab('home')} />;
       case 'buycard':
-        return <BuyCardRound onNavigate={handleTabChange} />;
+        return <BuyCardRound onBack={() => setActiveTab('home')} />;
       case 'history':
         return <History />;
       case 'profile':

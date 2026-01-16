@@ -175,7 +175,7 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
             />
 
             <header className="buy-card-header">
-                <button className="btn-back" onClick={onBack}>
+                <button className="btn-back" onClick={handleCountdownComplete}>
                     <BackIcon />
                 </button>
                 <h1 className="header-title">{t('buy_card.title')}</h1>
