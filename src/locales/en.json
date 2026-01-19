@@ -15,6 +15,9 @@
     },
     "home": {
         "title": "Digital Wallet",
+        "greeting": "Hello, {{name}}",
+        "guest": "Guest",
+        "select_card_instruction": "Select a card to use",
         "total_balance": "Total Balance",
         "top_up": "Top Up",
         "buy_card": "Buy Card",
@@ -85,6 +88,7 @@
     "buy_card": {
         "title": "Buy Virtual Card",
         "card_group": "Card Group",
+        "card_preview": "Card Preview",
         "select_group": "Select Card Group",
         "rounds": "Rounds",
         "select_rounds": "Select Rounds",
@@ -150,6 +154,12 @@
         "date_time": "Date & Time",
         "transaction_id": "Transaction ID",
         "type": "Type"
+    },
+    "yourcard": {
+        "title": "Your Cards",
+        "scan_to_use": "Scan to use card",
+        "lock_card": "Lock Card",
+        "lock_subtitle": "You can lock and unlock it anytime"
     },
     "menu": {
         "home": "Home",

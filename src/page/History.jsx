@@ -24,43 +24,11 @@ const History = () => {
             type: t('common.purchase'),
             rawType: 'purchase'
         },
-        {
-            id: 3,
-            title: t('history.topup_credit_card'),
-            date: 'Jan 13, 2026',
-            amount: '+ ฿50.00',
-            type: t('common.topup'),
-            rawType: 'topup'
-        },
-        {
-            id: 4,
-            title: t('history.topup_credit_card'),
-            date: 'Jan 13, 2026',
-            amount: '+ ฿50.00',
-            type: t('common.topup'),
-            rawType: 'topup'
-        },
-        {
-            id: 5,
-            title: t('history.purchased_round_card', { count: 1 }),
-            date: 'Jan 13, 2026',
-            amount: '฿50.00',
-            type: t('common.purchase'),
-            rawType: 'purchase'
-        },
-        {
-            id: 6,
-            title: t('history.topup_credit_card'),
-            date: 'Jan 13, 2026',
-            amount: '+ ฿20.00',
-            type: t('common.topup'),
-            rawType: 'topup'
-        }
+
     ];
 
     const filteredTransactions = transactions.filter(t => {
         if (activeTab === 'All') return true;
-        if (activeTab === 'Top Ups') return t.rawType === 'topup';
         if (activeTab === 'Purchases') return t.rawType === 'purchase';
         if (activeTab === 'Usage') return t.rawType === 'usage';
         return true;
@@ -116,7 +84,7 @@ const History = () => {
             </header>
 
             <div className="tabs-container">
-                {['All', 'Top Ups', 'Purchases', 'Usage'].map((tab) => (
+                {['All', 'Purchases', 'Usage'].map((tab) => (
                     <button
                         key={tab}
                         className={`tab-button ${activeTab === tab ? 'active' : ''}`}

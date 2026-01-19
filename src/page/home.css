@@ -30,152 +30,72 @@
 
 /* Header */
 .home-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
-.header-icon {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+.header-content {
+    padding: 0 4px;
 }
 
 .header-title {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 800;
     margin: 0;
     color: #ffffff;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* Balance Card */
-.balance-card {
-    background: var(--card-bg);
-    border-radius: 24px;
-    padding: 24px;
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--border-color);
-}
-
-.balance-card::before {
-    /* Subtle decorative circle */
-    content: '';
-    position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 150px;
-    height: 150px;
-    background: linear-gradient(135deg, rgba(255, 165, 0, 0.05) 0%, rgba(255, 152, 0, 0.1) 100%);
-    border-radius: 50%;
-    z-index: 0;
-}
-
-.balance-content {
-    position: relative;
-    z-index: 1;
-}
-
-.balance-label {
+.header-subtitle {
     font-size: 14px;
-    color: var(--text-secondary);
-    display: block;
-    margin-bottom: 4px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 4px 0 0 0;
     font-weight: 500;
 }
 
-.balance-amount {
-    font-size: 40px;
-    font-weight: 800;
-    margin: 0 0 24px 0;
-    color: var(--text-primary);
-    letter-spacing: -1px;
-    margin-bottom: 12px;
+.wave {
+    display: inline-block;
+    animation: wave-animation 2.5s infinite;
+    transform-origin: 70% 70%;
 }
 
-.balance-points {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 24px;
-    background: rgba(255, 255, 255, 0.5);
-    padding: 6px 14px;
-    border-radius: 20px;
-    width: fit-content;
-    backdrop-filter: blur(5px);
+@keyframes wave-animation {
+    0% {
+        transform: rotate(0.0deg)
+    }
+
+    10% {
+        transform: rotate(14.0deg)
+    }
+
+    20% {
+        transform: rotate(-8.0deg)
+    }
+
+    30% {
+        transform: rotate(14.0deg)
+    }
+
+    40% {
+        transform: rotate(-4.0deg)
+    }
+
+    50% {
+        transform: rotate(10.0deg)
+    }
+
+    60% {
+        transform: rotate(0.0deg)
+    }
+
+    100% {
+        transform: rotate(0.0deg)
+    }
 }
 
-.points-label {
-    font-size: 14px;
-    color: var(--text-secondary);
-    font-weight: 600;
-}
 
-.points-value {
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--primary-color);
-}
-
-.balance-actions {
-    display: flex;
-    gap: 12px;
-}
-
-.btn-topup {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--primary-gradient);
-    color: #ffffff;
-    border: none;
-    border-radius: 14px;
-    padding: 12px 24px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
-    flex: 1;
-    justify-content: center;
-}
-
-.btn-topup:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 165, 0, 0.4);
-}
-
-.btn-buycard {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 12px 24px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.btn-buycard:hover {
-    background: var(--border-color);
-    transform: translateY(-2px);
-}
 
 /* Cards Section */
 .cards-section {
@@ -252,117 +172,189 @@
     box-shadow: 0 4px 10px rgba(3, 169, 244, 0.2);
 }
 
-/* Virtual Card */
+/* Cards List Container */
 .cards-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.virtual-card {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 20px;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--card-shadow);
-    transition: transform 0.2s, box-shadow 0.2s;
+/* Zing Card Styles */
+.zing-card {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.virtual-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+.zing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-.card-top {
+/* Sunburst Background */
+.zing-card-sunburst {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.zing-card-round .zing-card-sunburst {
+    background: repeating-conic-gradient(from 0deg at 50% 50%,
+            #00BCD4 0deg 12deg,
+            #00ACC1 12deg 24deg);
+}
+
+.zing-card-money .zing-card-sunburst {
+    background: repeating-conic-gradient(from 0deg at 50% 50%,
+            #FFA726 0deg 12deg,
+            #FF9800 12deg 24deg);
+}
+
+/* Card Content */
+.zing-card-content {
+    position: relative;
+    z-index: 1;
+    padding: 16px;
+    height: 100%;
     display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
+    flex-direction: column;
 }
 
-.card-icon-wrapper {
-    width: 48px;
-    height: 48px;
-    background: var(--bg-secondary);
-    border-radius: 14px;
+/* Header */
+.zing-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.zing-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.zing-new-badge {
+    background: #E91E63;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(233, 30, 99, 0.4);
+}
+
+/* Center Large Text */
+.zing-card-center {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
+    margin-top: -20px;
 }
 
-.card-info {
+.zing-text {
+    font-size: 72px;
+    font-weight: 900;
+    color: white;
+    text-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(255, 255, 255, 0.2);
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+/* Bus Icon */
+.zing-card-bus {
+    position: absolute;
+    bottom: 50px;
+    left: 16px;
+    opacity: 0.8;
+}
+
+/* Info Overlay */
+.zing-card-info {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    right: 50px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.zing-info-item {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.card-name {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.card-type {
-    font-size: 12px;
-    color: var(--text-secondary);
-    background: var(--bg-secondary);
-    padding: 2px 8px;
-    border-radius: 4px;
-    align-self: flex-start;
-}
-
-.card-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding-top: 16px;
-    border-top: 1px dashed var(--border-color);
-}
-
-.card-balance,
-.card-expires {
-    display: flex;
-    flex-direction: column;
-}
-
-.card-balance-label,
-.card-expires-label {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-bottom: 4px;
-    font-weight: 500;
-}
-
-.card-balance-value {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--text-primary);
-}
-
-.card-expires-value {
-    font-size: 14px;
+.zing-info-label {
+    font-size: 10px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.card-expires {
-    text-align: right;
+.zing-info-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Right Vertical Strip */
+.zing-card-strip {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.zing-card-round .zing-card-strip {
+    background: rgba(0, 150, 136, 0.9);
+}
+
+.zing-card-money .zing-card-strip {
+    background: rgba(230, 81, 0, 0.9);
+}
+
+.zing-strip-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Responsive adjustments */
 @media (max-width: 380px) {
-    .home-container {
-        padding: 16px;
+    .zing-text {
+        font-size: 60px;
     }
 
-    .balance-amount {
-        font-size: 32px;
-    }
-
-    .balance-actions {
-        flex-direction: row;
-        /* Keep row even on small screens if possible, or stack if too small */
+    .zing-card {
+        height: 180px;
     }
 }
 
@@ -419,53 +411,14 @@
     color: white;
     border: none;
     box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
-/* Money Card Variant */
-.virtual-card.money-card {
-    border-left: 4px solid var(--success-color);
-}
-
-.virtual-card.money-card:hover {
-    box-shadow: 0 8px 24px rgba(76, 175, 80, 0.15);
-}
-
-.virtual-card.money-card .card-balance-value {
-    color: var(--success-color);
-}
-
-/* Round Card Variant */
-.virtual-card.round-card {
-    border-left: 4px solid var(--secondary-color);
-}
-
-.virtual-card.round-card .card-balance-value {
-    color: var(--secondary-color);
-}
-
-/* New Badge for unused cards */
-.new-badge {
-    background: var(--danger-color);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-left: auto;
-    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
-    animation: pulse-new 2s ease-in-out infinite;
-}
-
-@keyframes pulse-new {
-
-    0%,
-    100% {
-        box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
-    }
-
-    50% {
-        box-shadow: 0 2px 16px rgba(233, 30, 99, 0.5);
-    }
+.cards-empty .btn-buycard:hover {
+    transform: translateY(-2px);
 }

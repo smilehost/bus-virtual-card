@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './home.css';
+import './authentic-card.css';
 import CardDetailModal from '../components/CardDetailModal';
 import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
@@ -93,7 +94,7 @@ function Home({ onNavigate }) {
     const { t } = useTranslation();
     const [selectedCard, setSelectedCard] = useState(null);
     const [filter, setFilter] = useState('all');
-    const [memberData, setMemberData] = useState(null);
+
 
     // Get LIFF profile
     const { profile, isLoading: liffLoading } = useLiff();
@@ -120,7 +121,7 @@ function Home({ onNavigate }) {
                         // console.log('User not found, redirecting to register');
                         onNavigate('register');
                     } else if (response?.data) {
-                        setMemberData(response.data);
+                        // User exists
                     }
                 })
                 .catch(err => {
@@ -133,9 +134,6 @@ function Home({ onNavigate }) {
                 });
         }
     }, [profile?.userId, fetchCardsByUuid]);
-
-    // Calculate total balance from money cards
-    const totalBalance = getTotalBalance();
 
     // Filter cards based on selection and existing logic
     const filteredCards = cards.filter(card => {
@@ -155,38 +153,15 @@ function Home({ onNavigate }) {
 
     return (
         <div className="home-container">
-            {/* Header */}
+            {/* Header
             <header className="home-header">
-                <div className="header-icon">
-                    <WalletIcon />
+                <div className="header-content">
+                    <h1 className="header-title">
+                        {t('home.greeting', { name: profile?.displayName || t('home.guest') })} <span className="wave">👋</span>
+                    </h1>
+                    <p className="header-subtitle">{t('home.select_card_instruction')}</p>
                 </div>
-                <h1 className="header-title">{t('home.title')}</h1>
-            </header>
-
-            {/* Balance Card */}
-            <div className="balance-card">
-                <div className="balance-content">
-                    <span className="balance-label">{t('home.total_balance')}</span>
-                    <h2 className="balance-amount">
-                        {isLoading || !memberData ? '...' : `฿${(memberData.member_wallet || 0).toLocaleString()}`}
-                    </h2>
-                    <div className="balance-points">
-                        <span className="points-label">{t('home.points')}:</span>
-                        <span className="points-value">
-                            {isLoading || !memberData ? '...' : (memberData.member_point || 0).toLocaleString()}
-                        </span>
-                    </div>
-                    <div className="balance-actions">
-                        <button className="btn-topup" onClick={() => onNavigate('topup')}>
-                            <PlusIcon />
-                            <span>{t('home.top_up')}</span>
-                        </button>
-                        <button className="btn-buycard" onClick={() => onNavigate('buycard')}>
-                            <span>{t('home.buy_card')}</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            </header> */}
 
             {/* My Cards Section */}
             <div className="cards-section">
@@ -250,39 +225,61 @@ function Home({ onNavigate }) {
                             .map(card => (
                                 <div
                                     key={card.card_id}
-                                    className={`virtual-card ${card.card_type === 1 ? 'money-card' : 'round-card'}`}
+                                    className={`authentic-card ${card.card_type === 1 ? 'authentic-card-adult' : 'authentic-card-student'}`}
                                     onClick={() => setSelectedCard(card)}
-                                    style={{ cursor: 'pointer' }}
                                 >
-                                    <div className="card-top">
-                                        <div className="card-icon-wrapper">
-                                            <VirtualCardIcon type={card.card_type} />
+                                    {/* Sunburst Background */}
+                                    <div className="authentic-card-sunburst"></div>
+
+                                    {/* Card Content */}
+                                    <div className="authentic-card-content">
+                                        {/* Top Bus Illustration */}
+                                        <div className="authentic-card-bus-top">
+                                            <svg width="100%" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="40" y="10" width="120" height="30" rx="3" fill="rgba(0,0,0,0.3)" />
+                                                <rect x="50" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                <rect x="75" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                <rect x="105" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                <rect x="130" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                <circle cx="60" cy="42" r="6" fill="rgba(0,0,0,0.5)" />
+                                                <circle cx="140" cy="42" r="6" fill="rgba(0,0,0,0.5)" />
+                                            </svg>
                                         </div>
-                                        <div className="card-info">
-                                            <span className="card-name">
-                                                {card.card_type === 1 ? t('home.money_card') : t('home.round_card')}
-                                            </span>
-                                            <span className="card-type">
-                                                {card.card_type === 1 ? 'money' : 'round'} · {t('home.virtual')}
-                                            </span>
+
+                                        {/* Center with Large Text and Shapes */}
+                                        <div className="authentic-card-center">
+                                            <div className="authentic-shape authentic-shape-1"></div>
+                                            <div className="authentic-shape authentic-shape-2"></div>
+                                            <span className="authentic-text">ซิ่ง</span>
                                         </div>
+
+                                        {/* Bottom Branding */}
+                                        <div className="authentic-card-bottom">
+                                            <span className="authentic-brand">บัตรซิ่ง</span>
+                                        </div>
+
+                                        {/* Info Badge */}
+                                        <div className="authentic-info-badge">
+                                            <div className="authentic-info-row">
+                                                <span className="authentic-info-label">{t('home.balance')}</span>
+                                                <span className="authentic-info-value">{formatBalance(card.card_balance, card.card_type)}</span>
+                                            </div>
+                                            <div className="authentic-info-row">
+                                                <span className="authentic-info-label">{t('home.expires')}</span>
+                                                <span className="authentic-info-value-small">{formatExpiry(card, t)}</span>
+                                            </div>
+                                        </div>
+
                                         {!card.card_firstuse && (
-                                            <span className="new-badge">{t('home.filter_new')}</span>
+                                            <div className="authentic-new-badge">{t('home.filter_new')}</div>
                                         )}
                                     </div>
-                                    <div className="card-bottom">
-                                        <div className="card-balance">
-                                            <span className="card-balance-label">{t('home.balance')}</span>
-                                            <span className="card-balance-value">
-                                                {formatBalance(card.card_balance, card.card_type)}
-                                            </span>
-                                        </div>
-                                        <div className="card-expires">
-                                            <span className="card-expires-label">{t('home.expires')}</span>
-                                            <span className="card-expires-value">
-                                                {formatExpiry(card, t)}
-                                            </span>
-                                        </div>
+
+                                    {/* Right Vertical Text */}
+                                    <div className="authentic-card-strip">
+                                        <span className="authentic-strip-text">
+                                            {card.card_type === 1 ? 'e-THAI ADULT' : 'NRMS STUDENT'}
+                                        </span>
                                     </div>
                                 </div>
                             ))}

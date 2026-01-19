@@ -2,12 +2,13 @@
 import { useState } from 'react';
 import MainLayout from './layout/Mainlayout';
 import Home from './page/home';
-import TopUp from './page/TopUp';
+
 import History from './page/History';
 import './App.css';
 import BuyCardRound from './page/BuyCardRound';
 import Profile from './page/Profile';
 import Register from './page/Register';
+import YourCard from './page/YourCard';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -20,10 +21,11 @@ function App() {
     switch (activeTab) {
       case 'home':
         return <Home onNavigate={handleTabChange} />;
-      case 'topup':
-        return <TopUp onBack={() => setActiveTab('home')} />;
+
       case 'buycard':
         return <BuyCardRound onBack={() => setActiveTab('home')} />;
+      case 'yourcard':
+        return <YourCard />;
       case 'history':
         return <History />;
       case 'profile':

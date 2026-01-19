@@ -6,6 +6,7 @@ import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
 import { useTranslation } from 'react-i18next';
 import './BuyCardRound.css';
+import '../page/authentic-card.css';
 
 const BackIcon = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -222,6 +223,48 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                                 )}
                             </div>
                         </div>
+
+                        {/* Card Preview */}
+                        {selectedCardGroup && (
+                            <div className="card-preview-section">
+                                <label>{t('buy_card.card_preview')}</label>
+                                <div className="preview-card authentic-card authentic-card-student">
+                                    <div className="authentic-card-sunburst"></div>
+                                    <div className="authentic-card-content">
+                                        <div className="authentic-card-bus-top">
+                                            <svg width="100%" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="40" y="10" width="120" height="30" rx="3" fill="rgba(0,0,0,0.3)" />
+                                                <rect x="50" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                <rect x="75" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                <rect x="105" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                <rect x="130" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                <circle cx="60" cy="42" r="6" fill="rgba(0,0,0,0.5)" />
+                                                <circle cx="140" cy="42" r="6" fill="rgba(0,0,0,0.5)" />
+                                            </svg>
+                                        </div>
+                                        <div className="authentic-card-center">
+                                            <div className="authentic-shape authentic-shape-1"></div>
+                                            <div className="authentic-shape authentic-shape-2"></div>
+                                            <span className="authentic-text">ซิ่ง</span>
+                                        </div>
+                                        <div className="authentic-card-bottom">
+                                            <span className="authentic-brand">บัตรซิ่ง</span>
+                                        </div>
+                                        <div className="authentic-info-badge">
+                                            <div className="authentic-info-row">
+                                                <span className="authentic-info-label">{selectedCardGroup.card_group_name}</span>
+                                            </div>
+                                            <div className="authentic-info-row">
+                                                <span className="authentic-info-value">{selectedCardGroup.card_group_balance} {t('buy_card.rounds')}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="authentic-card-strip">
+                                        <span className="authentic-strip-text">NRMS STUDENT</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Select Rounds - Display only */}
                         <div className="form-group">
