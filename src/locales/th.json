@@ -41,7 +41,10 @@
         "days_plural": "วัน",
         "days_singular": "วัน",
         "hours_plural": "ชั่วโมง",
-        "hours_singular": "ชั่วโมง"
+        "hours_singular": "ชั่วโมง",
+        "authentic-card-adult": "บุคคลทั่วไป",
+        "authentic-card-student": "นักเรียน",
+        "scan": "สแกน"
     },
     "register": {
         "welcome": "ยินดีต้อนรับ",
@@ -63,7 +66,9 @@
         "language": "ภาษา",
         "logout": "ออกจากระบบ",
         "edit_profile": "แก้ไขโปรไฟล์",
-        "save_changes": "บันทึกการเปลี่ยนแปลง"
+        "save_changes": "บันทึกการเปลี่ยนแปลง",
+        "scan_qr": "สแกน QR Code",
+        "scan_description": "สแกนเพื่อเพิ่มบัตรใหม่เข้ากระเป๋า"
     },
     "topup": {
         "title": "เติมเงินเข้ากระเป๋า",
@@ -163,9 +168,9 @@
     },
     "menu": {
         "home": "หน้าหลัก",
+        "buy_card": "ซื้อบัตร",
         "history": "ประวัติ",
         "scan": "สแกน",
-        "topup": "เติมเงิน",
         "profile": "โปรไฟล์"
     }
 }

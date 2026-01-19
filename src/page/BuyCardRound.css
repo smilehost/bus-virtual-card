@@ -1,10 +1,12 @@
 /* Buy Virtual Card Page - Friendly Light Theme */
 .buy-card-container {
     min-height: 100vh;
-    background-color: var(--bg-color);
+    background-color: transparent;
+    /* Allows global bg to show, or use ::after */
     color: var(--text-primary);
     padding: 20px;
-    padding-bottom: 40px;
+    padding-bottom: 90px;
+    /* Match Profile bottom padding */
     padding-top: calc(20px + env(safe-area-inset-top));
     max-width: 100%;
     margin: 0 auto;
@@ -15,18 +17,39 @@
     z-index: 1;
 }
 
-/* Sky Blue Header Background */
+/* Background Image Layer - Like Home */
+.buy-card-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 400px;
+    background-image: url('../assets/bg-bussing-kkc.png');
+    background-size: cover;
+    background-position: center top;
+    opacity: 0.8;
+    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    z-index: -2;
+    pointer-events: none;
+}
+
+/* Sky Blue Header Background - Matches Profile */
 .buy-card-container::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 180px;
+    height: 250px;
+    /* Matched Profile */
     background: var(--secondary-gradient);
     z-index: -1;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 40px;
+    /* Matched Profile */
+    border-bottom-right-radius: 40px;
+    /* Matched Profile */
     box-shadow: 0 4px 20px rgba(3, 169, 244, 0.2);
 }
 
@@ -65,16 +88,24 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Main Content Card */
-.buy-card-content {
-    background: var(--card-bg);
-    border-radius: 24px;
-    padding: 24px;
-    box-shadow: var(--card-shadow);
-    flex: 1;
+/* Wrapper for content - Transparent */
+.buy-card-content-wrapper {
     display: flex;
     flex-direction: column;
+    gap: 20px;
+}
+
+/* Content Cards - White cards floating on background */
+.content-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
     border: 1px solid var(--border-color);
+}
+
+.preview-container {
+    padding: 10px 0;
 }
 
 .card-type-label {
@@ -86,6 +117,10 @@
 
 .form-group {
     margin-bottom: 24px;
+}
+
+.form-group.mb-0 {
+    margin-bottom: 0;
 }
 
 .form-group label {
@@ -103,8 +138,8 @@
 
 .dropdown-trigger {
     width: 100%;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    border: 1px solid transparent;
     border-radius: 14px;
     padding: 14px 16px;
     color: var(--text-primary);
@@ -114,12 +149,12 @@
     justify-content: space-between;
     align-items: center;
     transition: all 0.2s;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .dropdown-trigger:hover {
-    border-color: var(--primary-color);
     background: var(--bg-secondary);
+    border-color: var(--primary-color-alpha);
 }
 
 .dropdown-trigger:focus {
@@ -139,7 +174,7 @@
     margin-top: 8px;
     z-index: 100;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
 .dropdown-item {
@@ -158,11 +193,11 @@
 
 .dropdown-item:hover {
     background: var(--bg-secondary);
-    opacity: 0.8;
 }
 
 .dropdown-item.active {
-    background: var(--bg-secondary);
+    background: #FFF3E0;
+    /* Light Orange Tint */
     border-left: 3px solid var(--primary-color);
 }
 
@@ -184,8 +219,8 @@
 }
 
 .round-btn {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    border: 1px solid transparent;
     border-radius: 14px;
     padding: 16px 20px;
     display: flex;
@@ -194,15 +229,15 @@
     cursor: pointer;
     transition: all 0.2s;
     min-width: 100px;
+    flex: 1;
 }
 
 .round-btn:hover {
     border-color: var(--primary-color-alpha);
-    background: var(--bg-secondary);
 }
 
 .round-btn.active {
-    background: var(--bg-secondary);
+    background: #FFF3E0;
     border-color: var(--primary-color);
     box-shadow: 0 4px 12px rgba(255, 152, 0, 0.15);
 }
@@ -235,12 +270,13 @@
     align-items: center;
     gap: 8px;
     font-size: 13px;
-    color: var(--secondary-color);
+    color: var(--text-secondary);
     margin-top: 12px;
     padding: 10px 14px;
-    background: rgba(3, 169, 244, 0.1);
+    background: var(--bg-secondary);
     border-radius: 10px;
-    width: fit-content;
+    width: 100%;
+    justify-content: center;
     font-weight: 500;
 }
 
@@ -250,50 +286,20 @@
     align-items: center;
     gap: 15px;
     background: var(--bg-secondary);
-    padding: 6px;
+    padding: 10px 16px;
     border-radius: 14px;
     border: 1px solid transparent;
-    width: fit-content;
-}
-
-.quantity-selector button {
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    border: none;
-    background: var(--card-bg);
-    color: var(--text-primary);
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
+    width: 100%;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s;
-}
-
-.quantity-selector button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .quantity-selector span {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
-    min-width: 30px;
-    text-align: center;
     color: var(--text-primary);
 }
 
 /* Order Summary */
-.order-summary {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 24px;
-    margin-top: 24px;
-}
-
 .summary-title {
     font-size: 16px;
     font-weight: 700;
@@ -316,7 +322,7 @@
 
 .summary-divider {
     height: 1px;
-    background: var(--border-color);
+    border-top: 1px dashed var(--border-color);
     margin: 16px 0;
 }
 
@@ -405,29 +411,4 @@
     border-top-color: var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Card Preview Section */
-.card-preview-section {
-    margin-bottom: 24px;
-}
-
-.card-preview-section label {
-    display: block;
-    color: var(--text-secondary);
-    font-size: 14px;
-    margin-bottom: 12px;
-    font-weight: 600;
-}
-
-.preview-card {
-    max-width: 100%;
-    margin: 0 auto;
-    pointer-events: none;
 }

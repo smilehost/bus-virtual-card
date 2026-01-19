@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { useCardStore } from '../store/cardStore';
 import { useLiff } from '../context/LiffContext';
 import { useTranslation } from 'react-i18next';
@@ -30,14 +31,36 @@ const YourCard = () => {
         return `${balance} ${t('buy_card.rounds')}`;
     };
 
-    // Calculate time remaining
+    // Helper to safely parse date
+    const parseDate = (dateString) => {
+        if (!dateString) return null;
+        const date = new Date(dateString);
+        return isNaN(date.getTime()) ? null : date;
+    };
+
+    // Calculate time remaining (matches Home logic)
     const getTimeRemaining = (card) => {
+        // Case 1: Card NOT used yet - show validity period
         if (!card.card_firstuse) {
-            const hours = parseInt(card.card_expire) || 0;
-            return t('card_detail.starts_on_first_use', { hours });
+            if (card.card_expire) {
+                const hours = parseInt(card.card_expire);
+                if (hours >= 24) {
+                    const days = Math.floor(hours / 24);
+                    return t('home.days_before_use', { days });
+                }
+                return t('home.hours_before_use', { hours });
+            }
+            return '-';
         }
 
-        const expiryDate = new Date(card.card_expiredate);
+        // Case 2: Card used - show days remaining until expiry
+        const expiryDateStr = card.card_expire_date || card.card_expiredate; // Handle both potential keys
+        const expiryDate = parseDate(expiryDateStr);
+
+        if (!expiryDate) {
+            return '-';
+        }
+
         const now = new Date();
         const diffMs = expiryDate - now;
 
@@ -46,51 +69,83 @@ const YourCard = () => {
         }
 
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-        if (diffDays > 0) {
-            return `${diffDays} ${diffDays > 1 ? t('home.days_plural') : t('home.days_singular')} ${diffHours} ${t('home.hours_plural')}`;
-        }
-        return `${diffHours} ${diffHours > 1 ? t('home.hours_plural') : t('home.hours_singular')}`;
+        return `${diffDays} ${t('home.days_plural')} ${t('card_detail.left')}`;
     };
 
     // Get card status
     const getCardStatus = (card) => {
+        // Logic from Home: Filter New vs Active
         if (!card.card_firstuse) {
             return { label: t('card_detail.new'), color: '#4CAF50' };
         }
 
-        const expiryDate = new Date(card.card_expiredate);
+        const expiryDateStr = card.card_expire_date || card.card_expiredate;
+        const expiryDate = parseDate(expiryDateStr);
         const now = new Date();
 
-        if (expiryDate <= now || (card.card_type === 0 && card.card_balance === 0)) {
+        if (expiryDate && expiryDate <= now) {
+            return { label: t('card_detail.expired'), color: '#F44336' };
+        }
+
+        if (card.card_type === 0 && card.card_balance === 0) {
             return { label: t('card_detail.expired'), color: '#F44336' };
         }
 
         return { label: t('card_detail.active'), color: '#2196F3' };
     };
 
+
+
+
     // Format expiry date
     const formatExpiryDate = (card) => {
         if (!card.card_firstuse) {
             return t('home.no_expiry');
         }
-        const date = new Date(card.card_expiredate);
-        return date.toLocaleDateString('th-TH', {
+
+        const expiryDateStr = card.card_expire_date || card.card_expiredate;
+        const date = parseDate(expiryDateStr);
+
+        if (!date) {
+            return '-';
+        }
+
+        return date.toLocaleDateString('en-US', {
             year: 'numeric',
-            month: 'long',
+            month: 'short',
             day: 'numeric'
         });
-    };
-
-    // Generate QR code data
-    const getQRCodeData = (card) => {
-        return card.card_id || '';
     };
 
     const handleCardChange = (index) => {
         setCurrentCardIndex(index);
     };
+
+    // Detect scroll position and auto-update current card
+    useEffect(() => {
+        const slider = document.querySelector('.card-slider');
+        if (!slider) return;
+
+        const handleScroll = () => {
+            const scrollLeft = slider.scrollLeft;
+            const cardWidth = slider.offsetWidth * 0.9 + 16; // 90% width + gap
+            const newIndex = Math.round(scrollLeft / cardWidth);
+
+            if (newIndex !== currentCardIndex && newIndex >= 0 && newIndex < activeCards.length) {
+                setCurrentCardIndex(newIndex);
+            }
+        };
+
+        slider.addEventListener('scroll', handleScroll);
+        return () => slider.removeEventListener('scroll', handleScroll);
+    }, [currentCardIndex, activeCards.length]);
+
+    // Fetch/update card data when current card changes
+    useEffect(() => {
+        if (currentCard && profile?.userId) {
+            console.log('Current card changed:', currentCard.card_id);
+        }
+    }, [currentCardIndex, currentCard, profile?.userId]);
 
     if (isLoading) {
         return (
@@ -192,22 +247,21 @@ const YourCard = () => {
                 <div className="card-details-section">
                     {/* QR Code */}
                     <div className="detail-card qr-card">
-                        <div className="qr-code-placeholder">
-                            <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="150" height="150" fill="white" />
-                                <rect x="10" y="10" width="40" height="40" fill="black" />
-                                <rect x="100" y="10" width="40" height="40" fill="black" />
-                                <rect x="10" y="100" width="40" height="40" fill="black" />
-                                <rect x="20" y="20" width="20" height="20" fill="white" />
-                                <rect x="110" y="20" width="20" height="20" fill="white" />
-                                <rect x="20" y="110" width="20" height="20" fill="white" />
-                                {/* QR pattern */}
-                                <rect x="60" y="20" width="10" height="10" fill="black" />
-                                <rect x="80" y="20" width="10" height="10" fill="black" />
-                                <rect x="70" y="40" width="10" height="10" fill="black" />
-                                <rect x="60" y="60" width="10" height="10" fill="black" />
-                                <rect x="80" y="80" width="10" height="10" fill="black" />
-                            </svg>
+                        <div className="qr-scanner-frame">
+                            <div className="qr-code-wrapper">
+                                <QRCodeSVG
+                                    value={currentCard.card_hash || '4b1a97a120061ffac3f3b77abdd3c0ae842981ab84928a11572a5e8341280a7c'}
+                                    size={160}
+                                    level="M"
+                                    includeMargin={false}
+                                    bgColor="#ffffff"
+                                    fgColor="#000000"
+                                />
+                            </div>
+                            <div className="scanner-corner top-left"></div>
+                            <div className="scanner-corner top-right"></div>
+                            <div className="scanner-corner bottom-left"></div>
+                            <div className="scanner-corner bottom-right"></div>
                         </div>
                         <p className="qr-label">{t('yourcard.scan_to_use')}</p>
                     </div>

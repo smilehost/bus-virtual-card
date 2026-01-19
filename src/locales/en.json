@@ -41,7 +41,10 @@
         "days_plural": "Days",
         "days_singular": "Day",
         "hours_plural": "Hours",
-        "hours_singular": "Hour"
+        "hours_singular": "Hour",
+        "authentic-card-adult": "ADULT",
+        "authentic-card-student": "STUDENT",
+        "scan": "Scan"
     },
     "register": {
         "welcome": "Welcome",
@@ -63,7 +66,9 @@
         "language": "Language",
         "logout": "Logout",
         "edit_profile": "Edit Profile",
-        "save_changes": "Save Changes"
+        "save_changes": "Save Changes",
+        "scan_qr": "Scan QR Code",
+        "scan_description": "Scan to add a new card to your wallet"
     },
     "topup": {
         "title": "Top Up Wallet",
@@ -163,9 +168,9 @@
     },
     "menu": {
         "home": "Home",
+        "buy_card": "Buy Card",
         "history": "History",
         "scan": "Scan",
-        "topup": "Top Up",
         "profile": "Profile"
     }
 }
