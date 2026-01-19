@@ -1,0 +1,424 @@
+/* Home Page Styles - Friendly Smart Transit Wallet */
+
+.home-container {
+    flex: 1;
+    background: transparent;
+    color: var(--text-primary);
+    padding: 20px;
+    padding-top: calc(20px + env(safe-area-inset-top));
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Sky Blue Header Background */
+.home-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 280px;
+    background: var(--secondary-gradient);
+    z-index: -1;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    box-shadow: 0 4px 20px rgba(3, 169, 244, 0.2);
+}
+
+/* Header */
+.home-header {
+    margin-bottom: 20px;
+}
+
+.header-content {
+    padding: 0 4px;
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-subtitle {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 4px 0 0 0;
+    font-weight: 500;
+}
+
+.wave {
+    display: inline-block;
+    animation: wave-animation 2.5s infinite;
+    transform-origin: 70% 70%;
+}
+
+@keyframes wave-animation {
+    0% {
+        transform: rotate(0.0deg)
+    }
+
+    10% {
+        transform: rotate(14.0deg)
+    }
+
+    20% {
+        transform: rotate(-8.0deg)
+    }
+
+    30% {
+        transform: rotate(14.0deg)
+    }
+
+    40% {
+        transform: rotate(-4.0deg)
+    }
+
+    50% {
+        transform: rotate(10.0deg)
+    }
+
+    60% {
+        transform: rotate(0.0deg)
+    }
+
+    100% {
+        transform: rotate(0.0deg)
+    }
+}
+
+
+
+/* Cards Section */
+.cards-section {
+    margin-bottom: 24px;
+}
+
+.cards-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.cards-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.btn-new-card {
+    background: transparent;
+    color: var(--primary-color);
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.btn-new-card:hover {
+    background: rgba(255, 165, 0, 0.1);
+}
+
+.cards-header-row {
+    margin-bottom: 16px;
+}
+
+.cards-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.home-filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.home-filter-tab {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.home-filter-tab.active {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(3, 169, 244, 0.2);
+}
+
+/* Cards List Container */
+.cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Zing Card Styles */
+.zing-card {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.zing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Sunburst Background */
+.zing-card-sunburst {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.zing-card-round .zing-card-sunburst {
+    background: repeating-conic-gradient(from 0deg at 50% 50%,
+            #00BCD4 0deg 12deg,
+            #00ACC1 12deg 24deg);
+}
+
+.zing-card-money .zing-card-sunburst {
+    background: repeating-conic-gradient(from 0deg at 50% 50%,
+            #FFA726 0deg 12deg,
+            #FF9800 12deg 24deg);
+}
+
+/* Card Content */
+.zing-card-content {
+    position: relative;
+    z-index: 1;
+    padding: 16px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.zing-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.zing-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.zing-new-badge {
+    background: #E91E63;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(233, 30, 99, 0.4);
+}
+
+/* Center Large Text */
+.zing-card-center {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -20px;
+}
+
+.zing-text {
+    font-size: 72px;
+    font-weight: 900;
+    color: white;
+    text-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(255, 255, 255, 0.2);
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+/* Bus Icon */
+.zing-card-bus {
+    position: absolute;
+    bottom: 50px;
+    left: 16px;
+    opacity: 0.8;
+}
+
+/* Info Overlay */
+.zing-card-info {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    right: 50px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.zing-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.zing-info-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.zing-info-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Right Vertical Strip */
+.zing-card-strip {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.zing-card-round .zing-card-strip {
+    background: rgba(0, 150, 136, 0.9);
+}
+
+.zing-card-money .zing-card-strip {
+    background: rgba(230, 81, 0, 0.9);
+}
+
+.zing-strip-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 380px) {
+    .zing-text {
+        font-size: 60px;
+    }
+
+    .zing-card {
+        height: 180px;
+    }
+}
+
+/* Loading State */
+.cards-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 12px;
+    color: var(--text-secondary);
+}
+
+.cards-loading .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error State */
+.cards-error {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--danger-color);
+    background: rgba(233, 30, 99, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(233, 30, 99, 0.1);
+}
+
+/* Empty State */
+.cards-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 16px;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.cards-empty .btn-buycard {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.cards-empty .btn-buycard:hover {
+    transform: translateY(-2px);
+}

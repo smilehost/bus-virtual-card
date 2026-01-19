@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+
+import { useState } from 'react';
+import MainLayout from './layout/Mainlayout';
+import Home from './page/home';
+
+import History from './page/History';
+import './App.css';
+import BuyCardRound from './page/BuyCardRound';
+import Profile from './page/Profile';
+import Register from './page/Register';
+import YourCard from './page/YourCard';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeTab, setActiveTab] = useState('home');
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
+  const renderPage = () => {
+    switch (activeTab) {
+      case 'home':
+        return <Home onNavigate={handleTabChange} />;
+
+      case 'buycard':
+        return <BuyCardRound onBack={() => setActiveTab('home')} />;
+      case 'yourcard':
+        return <YourCard />;
+      case 'history':
+        return <History />;
+      case 'profile':
+        return <Profile onNavigate={handleTabChange} />;
+      case 'register':
+        return <Register onNavigate={handleTabChange} />;
+      default:
+        return <Home onNavigate={handleTabChange} />;
+    }
+  };
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <MainLayout activeTab={activeTab} onTabChange={handleTabChange}>
+      {renderPage()}
+    </MainLayout>
+  );
 }
 
-export default App
+export default App;
+
