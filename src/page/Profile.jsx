@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
 import { useTranslation } from 'react-i18next';
@@ -153,7 +153,14 @@ const Profile = ({ onNavigate }) => {
         message: ''
     });
 
-    const closeAlert = () => setAlertState(prev => ({ ...prev, isOpen: false }));
+    const closeAlert = () => {
+        setAlertState({
+            isOpen: false,
+            type: 'success',
+            title: '',
+            message: ''
+        });
+    };
 
     const showAlert = (type, title, message) => {
         setAlertState({
@@ -164,16 +171,26 @@ const Profile = ({ onNavigate }) => {
         });
     };
 
+    // Auto-close success alerts after 3 seconds
+    useEffect(() => {
+        if (alertState.isOpen && alertState.type === 'success') {
+            const timer = setTimeout(() => {
+                closeAlert();
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [alertState.isOpen, alertState.type]);
+
     // Scanner Logic
     const [isScanning, setIsScanning] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const scannerRef = useRef(null);
 
     useEffect(() => {
-        let html5QrCode = null;
-
         if (isScanning) {
             // Give a small delay to ensure DOM is ready
             const timer = setTimeout(() => {
-                html5QrCode = new Html5Qrcode("reader");
+                scannerRef.current = new Html5Qrcode("reader");
                 const config = {
                     fps: 10,
                     qrbox: { width: 200, height: 200 },
@@ -181,7 +198,7 @@ const Profile = ({ onNavigate }) => {
                 };
 
                 // Use back camera by default
-                html5QrCode.start(
+                scannerRef.current.start(
                     { facingMode: "environment" },
                     config,
                     onScanSuccess,
@@ -196,16 +213,28 @@ const Profile = ({ onNavigate }) => {
             return () => clearTimeout(timer);
         }
 
+        // Cleanup when scanning stops
         return () => {
-            if (html5QrCode && html5QrCode.isScanning) {
-                html5QrCode.stop().then(() => {
-                    html5QrCode.clear();
+            if (scannerRef.current && scannerRef.current.isScanning) {
+                scannerRef.current.stop().then(() => {
+                    scannerRef.current.clear();
+                    scannerRef.current = null;
                 }).catch(err => console.error("Failed to stop scanner", err));
             }
         };
     }, [isScanning]);
 
-    const onScanSuccess = (decodedText) => {
+    const onScanSuccess = async (decodedText) => {
+        // Stop scanner immediately to prevent multiple scans
+        if (scannerRef.current && scannerRef.current.isScanning) {
+            try {
+                await scannerRef.current.stop();
+                await scannerRef.current.clear();
+                scannerRef.current = null;
+            } catch (err) {
+                console.error("Error stopping scanner", err);
+            }
+        }
         setIsScanning(false);
         processScan(decodedText);
     };
@@ -231,18 +260,28 @@ const Profile = ({ onNavigate }) => {
     };
 
     const processScan = async (hash) => {
+        // Prevent duplicate processing
+        if (isProcessing) {
+            console.log('Already processing a scan, please wait...');
+            return;
+        }
+
         if (!memberData?.member_id) {
             showAlert('error', 'Error', 'Member data not loaded.');
             return;
         }
+
+        setIsProcessing(true);
         try {
             const lastPart = hash.split('/').pop();
             await linkCardToUser(lastPart, memberData.member_id);
             showAlert('success', 'Success', 'Card added successfully!');
-            if (profile?.userId) fetchCardsByUuid(profile.userId);
+            if (profile?.userId) await fetchCardsByUuid(profile.userId);
         } catch (error) {
-            console.error(error);
+            console.error('Error processing scan:', error);
             showAlert('error', 'Failed', 'Failed to add card. Invalid or used.');
+        } finally {
+            setIsProcessing(false);
         }
     };
 
