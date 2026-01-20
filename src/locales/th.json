@@ -70,21 +70,11 @@
         "scan_qr": "สแกน QR Code",
         "scan_description": "สแกนเพื่อเพิ่มบัตรใหม่เข้ากระเป๋า"
     },
-    "topup": {
-        "title": "เติมเงินเข้ากระเป๋า",
-        "enter_amount": "ระบุจำนวนเงิน",
-        "payment_method": "ช่องทางการชำระเงิน",
-        "credit_card": "บัตรเครดิต",
-        "mobile_banking": "โมบายแบงก์กิ้ง",
-        "pay_button": "ชำระเงิน ฿{{amount}}"
-    },
     "history": {
         "title": "ประวัติการใช้งาน",
         "purchased_money_card": "ซื้อบัตรเงินสด {{count}} ใบ",
         "purchased_round_card": "ซื้อบัตรเที่ยว {{count}} ใบ",
-        "topup_credit_card": "เติมเงินผ่านบัตรเครดิต",
         "tab_all": "ทั้งหมด",
-        "tab_topups": "การเติมเงิน",
         "tab_purchases": "การซื้อ",
         "tab_usage": "การใช้งาน",
         "no_transactions": "ยังไม่มีรายการ",
@@ -159,12 +149,6 @@
         "date_time": "วันและเวลา",
         "transaction_id": "เลขที่ธุรกรรม",
         "type": "ประเภท"
-    },
-    "yourcard": {
-        "title": "บัตรของคุณ",
-        "scan_to_use": "สแกนเพื่อใช้งานบัตร",
-        "lock_card": "ล็อคบัตร",
-        "lock_subtitle": "คุณสามารถล็อคและปลดล็อคได้ตลอดเวลา"
     },
     "menu": {
         "home": "หน้าหลัก",

@@ -7,7 +7,7 @@ import './home.css';
 import '../page/authentic-card.css';
 
 const Home = ({ onNavigate }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { cards, isLoading, fetchCardsByUuid } = useCardStore();
     const { profile } = useLiff();
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -130,7 +130,7 @@ const Home = ({ onNavigate }) => {
             return '-';
         }
 
-        return date.toLocaleDateString('en-US', {
+        return date.toLocaleDateString(i18n.language, {
             year: 'numeric',
             month: 'short',
             day: 'numeric'
@@ -175,7 +175,7 @@ const Home = ({ onNavigate }) => {
         return (
             <div className="home-container">
                 <header className="home-header">
-                    <h1>{t('yourcard.title')}</h1>
+                    <h1>{t('home.title')}</h1>
                 </header>
                 <div className="empty-state">
                     <p>{t('home.no_cards')}</p>
@@ -201,7 +201,7 @@ const Home = ({ onNavigate }) => {
         <div className="home-container">
             {/* Header */}
             <header className="home-header">
-                <h1>{t('yourcard.title')}</h1>
+                <h1>{t('home.title')}</h1>
             </header>
 
             {/* Card Slider */}
@@ -289,7 +289,7 @@ const Home = ({ onNavigate }) => {
                             <div className="scanner-corner bottom-left"></div>
                             <div className="scanner-corner bottom-right"></div>
                         </div>
-                        <p className="qr-label">{t('yourcard.scan_to_use')}</p>
+                        <p className="qr-label">{t('card_detail.scan_to_use')}</p>
                     </div>
 
                     {/* Balance */}

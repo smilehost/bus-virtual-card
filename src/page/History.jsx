@@ -62,7 +62,6 @@ const History = () => {
     const getTabName = (tabKey) => {
         switch (tabKey) {
             case 'All': return t('history.tab_all');
-            case 'Top Ups': return t('history.tab_topups');
             case 'Purchases': return t('history.tab_purchases');
             case 'Usage': return t('history.tab_usage');
             default: return tabKey;
