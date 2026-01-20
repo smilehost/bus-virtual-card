@@ -4,7 +4,7 @@ import { useCardStore } from '../store/cardStore';
 import { useTranslation } from 'react-i18next';
 import { linkCardToUser } from '../services/cardService';
 import liff from '@line/liff';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5Qrcode } from 'html5-qrcode';
 import './Profile.css';
 import './authentic-card.css';
 
@@ -168,19 +168,39 @@ const Profile = ({ onNavigate }) => {
     const [isScanning, setIsScanning] = useState(false);
 
     useEffect(() => {
-        let scanner = null;
+        let html5QrCode = null;
+
         if (isScanning) {
-            scanner = new Html5QrcodeScanner(
-                "reader",
-                { fps: 10, qrbox: { width: 250, height: 250 } },
-                false
-            );
-            scanner.render(onScanSuccess, onScanFailure);
+            // Give a small delay to ensure DOM is ready
+            const timer = setTimeout(() => {
+                html5QrCode = new Html5Qrcode("reader");
+                const config = {
+                    fps: 10,
+                    qrbox: { width: 200, height: 200 },
+                    aspectRatio: 1.0
+                };
+
+                // Use back camera by default
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    config,
+                    onScanSuccess,
+                    onScanFailure
+                ).catch(err => {
+                    console.error("Error starting scanner", err);
+                    showAlert('error', t('common.error'), 'Could not access camera. Please allow camera permissions.');
+                    setIsScanning(false);
+                });
+            }, 100);
+
+            return () => clearTimeout(timer);
         }
 
         return () => {
-            if (scanner) {
-                scanner.clear().catch(error => console.error("Failed to clear scanner", error));
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => {
+                    html5QrCode.clear();
+                }).catch(err => console.error("Failed to stop scanner", err));
             }
         };
     }, [isScanning]);
@@ -402,13 +422,33 @@ const Profile = ({ onNavigate }) => {
             )}
             {/* Scanner Modal */}
             {isScanning && (
-                <div className="scanner-modal">
-                    <div className="scanner-content">
-                        <button className="scanner-close-btn" onClick={() => setIsScanning(false)}>
-                            ✕
-                        </button>
-                        <div id="reader" width="100%"></div>
-                        <p className="scanner-instruction">{t('home.scan_instruction') || "Align QR code within the frame"}</p>
+                <div className="scanner-modal-fullscreen">
+                    {/* Close Button */}
+                    <button className="scanner-close-btn-top" onClick={() => setIsScanning(false)}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </button>
+
+                    {/* Scan Frame Container */}
+                    <div className="scanner-frame-container">
+                        {/* Corner Brackets */}
+                        <div className="scanner-corner scanner-corner-tl"></div>
+                        <div className="scanner-corner scanner-corner-tr"></div>
+                        <div className="scanner-corner scanner-corner-bl"></div>
+                        <div className="scanner-corner scanner-corner-br"></div>
+
+                        {/* QR Reader */}
+                        <div id="reader" className="scanner-reader-area"></div>
+                    </div>
+
+                    {/* Bottom Instruction */}
+                    <div className="scanner-bottom-instruction">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8M16 4H18C19.1046 4 20 4.89543 20 6V8M20 16V18C20 19.1046 19.1046 20 18 20H16M8 20H6C4.89543 20 4 19.1046 4 18V16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <rect x="9" y="9" width="6" height="6" rx="1" stroke="white" strokeWidth="2" />
+                        </svg>
+                        <span>{t('profile.scan_qr') || "Scan QR Code"}</span>
                     </div>
                 </div>
             )}

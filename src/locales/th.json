@@ -52,7 +52,7 @@
         "gender": "เพศ",
         "male": "ชาย",
         "female": "หญิง",
-        "other": "อื่นๆ",
+        "other": "ไม่ระบุ",
         "birth_year": "ปีเกิด (พ.ศ.)",
         "birth_year_placeholder": "ตัวอย่าง 2540",
         "submit": "ลงทะเบียน",

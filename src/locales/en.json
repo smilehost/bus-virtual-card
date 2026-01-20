@@ -52,7 +52,7 @@
         "gender": "Gender",
         "male": "Male",
         "female": "Female",
-        "other": "Other",
+        "other": "Unknown",
         "birth_year": "Birth Year (B.E.)",
         "birth_year_placeholder": "e.g. 2540",
         "submit": "Complete Registration",

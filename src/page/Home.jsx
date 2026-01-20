@@ -20,12 +20,29 @@ const Home = ({ onNavigate }) => {
     }, [profile?.userId, fetchCardsByUuid]);
 
     // Filter out expired cards with zero balance
-    const activeCards = cards.filter(card => {
-        if (card.card_type === 0) { // Round card
-            return card.card_balance > 0;
-        }
-        return true; // Money cards always show
-    });
+    // Filter out expired cards and sort
+    const activeCards = cards
+        .filter(card => {
+            // 1. Check strict expiry date
+            const expiryDateStr = card.card_expire_date || card.card_expiredate;
+            if (expiryDateStr) {
+                const expiry = new Date(expiryDateStr);
+                if (expiry < new Date()) return false;
+            }
+
+            // 2. Check round card balance
+            if (card.card_type === 0 && card.card_balance <= 0) {
+                return false;
+            }
+
+            return true;
+        })
+        .sort((a, b) => {
+            // Sort: New Cards (null firstuse) -> Recent First Use -> Old First Use
+            // Treat null/undefined firstuse as "Future/New" (Max Date)
+            const getSortDate = (c) => c.card_firstuse ? new Date(c.card_firstuse) : new Date(8640000000000000);
+            return getSortDate(b) - getSortDate(a);
+        });
 
     const currentCard = activeCards[currentCardIndex];
 
