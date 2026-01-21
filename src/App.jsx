@@ -7,6 +7,7 @@ import './App.css';
 import BuyCardRound from './page/BuyCardRound';
 import Profile from './page/Profile';
 import Register from './page/Register';
+import YourCard from './page/YourCard';
 import { useLiff } from './context/LiffContext';
 import { getMemberByUserId } from './services/memberService';
 
@@ -51,6 +52,8 @@ function App() {
         return <BuyCardRound onBack={() => setActiveTab('home')} />;
       case 'history':
         return <History />;
+      case 'yourcard':
+        return <YourCard onNavigate={handleTabChange} />;
       case 'profile':
         return <Profile onNavigate={handleTabChange} />;
       case 'register':

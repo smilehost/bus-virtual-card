@@ -33,6 +33,14 @@ const ProfileIcon = ({ active }) => (
     </svg>
 );
 
+const CardIcon = ({ active }) => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2" />
+        <path d="M2 10H22" stroke="currentColor" strokeWidth="2" />
+        <circle cx="6" cy="15" r="1" fill="currentColor" />
+    </svg>
+);
+
 
 
 /*
@@ -81,6 +89,13 @@ function MainLayout({ children, activeTab, onTabChange }) {
                     >
                         <HistoryIcon />
                         <span>{t('menu.history')}</span>
+                    </button>
+                    <button
+                        className={`nav-item ${activeTab === 'yourcard' ? 'active' : ''}`}
+                        onClick={() => onTabChange('yourcard')}
+                    >
+                        <CardIcon active={activeTab === 'yourcard'} />
+                        <span>{t('menu.yourcard') || 'บัตรของฉัน'}</span>
                     </button>
                     <button
                         className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
