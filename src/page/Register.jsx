@@ -27,6 +27,20 @@ const Register = ({ onNavigate }) => {
         }));
     };
 
+    const handleGenderSelect = (gender) => {
+        setFormData(prev => ({
+            ...prev,
+            member_gender: gender
+        }));
+    };
+
+    // Generate years (2500 to Current BE) by calendar
+    const currentYearBE = new Date().getFullYear() + 543;
+    const years = [];
+    for (let y = currentYearBE; y >= 2500; y--) {
+        years.push(y);
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -75,33 +89,35 @@ const Register = ({ onNavigate }) => {
 
             <form className="register-form" onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="member_gender">{t('register.gender')}</label>
-                    <select
-                        id="member_gender"
-                        name="member_gender"
-                        value={formData.member_gender}
-                        onChange={handleChange}
-                        className="form-input"
-                    >
-                        <option value="male">{t('register.male')}</option>
-                        <option value="female">{t('register.female')}</option>
-                        <option value="other">{t('register.other')}</option>
-                    </select>
+                    <label>{t('register.gender')}</label>
+                    <div className="gender-selector">
+                        {['male', 'female', 'other'].map((gender) => (
+                            <button
+                                key={gender}
+                                type="button"
+                                className={`gender-btn ${formData.member_gender === gender ? 'active' : ''}`}
+                                onClick={() => handleGenderSelect(gender)}
+                            >
+                                {t(`register.${gender}`)}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 <div className="form-group">
                     <label htmlFor="birthYear">{t('register.birth_year')}</label>
-                    <input
-                        type="number"
+                    <select
                         id="birthYear"
                         name="birthYear"
                         value={formData.birthYear}
                         onChange={handleChange}
-                        placeholder={t('register.birth_year_placeholder')}
                         className="form-input"
-                        min="2400"
-                        max="2600"
-                    />
+                    >
+                        <option value="">{t('register.birth_year_placeholder')}</option>
+                        {years.map(y => (
+                            <option key={y} value={y}>{y}</option>
+                        ))}
+                    </select>
                 </div>
 
                 {error && <div className="error-message">{error}</div>}
