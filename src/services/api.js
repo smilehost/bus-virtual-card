@@ -60,12 +60,14 @@ export const get = (endpoint, options = {}) => {
  * POST request helper
  * @param {string} endpoint - API endpoint
  * @param {object} data - Request body
+ * @param {object} options - Fetch options
  * @returns {Promise<any>} Response data
  */
-export const post = (endpoint, data) => {
+export const post = (endpoint, data, options = {}) => {
     return apiRequest(endpoint, {
         method: 'POST',
         body: JSON.stringify(data),
+        ...options
     });
 };
 
@@ -73,12 +75,14 @@ export const post = (endpoint, data) => {
  * PUT request helper
  * @param {string} endpoint - API endpoint
  * @param {object} data - Request body
+ * @param {object} options - Fetch options
  * @returns {Promise<any>} Response data
  */
-export const put = (endpoint, data) => {
+export const put = (endpoint, data, options = {}) => {
     return apiRequest(endpoint, {
         method: 'PUT',
         body: JSON.stringify(data),
+        ...options
     });
 };
 

@@ -1,5 +1,6 @@
+/* Register Page Styles - Friendly Light Theme */
 .register-container {
-    padding: 24px;
+    padding: clamp(16px, 5vw, 24px);
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -20,13 +21,38 @@
     z-index: -1;
 }
 
+.register-lang-btn {
+    position: absolute;
+    top: clamp(16px, 5vw, 24px);
+    right: clamp(16px, 5vw, 24px);
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    width: clamp(36px, 10vw, 44px);
+    height: clamp(36px, 10vw, 44px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: clamp(12px, 3.5vw, 14px);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    transition: background 0.2s;
+}
+
+.register-lang-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 .register-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: clamp(24px, 6vw, 40px);
 }
 
 .register-header h1 {
-    font-size: 32px;
+    font-size: clamp(24px, 7vw, 32px);
     font-weight: 800;
     color: var(--text-primary);
     margin-bottom: 8px;
@@ -37,13 +63,13 @@
 
 .register-header p {
     color: var(--text-secondary);
-    font-size: 16px;
+    font-size: clamp(14px, 4vw, 16px);
 }
 
 .register-form {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: clamp(16px, 5vw, 24px);
 }
 
 .form-group {
@@ -59,12 +85,12 @@
 }
 
 .form-input {
-    padding: 14px 16px;
+    padding: clamp(12px, 3.5vw, 14px) 16px;
     border-radius: 12px;
     border: 1px solid var(--border-color);
     background: var(--card-bg);
     color: var(--text-primary);
-    font-size: 16px;
+    font-size: clamp(14px, 4vw, 16px);
     outline: none;
     transition: border-color 0.2s;
 }
@@ -75,11 +101,11 @@
 
 .btn-submit {
     margin-top: 16px;
-    padding: 16px;
+    padding: clamp(14px, 4vw, 16px);
     border-radius: 14px;
     background: var(--primary-gradient);
     color: white;
-    font-size: 16px;
+    font-size: clamp(14px, 4vw, 16px);
     font-weight: 700;
     border: none;
     cursor: pointer;

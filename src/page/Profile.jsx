@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
 import { useTranslation } from 'react-i18next';
+import { linkCardToUser } from '../services/cardService';
+import liff from '@line/liff';
+import { Html5Qrcode } from 'html5-qrcode';
 import './Profile.css';
+import './authentic-card.css';
 
 // Format card expiry display (same logic as Home.jsx)
 const formatExpiry = (card, t) => {
@@ -88,7 +92,8 @@ const getCardStatus = (card) => {
 
 import { getMemberByUserId } from '../services/memberService';
 import { useTheme } from '../context/ThemeContext';
-import ProfileCardDetailModal from '../components/ProfileCardDetailModal'; // Import modal
+import ProfileCardDetailModal from '../components/ProfileCardDetailModal';
+import AlertModal from '../components/AlertModal';
 
 const Profile = ({ onNavigate }) => {
     const { t, i18n } = useTranslation();
@@ -140,6 +145,148 @@ const Profile = ({ onNavigate }) => {
         i18n.changeLanguage(lng);
     };
 
+    // Alert State
+    const [alertState, setAlertState] = useState({
+        isOpen: false,
+        type: 'success',
+        title: '',
+        message: ''
+    });
+
+    const closeAlert = () => {
+        setAlertState({
+            isOpen: false,
+            type: 'success',
+            title: '',
+            message: ''
+        });
+    };
+
+    const showAlert = (type, title, message) => {
+        setAlertState({
+            isOpen: true,
+            type,
+            title,
+            message
+        });
+    };
+
+    // Auto-close success alerts after 3 seconds
+    useEffect(() => {
+        if (alertState.isOpen && alertState.type === 'success') {
+            const timer = setTimeout(() => {
+                closeAlert();
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [alertState.isOpen, alertState.type]);
+
+    // Scanner Logic
+    const [isScanning, setIsScanning] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const scannerRef = useRef(null);
+
+    useEffect(() => {
+        if (isScanning) {
+            // Give a small delay to ensure DOM is ready
+            const timer = setTimeout(() => {
+                scannerRef.current = new Html5Qrcode("reader");
+                const config = {
+                    fps: 10,
+                    qrbox: { width: 200, height: 200 },
+                    aspectRatio: 1.0
+                };
+
+                // Use back camera by default
+                scannerRef.current.start(
+                    { facingMode: "environment" },
+                    config,
+                    onScanSuccess,
+                    onScanFailure
+                ).catch(err => {
+                    console.error("Error starting scanner", err);
+                    showAlert('error', t('common.error'), 'Could not access camera. Please allow camera permissions.');
+                    setIsScanning(false);
+                });
+            }, 100);
+
+            return () => clearTimeout(timer);
+        }
+
+        // Cleanup when scanning stops
+        return () => {
+            if (scannerRef.current && scannerRef.current.isScanning) {
+                scannerRef.current.stop().then(() => {
+                    scannerRef.current.clear();
+                    scannerRef.current = null;
+                }).catch(err => console.error("Failed to stop scanner", err));
+            }
+        };
+    }, [isScanning]);
+
+    const onScanSuccess = async (decodedText) => {
+        // Stop scanner immediately to prevent multiple scans
+        if (scannerRef.current && scannerRef.current.isScanning) {
+            try {
+                await scannerRef.current.stop();
+                await scannerRef.current.clear();
+                scannerRef.current = null;
+            } catch (err) {
+                console.error("Error stopping scanner", err);
+            }
+        }
+        setIsScanning(false);
+        processScan(decodedText);
+    };
+
+    const onScanFailure = (error) => {
+        // console.warn(error);
+    };
+
+    const handleScan = async () => {
+        try {
+            if (!liff.isInClient()) {
+                setIsScanning(true);
+                return;
+            }
+            if (liff.scanCode) {
+                const result = await liff.scanCode();
+                if (result.value) processScan(result.value);
+            }
+        } catch (error) {
+            console.error('Scan Error:', error);
+            showAlert('error', t('common.error'), 'Failed to open scanner.');
+        }
+    };
+
+    const processScan = async (hash) => {
+        // Prevent duplicate processing
+        if (isProcessing) {
+            console.log('Already processing a scan, please wait...');
+            return;
+        }
+
+        if (!memberData?.member_id) {
+            showAlert('error', 'Error', 'Member data not loaded.');
+            return;
+        }
+
+        setIsProcessing(true);
+        try {
+            const lastPart = hash.split('/').pop();
+            await linkCardToUser(lastPart, memberData.member_id);
+            showAlert('success', 'Success', 'Card added successfully!');
+            if (profile?.userId) await fetchCardsByUuid(profile.userId);
+        } catch (error) {
+            console.error('Error processing scan:', error);
+            showAlert('error', 'Failed', 'Failed to add card. Invalid or used.');
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+
+
     return (
         <div className="profile-page">
             <header className="profile-header">
@@ -151,6 +298,7 @@ const Profile = ({ onNavigate }) => {
                 </div>
                 <h1>{t('profile.title')}</h1>
                 <div className="header-actions">
+                    {/* Scan button removed from here */}
                     <button className="lang-btn" onClick={() => changeLanguage(i18n.language === 'en' ? 'th' : 'en')}>
                         {i18n.language === 'en' ? 'TH' : 'EN'}
                     </button>
@@ -182,24 +330,26 @@ const Profile = ({ onNavigate }) => {
                         <p>{profile?.statusMessage || 'LINE User'}</p>
                     </div>
                 </div>
-
-
-
-                <div className="stats-grid">
-
-                    <div className="stat-card">
-                        <div className="stat-icon card-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2" />
-                                <line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" strokeWidth="2" />
+                {/* Prominent Scan Button */}
+                <div className="scan-section">
+                    <button className="scan-card-btn" onClick={handleScan}>
+                        <div className="scan-icon-container">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8M16 4H18C19.1046 4 20 4.89543 20 6V8M20 16V18C20 19.1046 19.1046 20 18 20H16M8 20H6C4.89543 20 4 19.1046 4 18V16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <circle cx="12" cy="12" r="2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         </div>
-                        <span className="stat-label">Cards Bought</span>
-                        <span className="stat-value">0</span>
-                    </div>
+                        <div className="scan-btn-text">
+                            <span className="scan-title">{t('profile.scan_qr')}</span>
+                            <span className="scan-desc">{t('profile.scan_description')}</span>
+                        </div>
+                        <div className="scan-chevron">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </div>
+                    </button>
                 </div>
-
-
 
                 {/* All Cards Section with Filters */}
                 <div className="all-cards-section">
@@ -239,41 +389,56 @@ const Profile = ({ onNavigate }) => {
                                 return (
                                     <div
                                         key={card.card_id}
-                                        className={`virtual-card ${card.card_type === 1 ? 'money-card' : 'round-card'} ${status === 'expired' ? 'expired' : ''}`}
+                                        className={`authentic-card ${card.card_type === 1 ? 'authentic-card-adult' : 'authentic-card-student'}`}
                                         onClick={() => handleCardClick(card)}
+                                        style={{ marginBottom: '16px', opacity: status === 'expired' ? 0.7 : 1 }}
                                     >
-                                        <div className="card-top">
-                                            <div className="card-icon-wrapper">
-                                                <VirtualCardIcon type={card.card_type} />
+                                        <div className="authentic-card-sunburst"></div>
+                                        <div className="authentic-card-content">
+                                            <div className="authentic-card-bus-top">
+                                                <svg width="100%" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <rect x="40" y="10" width="120" height="30" rx="3" fill="rgba(0,0,0,0.3)" />
+                                                    <rect x="50" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                    <rect x="75" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                    <rect x="105" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                    <rect x="130" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
+                                                    <circle cx="60" cy="42" r="6" fill="rgba(0,0,0,0.5)" />
+                                                    <circle cx="140" cy="42" r="6" fill="rgba(0,0,0,0.5)" />
+                                                </svg>
                                             </div>
-                                            <div className="card-info">
-                                                <span className="card-name">
-                                                    {card.card_type === 1 ? t('home.money_card') : t('home.round_card')}
-                                                </span>
-                                                <span className="card-type">
-                                                    {card.card_type === 1 ? 'money' : 'round'} · {t('home.virtual')}
+                                            <div className="authentic-card-center">
+                                                <div className="authentic-shape authentic-shape-1"></div>
+                                                <div className="authentic-shape authentic-shape-2"></div>
+                                                <span className="authentic-text">
+                                                    {card.card_type === 1 ? t('home.authentic-card-adult') : t('home.authentic-card-student')}
                                                 </span>
                                             </div>
-                                            {!card.card_firstuse && status !== 'expired' && (
-                                                <span className="new-badge">{t('home.filter_new')}</span>
-                                            )}
-                                            {status === 'expired' && (
-                                                <span className="card-status-badge expired" style={{ marginLeft: 'auto' }}>{t('home.expires')}</span>
-                                            )}
+                                            <div className="authentic-card-bottom">
+                                                <span className="authentic-brand">บัตรซิ่ง</span>
+                                            </div>
+
+                                            {/* Status Badges */}
+                                            {status === 'expired' ? (
+                                                <div className="authentic-new-badge" style={{ backgroundColor: '#F44336', boxShadow: '0 2px 8px rgba(244, 67, 54, 0.4)' }}>
+                                                    {t('home.expires')}
+                                                </div>
+                                            ) : !card.card_firstuse ? (
+                                                <div className="authentic-new-badge">
+                                                    {t('home.filter_new')}
+                                                </div>
+                                            ) : null}
+
+                                            <div className="authentic-info-badge">
+                                                <div className="authentic-info-row">
+                                                    <span className="authentic-info-label">{t('home.balance')}</span>
+                                                    <span className="authentic-info-value">{formatBalance(card.card_balance, card.card_type)}</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="card-bottom">
-                                            <div className="card-balance">
-                                                <span className="card-balance-label">{t('home.balance')}</span>
-                                                <span className="card-balance-value">
-                                                    {formatBalance(card.card_balance, card.card_type)}
-                                                </span>
-                                            </div>
-                                            <div className="card-expires">
-                                                <span className="card-expires-label">{t('home.expires')}</span>
-                                                <span className="card-expires-value">
-                                                    {status === 'expired' ? t('home.expires') : formatExpiry(card, t)}
-                                                </span>
-                                            </div>
+                                        <div className="authentic-card-strip">
+                                            <span className="authentic-strip-text">
+                                                {card.card_type === 1 ? 'e-THAI ADULT' : 'NRMS STUDENT'}
+                                            </span>
                                         </div>
                                     </div>
                                 );
@@ -294,6 +459,46 @@ const Profile = ({ onNavigate }) => {
                     card={selectedCard}
                 />
             )}
+            {/* Scanner Modal */}
+            {isScanning && (
+                <div className="scanner-modal-fullscreen">
+                    {/* Close Button */}
+                    <button className="scanner-close-btn-top" onClick={() => setIsScanning(false)}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </button>
+
+                    {/* Scan Frame Container */}
+                    <div className="scanner-frame-container">
+                        {/* Corner Brackets */}
+                        <div className="scanner-corner scanner-corner-tl"></div>
+                        <div className="scanner-corner scanner-corner-tr"></div>
+                        <div className="scanner-corner scanner-corner-bl"></div>
+                        <div className="scanner-corner scanner-corner-br"></div>
+
+                        {/* QR Reader */}
+                        <div id="reader" className="scanner-reader-area"></div>
+                    </div>
+
+                    {/* Bottom Instruction */}
+                    <div className="scanner-bottom-instruction">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8M16 4H18C19.1046 4 20 4.89543 20 6V8M20 16V18C20 19.1046 19.1046 20 18 20H16M8 20H6C4.89543 20 4 19.1046 4 18V16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <rect x="9" y="9" width="6" height="6" rx="1" stroke="white" strokeWidth="2" />
+                        </svg>
+                        <span>{t('profile.scan_qr') || "Scan QR Code"}</span>
+                    </div>
+                </div>
+            )}
+
+            <AlertModal
+                isOpen={alertState.isOpen}
+                onClose={closeAlert}
+                type={alertState.type}
+                title={alertState.title}
+                message={alertState.message}
+            />
         </div>
     );
 };

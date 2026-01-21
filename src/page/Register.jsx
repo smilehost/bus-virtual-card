@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import './Register.css';
 
 const Register = ({ onNavigate }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { profile } = useLiff();
     const [formData, setFormData] = useState({
         member_gender: 'female',
@@ -13,6 +13,11 @@ const Register = ({ onNavigate }) => {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const toggleLanguage = () => {
+        const newLang = i18n.language === 'en' ? 'th' : 'en';
+        i18n.changeLanguage(newLang);
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -60,6 +65,9 @@ const Register = ({ onNavigate }) => {
 
     return (
         <div className="register-container">
+            <button className="register-lang-btn" onClick={toggleLanguage}>
+                {i18n.language === 'en' ? 'TH' : 'EN'}
+            </button>
             <header className="register-header">
                 <h1>{t('register.welcome')}</h1>
                 <p>{t('register.subtitle')}</p>

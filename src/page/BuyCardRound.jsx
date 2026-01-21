@@ -182,7 +182,7 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                 <h1 className="header-title">{t('buy_card.title')}</h1>
             </header>
 
-            <div className="buy-card-content">
+            <div className="buy-card-content-wrapper">
                 {isLoading ? (
                     <div className="loading-state">
                         <div className="loading-spinner"></div>
@@ -194,40 +194,9 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                     </div>
                 ) : (
                     <>
-                        {/* Card Group Dropdown */}
-                        <div className="form-group">
-                            <label>{t('buy_card.card_group')}</label>
-                            <div className="dropdown-container">
-                                <button
-                                    className="dropdown-trigger"
-                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                >
-                                    <span>{selectedCardGroup?.card_group_name || t('buy_card.select_group')}</span>
-                                    <ChevronDownIcon />
-                                </button>
-                                {isDropdownOpen && (
-                                    <div className="dropdown-menu">
-                                        {cardGroups.map(group => (
-                                            <div
-                                                key={group.card_group_id}
-                                                className={`dropdown-item ${selectedCardGroup?.card_group_id === group.card_group_id ? 'active' : ''}`}
-                                                onClick={() => handleSelectCardGroup(group)}
-                                            >
-                                                <span className="dropdown-item-name">{group.card_group_name}</span>
-                                                <span className="dropdown-item-info">
-                                                    {group.card_group_balance} {t('buy_card.rounds')} · ฿{group.card_group_price}
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Card Preview */}
+                        {/* Card Preview Section */}
                         {selectedCardGroup && (
-                            <div className="card-preview-section">
-                                <label>{t('buy_card.card_preview')}</label>
+                            <div className="preview-container">
                                 <div className="preview-card authentic-card authentic-card-student">
                                     <div className="authentic-card-sunburst"></div>
                                     <div className="authentic-card-content">
@@ -245,7 +214,9 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                                         <div className="authentic-card-center">
                                             <div className="authentic-shape authentic-shape-1"></div>
                                             <div className="authentic-shape authentic-shape-2"></div>
-                                            <span className="authentic-text">ซิ่ง</span>
+                                            <span className="authentic-text">
+                                                {selectedCardGroup.card_type === 1 ? t('home.authentic-card-adult') : t('home.authentic-card-student')}
+                                            </span>
                                         </div>
                                         <div className="authentic-card-bottom">
                                             <span className="authentic-brand">บัตรซิ่ง</span>
@@ -266,31 +237,64 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                             </div>
                         )}
 
-                        {/* Select Rounds - Display only */}
-                        <div className="form-group">
-                            <label>{t('buy_card.select_rounds')}</label>
-                            <div className="rounds-display">
-                                <div className="round-btn active">
-                                    <span className="round-val">{rounds}</span>
-                                    <span className="round-label">{t('buy_card.rounds')}</span>
+                        {/* Selection Card */}
+                        <div className="content-card selection-card">
+                            {/* Card Group Dropdown */}
+                            <div className="form-group">
+                                <label>{t('buy_card.card_group')}</label>
+                                <div className="dropdown-container">
+                                    <button
+                                        className="dropdown-trigger"
+                                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                    >
+                                        <span>{selectedCardGroup?.card_group_name || t('buy_card.select_group')}</span>
+                                        <ChevronDownIcon />
+                                    </button>
+                                    {isDropdownOpen && (
+                                        <div className="dropdown-menu">
+                                            {cardGroups.map(group => (
+                                                <div
+                                                    key={group.card_group_id}
+                                                    className={`dropdown-item ${selectedCardGroup?.card_group_id === group.card_group_id ? 'active' : ''}`}
+                                                    onClick={() => handleSelectCardGroup(group)}
+                                                >
+                                                    <span className="dropdown-item-name">{group.card_group_name}</span>
+                                                    <span className="dropdown-item-info">
+                                                        {group.card_group_balance} {t('buy_card.rounds')} · ฿{group.card_group_price}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                            <div className="expiry-hint">
-                                <ClockIcon />
-                                {t('buy_card.valid_until', { date: expiryDate })}
+
+                            {/* Select Rounds - Display only */}
+                            <div className="form-group">
+                                <label>{t('buy_card.select_rounds')}</label>
+                                <div className="rounds-display">
+                                    <div className="round-btn active">
+                                        <span className="round-val">{rounds}</span>
+                                        <span className="round-label">{t('buy_card.rounds')}</span>
+                                    </div>
+                                </div>
+                                <div className="expiry-hint">
+                                    <ClockIcon />
+                                    {t('buy_card.valid_until', { date: expiryDate })}
+                                </div>
+                            </div>
+
+                            {/* Quantity - Fixed at 1 */}
+                            <div className="form-group mb-0">
+                                <label>{t('buy_card.quantity')}</label>
+                                <div className="quantity-selector">
+                                    <span>1</span>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Quantity - Fixed at 1 */}
-                        <div className="form-group">
-                            <label>{t('buy_card.quantity')}</label>
-                            <div className="quantity-selector">
-                                <span>1</span>
-                            </div>
-                        </div>
-
-                        {/* Order Summary */}
-                        <div className="order-summary">
+                        {/* Order Summary Card */}
+                        <div className="content-card order-summary-card">
                             <h3 className="summary-title">{t('buy_card.order_summary')}</h3>
                             <div className="summary-row">
                                 <span>{t('buy_card.card_type')}</span>
