@@ -11,6 +11,7 @@ const Home = ({ onNavigate }) => {
     const { cards, isLoading, fetchCardsByUuid } = useCardStore();
     const { profile } = useLiff();
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
+    const [isLocked, setIsLocked] = useState(false);
 
     // Fetch cards when profile is loaded
     useEffect(() => {
@@ -323,6 +324,22 @@ const Home = ({ onNavigate }) => {
                             <span className="detail-value">{getTimeRemaining(currentCard)}</span>
                         </div>
                     </div>
+
+                    {/* Lock Card */}
+                    <div className="detail-card">
+                        <div className="detail-content">
+                            <span className="detail-label">{t('card_detail.lock_card')}</span>
+                            <label className="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    checked={isLocked}
+                                    onChange={(e) => setIsLocked(e.target.checked)}
+                                />
+                                <span className="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
                 </div>
             )}
         </div>
