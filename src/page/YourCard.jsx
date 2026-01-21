@@ -5,6 +5,43 @@ import { useLiff } from '../context/LiffContext';
 import { useTranslation } from 'react-i18next';
 import './YourCard.css';
 import CardImage from '../assets/FREE_SHUTTLE_Card.png';
+import CardBusAdult from '../assets/card_bus_adult.png';
+import CardBusStudent from '../assets/card_bus_student.png';
+import CardBusOneDayPass from '../assets/card_bus_onedaypass.png';
+
+// Static card data for display (UI only - Mock data)
+const staticCards = [
+    {
+        card_id: 'mock-adult-001',
+        card_name: 'บัตรซิ่ง ผู้ใหญ่',
+        image: CardBusAdult,
+        card_type: 0,
+        card_balance: 30,
+        card_hash: 'MOCK-ADULT-HASH-001',
+        card_firstuse: '2026-01-15T10:00:00Z',
+        card_expire_date: '2026-02-15T23:59:59Z',
+    },
+    {
+        card_id: 'mock-student-002',
+        card_name: 'บัตรซิ่ง นักเรียน',
+        image: CardBusStudent,
+        card_type: 0,
+        card_balance: 50,
+        card_hash: 'MOCK-STUDENT-HASH-002',
+        card_firstuse: '2026-01-10T08:00:00Z',
+        card_expire_date: '2026-03-10T23:59:59Z',
+    },
+    {
+        card_id: 'mock-onedaypass-003',
+        card_name: 'บัตรซิ่ง One-Day Pass',
+        image: CardBusOneDayPass,
+        card_type: 1,
+        card_balance: 100,
+        card_hash: 'MOCK-ONEDAYPASS-HASH-003',
+        card_firstuse: null, // ยังไม่เคยใช้
+        card_expire: '24', // อายุ 24 ชั่วโมงหลังใช้ครั้งแรก
+    },
+];
 
 const YourCard = ({ onNavigate }) => {
     const { t, i18n } = useTranslation();
@@ -40,7 +77,10 @@ const YourCard = ({ onNavigate }) => {
             return getSortDate(b) - getSortDate(a);
         });
 
-    const currentCard = activeCards[currentCardIndex];
+    // Combine active API cards with static mock cards
+    const displayCards = [...activeCards, ...staticCards];
+
+    const currentCard = displayCards[currentCardIndex];
 
     // Helper to safely parse date
     const parseDate = (dateString) => {
@@ -171,7 +211,7 @@ const YourCard = ({ onNavigate }) => {
 
         const newIndex = Math.round(scrollLeft / cardWidth);
 
-        if (newIndex !== currentCardIndex && newIndex >= 0 && newIndex < activeCards.length) {
+        if (newIndex !== currentCardIndex && newIndex >= 0 && newIndex < displayCards.length) {
             setCurrentCardIndex(newIndex);
             setIsFlipped(false);
         }
@@ -188,7 +228,7 @@ const YourCard = ({ onNavigate }) => {
         );
     }
 
-    if (activeCards.length === 0) {
+    if (displayCards.length === 0) {
         return (
             <div className="yourcard-container">
                 <header className="yourcard-header">
@@ -205,7 +245,7 @@ const YourCard = ({ onNavigate }) => {
     }
 
     const status = currentCard ? getCardStatus(currentCard) : null;
-    const isSingleCard = activeCards.length === 1;
+    const isSingleCard = displayCards.length === 1;
 
     return (
         <div className="yourcard-container">
@@ -221,7 +261,7 @@ const YourCard = ({ onNavigate }) => {
                     className={`card-slider-vertical ${isSingleCard ? 'single-card' : ''}`}
                     onScroll={handleScroll}
                 >
-                    {activeCards.map((card, index) => (
+                    {displayCards.map((card, index) => (
                         <div
                             key={card.card_id}
                             className={`card-wrapper ${index === currentCardIndex ? 'active' : ''}`}
@@ -237,7 +277,7 @@ const YourCard = ({ onNavigate }) => {
                                 {/* Front Side - Card Image */}
                                 <div className="flip-card-front">
                                     <img
-                                        src={CardImage}
+                                        src={card.image || CardImage}
                                         alt="Card"
                                         className="card-image"
                                     />
@@ -247,7 +287,7 @@ const YourCard = ({ onNavigate }) => {
                                 <div className="flip-card-back">
                                     <div className="card-back-blur">
                                         <img
-                                            src={CardImage}
+                                            src={card.image || CardImage}
                                             alt="Card Background"
                                             className="card-image-blurred"
                                         />
@@ -274,9 +314,9 @@ const YourCard = ({ onNavigate }) => {
                 </div>
 
                 {/* Slider Indicators */}
-                {activeCards.length > 1 && (
+                {displayCards.length > 1 && (
                     <div className="slider-indicators">
-                        {activeCards.map((_, index) => (
+                        {displayCards.map((_, index) => (
                             <button
                                 key={index}
                                 className={`indicator-dot ${index === currentCardIndex ? 'active' : ''}`}

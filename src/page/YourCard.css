@@ -97,6 +97,12 @@
     transform: scale(1);
 }
 
+/* Static cards always visible */
+.card-wrapper.static-card-item {
+    opacity: 1;
+    transform: scale(1);
+}
+
 /* Flip Card */
 .flip-card {
     position: relative;
