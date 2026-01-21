@@ -54,7 +54,7 @@
         "female": "Female",
         "other": "Unknown",
         "birth_year": "Birth Year (B.E.)",
-        "birth_year_placeholder": "e.g. 2540",
+        "birth_year_placeholder": "Select Birth Year",
         "submit": "Complete Registration",
         "registering": "Registering...",
         "error_birth_year": "Please enter your birth year",

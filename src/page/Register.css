@@ -99,6 +99,37 @@
     border-color: var(--primary-color);
 }
 
+/* Gender Selector Buttons */
+.gender-selector {
+    display: flex;
+    gap: 12px;
+}
+
+.gender-btn {
+    flex: 1;
+    padding: clamp(12px, 3.5vw, 14px);
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border-radius: 12px;
+    font-size: clamp(13px, 3.5vw, 15px);
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.gender-btn:hover:not(.active) {
+    border-color: var(--primary-color);
+    background: rgba(33, 150, 243, 0.05);
+}
+
+.gender-btn.active {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
 .btn-submit {
     margin-top: 16px;
     padding: clamp(14px, 4vw, 16px);
