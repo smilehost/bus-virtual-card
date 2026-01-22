@@ -174,9 +174,9 @@
 
 .card-back-qr h3 {
     font-size: clamp(14px, 4vw, 18px);
-    color: #4CAF50;
+    color: white;
     margin: 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .qr-wrapper {
@@ -257,11 +257,42 @@
     color: white;
     position: relative;
     overflow: hidden;
-    padding: clamp(20px, 5vw, 28px);
-    box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+    padding: 16px 20px;
+    box-shadow: 0 4px 15px -3px rgba(16, 185, 129, 0.3);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: background 0.3s ease;
+    overflow: hidden;
+    min-height: 80px;
+}
+
+.balance-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+    opacity: 0.3;
+    pointer-events: none;
+    transform: rotate(30deg);
+}
+
+.balance-card.adult {
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+    box-shadow: 0 4px 15px -3px rgba(255, 152, 0, 0.3);
+}
+
+.balance-card.student {
+    background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+    box-shadow: 0 4px 15px -3px rgba(233, 30, 99, 0.3);
+}
+
+.balance-card.oneday {
+    background: linear-gradient(135deg, #03A9F4 0%, #0288D1 100%);
+    box-shadow: 0 4px 15px -3px rgba(3, 169, 244, 0.3);
 }
 
 .balance-card .info-card-header {
@@ -272,14 +303,17 @@
     position: relative;
     z-index: 2;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .balance-label {
-    font-size: clamp(14px, 4vw, 16px);
+    font-size: 14px;
     opacity: 0.9;
-    font-weight: 500;
-    margin-bottom: 2px;
+    font-weight: 600;
+    margin-bottom: 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -287,29 +321,29 @@
 .balance-value-group {
     display: flex;
     align-items: baseline;
-    gap: 8px;
+    gap: 6px;
 }
 
 .balance-number {
-    font-size: clamp(48px, 12vw, 64px);
-    font-weight: 800;
+    font-size: 28px;
+    font-weight: 700;
     line-height: 1;
-    letter-spacing: -1px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .balance-unit {
-    font-size: clamp(16px, 4vw, 20px);
+    font-size: clamp(14px, 4vw, 18px);
     font-weight: 600;
-    opacity: 0.95;
+    opacity: 0.9;
 }
 
 .balance-icon-bg {
     position: absolute;
-    right: -20px;
-    bottom: -30px;
-    opacity: 0.15;
-    transform: rotate(-15deg) scale(1.5);
+    right: -15px;
+    bottom: -25px;
+    opacity: 0.2;
+    transform: rotate(-15deg) scale(1.8);
     z-index: 1;
     pointer-events: none;
     color: white;

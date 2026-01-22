@@ -184,43 +184,87 @@ const Profile = ({ onNavigate }) => {
     // Scanner Logic
     const [isScanning, setIsScanning] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [scanError, setScanError] = useState(null);
     const scannerRef = useRef(null);
 
-    useEffect(() => {
-        if (isScanning) {
-            // Give a small delay to ensure DOM is ready
-            const timer = setTimeout(() => {
-                scannerRef.current = new Html5Qrcode("reader");
-                const config = {
-                    fps: 10,
-                    qrbox: { width: 200, height: 200 },
-                    aspectRatio: 1.0
-                };
+    const startScanner = async () => {
+        setScanError(null);
 
-                // Use back camera by default
-                scannerRef.current.start(
-                    { facingMode: "environment" },
-                    config,
-                    onScanSuccess,
-                    onScanFailure
-                ).catch(err => {
-                    console.error("Error starting scanner", err);
-                    showAlert('error', t('common.error'), 'Could not access camera. Please allow camera permissions.');
-                    setIsScanning(false);
-                });
-            }, 100);
-
-            return () => clearTimeout(timer);
+        // Ensure cleanup of any previous instance
+        if (scannerRef.current) {
+            try {
+                // If scanning, stop first
+                if (scannerRef.current.isScanning) {
+                    await scannerRef.current.stop();
+                }
+                // Always clear
+                await scannerRef.current.clear();
+            } catch (e) {
+                console.warn("Cleanup warning:", e);
+            }
+            scannerRef.current = null;
         }
 
-        // Cleanup when scanning stops
-        return () => {
-            if (scannerRef.current && scannerRef.current.isScanning) {
-                scannerRef.current.stop().then(() => {
-                    scannerRef.current.clear();
-                    scannerRef.current = null;
-                }).catch(err => console.error("Failed to stop scanner", err));
+        // Delay to allow DOM to settle
+        const timerId = setTimeout(() => {
+            // Check if user cancelled while waiting
+            if (!isScanning) return;
+
+            if (!scannerRef.current) {
+                scannerRef.current = new Html5Qrcode("reader");
             }
+
+            const config = {
+                fps: 10,
+                qrbox: { width: 200, height: 200 },
+                aspectRatio: 1.0
+            };
+
+            scannerRef.current.start(
+                { facingMode: "environment" },
+                config,
+                onScanSuccess,
+                onScanFailure
+            ).catch(err => {
+                if (!isScanning) return; // ignore errors if closed
+                console.error("Error starting scanner", err);
+                const errorMessage = err?.name === 'NotAllowedError'
+                    ? (t('common.camera_permission_denied') || "Permission denied. Please reset permissions.")
+                    : (t('common.camera_error') || "Camera error. Please try again.");
+                setScanError(errorMessage);
+            });
+        }, 300);
+
+        return timerId;
+    };
+
+    useEffect(() => {
+        let timerId;
+
+        const cleanupScanner = async () => {
+            if (timerId) clearTimeout(timerId);
+
+            if (scannerRef.current) {
+                try {
+                    if (scannerRef.current.isScanning) {
+                        await scannerRef.current.stop();
+                    }
+                    await scannerRef.current.clear();
+                } catch (err) {
+                    console.warn("Scanner cleanup error:", err);
+                }
+                scannerRef.current = null;
+            }
+        };
+
+        if (isScanning) {
+            startScanner().then(id => timerId = id);
+        } else {
+            cleanupScanner();
+        }
+
+        return () => {
+            cleanupScanner();
         };
     }, [isScanning]);
 
@@ -290,12 +334,7 @@ const Profile = ({ onNavigate }) => {
     return (
         <div className="profile-page">
             <header className="profile-header">
-                <div className="header-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="2" y="4" width="20" height="16" rx="3" stroke="white" strokeWidth="2" />
-                        <path d="M2 10H22" stroke="white" strokeWidth="2" />
-                    </svg>
-                </div>
+
                 <h1>{t('profile.title')}</h1>
                 <div className="header-actions">
                     {/* Scan button removed from here */}
@@ -469,26 +508,55 @@ const Profile = ({ onNavigate }) => {
                         </svg>
                     </button>
 
-                    {/* Scan Frame Container */}
-                    <div className="scanner-frame-container">
-                        {/* Corner Brackets */}
-                        <div className="scanner-corner scanner-corner-tl"></div>
-                        <div className="scanner-corner scanner-corner-tr"></div>
-                        <div className="scanner-corner scanner-corner-bl"></div>
-                        <div className="scanner-corner scanner-corner-br"></div>
+                    {scanError ? (
+                        <div className="scanner-error-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'white', gap: '20px', padding: '20px', textAlign: 'center' }}>
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#F44336" strokeWidth="2" />
+                                <path d="M12 8V12" stroke="#F44336" strokeWidth="2" strokeLinecap="round" />
+                                <path d="M12 16H12.01" stroke="#F44336" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                            <h3>{t('common.error') || 'Error'}</h3>
+                            <p>{scanError}</p>
+                            <button
+                                onClick={startScanner}
+                                style={{
+                                    padding: '10px 24px',
+                                    borderRadius: '8px',
+                                    background: 'white',
+                                    color: '#333',
+                                    border: 'none',
+                                    fontWeight: 'bold',
+                                    fontSize: '16px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {t('common.retry') || 'Retry'}
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            {/* Scan Frame Container */}
+                            <div className="scanner-frame-container">
+                                {/* Corner Brackets */}
+                                <div className="scanner-corner scanner-corner-tl"></div>
+                                <div className="scanner-corner scanner-corner-tr"></div>
+                                <div className="scanner-corner scanner-corner-bl"></div>
+                                <div className="scanner-corner scanner-corner-br"></div>
 
-                        {/* QR Reader */}
-                        <div id="reader" className="scanner-reader-area"></div>
-                    </div>
+                                {/* QR Reader */}
+                                <div id="reader" className="scanner-reader-area"></div>
+                            </div>
 
-                    {/* Bottom Instruction */}
-                    <div className="scanner-bottom-instruction">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8M16 4H18C19.1046 4 20 4.89543 20 6V8M20 16V18C20 19.1046 19.1046 20 18 20H16M8 20H6C4.89543 20 4 19.1046 4 18V16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            <rect x="9" y="9" width="6" height="6" rx="1" stroke="white" strokeWidth="2" />
-                        </svg>
-                        <span>{t('profile.scan_qr') || "Scan QR Code"}</span>
-                    </div>
+                            {/* Bottom Instruction */}
+                            <div className="scanner-bottom-instruction">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 8V6C4 4.89543 4.89543 4 6 4H8M16 4H18C19.1046 4 20 4.89543 20 6V8M20 16V18C20 19.1046 19.1046 20 18 20H16M8 20H6C4.89543 20 4 19.1046 4 18V16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    <rect x="9" y="9" width="6" height="6" rx="1" stroke="white" strokeWidth="2" />
+                                </svg>
+                                <span>{t('profile.scan_qr') || "Scan QR Code"}</span>
+                            </div>
+                        </>
+                    )}
                 </div>
             )}
 

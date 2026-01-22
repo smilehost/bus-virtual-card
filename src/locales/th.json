@@ -54,7 +54,7 @@
         "female": "หญิง",
         "other": "ไม่ระบุ",
         "birth_year": "ปีเกิด (พ.ศ.)",
-        "birth_year_placeholder": "เลือกปีเกิด",
+        "birth_year_placeholder": "ระบุปีเกิด (2500 - ปัจจุบัน)",
         "submit": "ลงทะเบียน",
         "registering": "กำลังลงทะเบียน...",
         "error_birth_year": "กรุณากรอกปีเกิด",

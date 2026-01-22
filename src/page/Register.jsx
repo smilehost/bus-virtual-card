@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useLiff } from '../context/LiffContext';
 import { createMember } from '../services/memberService';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
 import './Register.css';
 
 const Register = ({ onNavigate }) => {
     const { t, i18n } = useTranslation();
+    const { theme, toggleTheme } = useTheme();
     const { profile } = useLiff();
     const [formData, setFormData] = useState({
         member_gender: 'female',
@@ -36,10 +38,7 @@ const Register = ({ onNavigate }) => {
 
     // Generate years (2500 to Current BE) by calendar
     const currentYearBE = new Date().getFullYear() + 543;
-    const years = [];
-    for (let y = currentYearBE; y >= 2500; y--) {
-        years.push(y);
-    }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -82,6 +81,9 @@ const Register = ({ onNavigate }) => {
             <button className="register-lang-btn" onClick={toggleLanguage}>
                 {i18n.language === 'en' ? 'TH' : 'EN'}
             </button>
+            <button className="register-theme-btn" onClick={toggleTheme}>
+                {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
             <header className="register-header">
                 <h1>{t('register.welcome')}</h1>
                 <p>{t('register.subtitle')}</p>
@@ -106,18 +108,22 @@ const Register = ({ onNavigate }) => {
 
                 <div className="form-group">
                     <label htmlFor="birthYear">{t('register.birth_year')}</label>
-                    <select
+                    <input
+                        type="text"
                         id="birthYear"
                         name="birthYear"
                         value={formData.birthYear}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\d*$/.test(value)) {
+                                handleChange(e);
+                            }
+                        }}
+                        placeholder={t('register.birth_year_placeholder')}
                         className="form-input"
-                    >
-                        <option value="">{t('register.birth_year_placeholder')}</option>
-                        {years.map(y => (
-                            <option key={y} value={y}>{y}</option>
-                        ))}
-                    </select>
+                        inputMode="numeric"
+                        maxLength={4}
+                    />
                 </div>
 
                 {error && <div className="error-message">{error}</div>}

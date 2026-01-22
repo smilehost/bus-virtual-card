@@ -247,6 +247,21 @@ const YourCard = ({ onNavigate }) => {
     const status = currentCard ? getCardStatus(currentCard) : null;
     const isSingleCard = displayCards.length === 1;
 
+    // Get card color class
+    const getCardGradientClass = (card) => {
+        if (!card) return '';
+        // If it's a One-Day pass (Type 1)
+        if (card.card_type === 1) return 'oneday';
+
+        // For Type 0 (Round Card), check name/image implies Adult or Student
+        const name = (card.card_name || '').toLowerCase();
+        if (name.includes('adult') || name.includes('ผู้ใหญ่')) return 'adult';
+        if (name.includes('student') || name.includes('นักเรียน')) return 'student';
+
+        // Fallback default
+        return '';
+    };
+
     return (
         <div className="yourcard-container">
             {/* Header */}
@@ -300,7 +315,7 @@ const YourCard = ({ onNavigate }) => {
                                                 size={200}
                                                 level="M"
                                                 bgColor="#ffffff"
-                                                fgColor="#2E7D32"
+                                                fgColor="#000000"
                                             />
                                         </div>
                                         <button className="flip-btn" onClick={(e) => { e.stopPropagation(); handleFlip(); }}>
@@ -333,9 +348,9 @@ const YourCard = ({ onNavigate }) => {
             {currentCard && (
                 <div className="card-info-panel">
                     {/* Balance Card */}
-                    <div className="info-card balance-card">
+                    <div className={`info-card balance-card ${getCardGradientClass(currentCard)}`}>
                         <div className="info-card-header">
-                            <span className="info-icon">�</span>
+                            <span className="info-icon"></span>
                             <span className="info-title">{t('home.balance')}</span>
                         </div>
                         <div className="balance-content">
