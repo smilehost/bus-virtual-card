@@ -44,7 +44,8 @@
         "hours_singular": "ชั่วโมง",
         "authentic-card-adult": "บุคคลทั่วไป",
         "authentic-card-student": "นักเรียน",
-        "scan": "สแกน"
+        "scan": "สแกน",
+        "tap_to_see_qr": "แตะบัตรเพื่อดู QR Code"
     },
     "register": {
         "welcome": "ยินดีต้อนรับ",
@@ -68,7 +69,9 @@
         "edit_profile": "แก้ไขโปรไฟล์",
         "save_changes": "บันทึกการเปลี่ยนแปลง",
         "scan_qr": "สแกน QR Code",
-        "scan_description": "สแกนเพื่อเพิ่มบัตรใหม่เข้ากระเป๋า"
+        "scan_description": "สแกนเพื่อเพิ่มบัตรใหม่เข้ากระเป๋า",
+        "error_card_owned_title": "ไม่สามารถเพิ่มบัตรได้",
+        "error_card_owned_message": "การ์ดนี้มีเจ้าของแล้ว ไม่สามารถเปลี่ยนแปลงได้"
     },
     "history": {
         "title": "ประวัติการใช้งาน",
@@ -89,6 +92,7 @@
         "select_rounds": "เลือกจำนวนเที่ยว",
         "quantity": "จำนวน",
         "valid_until": "ใช้ได้ถึง {{date}}",
+        "valid_until_label": "ใช้ได้ถึง",
         "order_summary": "สรุปคำสั่งซื้อ",
         "card_type": "ประเภทบัตร",
         "details": "รายละเอียด",
@@ -122,7 +126,9 @@
         "left": "ที่เหลือ",
         "bus_ride": "ค่าโดยสารรถประจำทาง",
         "scan_failed": "สแกนไม่สำเร็จ",
-        "scan_error": "เกิดข้อผิดพลาดในการสแกน"
+        "scan_error": "เกิดข้อผิดพลาดในการสแกน",
+        "your_qr_code": "QR Code ของคุณ",
+        "flip_back": "พลิกกลับ"
     },
     "success_modal": {
         "title": "เติมเงินสำเร็จ!",

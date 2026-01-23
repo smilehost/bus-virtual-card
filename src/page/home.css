@@ -1,90 +1,194 @@
-/* Home Page Styles - Friendly Smart Transit Wallet */
+/* Home Page Styles - Matching YourCard UI */
 
 .home-container {
     flex: 1;
-    background: transparent;
+    background: var(--bg-primary);
     color: var(--text-primary);
-    padding: clamp(16px, 5vw, 24px);
-    padding-top: calc(clamp(16px, 5vw, 24px) + env(safe-area-inset-top));
+    padding: clamp(16px, 4vw, 24px);
+    padding-top: calc(clamp(16px, 4vw, 24px) + env(safe-area-inset-top));
     max-width: 100%;
     width: 100%;
     margin: 0 auto;
     position: relative;
     z-index: 1;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-/* Sky Blue Header Background */
+/* Header Background */
 .home-container::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 400px;
+    height: 300px;
     background-image: url('../assets/bg-bussing-kkc.png');
     background-size: cover;
     background-position: center top;
-    opacity: 1.5;
-    /* Faint opacity */
+    opacity: 0.8;
     mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
     z-index: 0;
     pointer-events: none;
 }
 
-.home-header,
-.card-slider-section,
-.card-details-section {
-    position: relative;
-    z-index: 1;
-}
-
 /* Header */
 .home-header {
+    position: relative;
+    z-index: 1;
     margin-bottom: clamp(16px, 4vw, 24px);
 }
 
 .home-header h1 {
-    font-size: clamp(20px, 6vw, 28px);
+    font-size: clamp(20px, 5vw, 26px);
     font-weight: 800;
     color: var(--text-primary);
     margin: 0;
 }
 
-/* Card Slider Section */
-.card-slider-section {
-    margin-bottom: clamp(24px, 6vw, 32px);
+/* Card Display Section */
+.card-display-section {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: clamp(16px, 4vw, 24px);
 }
 
-.card-slider {
+.card-slider-vertical {
     display: flex;
-    gap: clamp(12px, 3vw, 16px);
+    gap: 16px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding: 8px 0;
+    padding: 24px calc(50% - clamp(120px, 35vw, 170px));
+    justify-content: flex-start;
+    width: 100%;
 }
 
-.card-slider::-webkit-scrollbar {
+.card-slider-vertical::-webkit-scrollbar {
     display: none;
 }
 
-.slider-card-wrapper {
-    flex: 0 0 90%;
+.card-slider-vertical.single-card {
+    overflow-x: visible;
+}
+
+/* Card Wrapper */
+.card-wrapper {
+    flex: 0 0 auto;
+    width: clamp(240px, 70vw, 340px);
     scroll-snap-align: center;
     transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: 0.6;
-    transform: scale(0.95);
+    transform: scale(0.9);
+    perspective: 1000px;
 }
 
-.slider-card-wrapper.active {
+.card-wrapper.active {
     opacity: 1;
     transform: scale(1);
 }
 
-.slider-card-wrapper .authentic-card {
+/* Flip Card */
+.flip-card {
+    position: relative;
+    width: 100%;
+    height: clamp(420px, 120vw, 550px);
     cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flip-card.flipped {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: clamp(14px, 4vw, 20px);
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.flip-card-front {
+    background: #1a1a2e;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Back Side */
+.flip-card-back {
+    transform: rotateY(180deg);
+}
+
+.card-back-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.card-image-blurred {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(20px) brightness(0.35);
+    transform: scale(1.1);
+}
+
+.card-back-qr {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    gap: 16px;
+}
+
+.card-back-qr h3 {
+    font-size: clamp(14px, 4vw, 18px);
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.qr-wrapper {
+    background: white;
+    padding: clamp(10px, 3vw, 16px);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.flip-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: clamp(12px, 3vw, 14px);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.flip-btn:active {
+    transform: scale(0.96);
 }
 
 /* Slider Indicators */
@@ -92,7 +196,7 @@
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-top: 16px;
+    margin-top: 12px;
 }
 
 .indicator-dot {
@@ -112,234 +216,161 @@
     background: var(--primary-color);
 }
 
-/* Card Details Section */
-.card-details-section {
+.tap-hint {
+    font-size: clamp(11px, 3vw, 13px);
+    color: var(--text-secondary);
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* Card Info Panel */
+.card-info-panel {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 3vw, 16px);
+}
+
+.info-card {
+    background: var(--card-bg);
+    border-radius: clamp(14px, 4vw, 20px);
+    padding: clamp(16px, 4vw, 20px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-color);
+}
+
+/* Balance Card */
+.balance-card {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    border: none;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    padding: 16px 20px;
+    box-shadow: 0 4px 15px -3px rgba(16, 185, 129, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
+    min-height: 80px;
+}
+
+.balance-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+    opacity: 0.3;
+    pointer-events: none;
+    transform: rotate(30deg);
+}
+
+.balance-card.adult {
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+    box-shadow: 0 4px 15px -3px rgba(255, 152, 0, 0.3);
+}
+
+.balance-card.student {
+    background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+    box-shadow: 0 4px 15px -3px rgba(233, 30, 99, 0.3);
+}
+
+.balance-card.oneday {
+    background: linear-gradient(135deg, #03A9F4 0%, #0288D1 100%);
+    box-shadow: 0 4px 15px -3px rgba(3, 169, 244, 0.3);
+}
+
+.balance-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.balance-label {
+    font-size: 14px;
+    opacity: 0.9;
+    font-weight: 600;
+    margin-bottom: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.balance-value-group {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.balance-number {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.balance-unit {
+    font-size: clamp(14px, 4vw, 18px);
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.balance-icon-bg {
+    position: absolute;
+    right: -15px;
+    bottom: -25px;
+    opacity: 0.2;
+    transform: rotate(-15deg) scale(1.8);
+    z-index: 1;
+    pointer-events: none;
+    color: white;
+}
+
+/* Details Card */
+.details-card {
     display: flex;
     flex-direction: column;
     gap: 0;
 }
 
-.detail-card {
-    background: transparent;
-    padding: clamp(10px, 3vw, 14px) 0;
+.detail-row {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px dashed var(--border-color);
-    box-shadow: none;
-    border-radius: 0;
-}
-
-.detail-card:last-child {
-    border-bottom: none;
-}
-
-.detail-card:active {
-    transform: none;
-}
-
-/* QR Card - Enhanced Design */
-.qr-card {
-    background: #fff;
-    border-radius: 24px;
-    padding: clamp(20px, 5vw, 32px) clamp(16px, 4vw, 24px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    /* Softer, deeper shadow */
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    /* Subtle border */
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Scanner Frame */
-.qr-scanner-frame {
-    position: relative;
-    padding: 16px;
-    background: #fff;
-    width: 100%;
-    max-width: 320px;
-    /* Max width for larger screens */
-    display: flex;
-    justify-content: center;
-}
-
-/* Corner Markers */
-.scanner-corner {
-    position: absolute;
-    width: clamp(20px, 6vw, 30px);
-    height: clamp(20px, 6vw, 30px);
-    border: 3px solid var(--primary-color);
-    border-radius: 4px;
-    transition: all 0.3s ease;
-}
-
-.scanner-corner.top-left {
-    top: 0;
-    left: 0;
-    border-right: none;
-    border-bottom: none;
-}
-
-.scanner-corner.top-right {
-    top: 0;
-    right: 0;
-    border-left: none;
-    border-bottom: none;
-}
-
-.scanner-corner.bottom-left {
-    bottom: 0;
-    left: 0;
-    border-right: none;
-    border-top: none;
-}
-
-.scanner-corner.bottom-right {
-    bottom: 0;
-    right: 0;
-    border-left: none;
-    border-top: none;
-}
-
-.qr-code-wrapper {
-    background: #fff;
-    padding: clamp(6px, 2vw, 10px);
-    border-radius: 8px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.qr-code-wrapper canvas {
-    width: 100% !important;
-    height: auto !important;
-    max-width: 250px;
-}
-
-.qr-label {
-    font-size: clamp(12px, 3.5vw, 14px);
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin: 0;
-    background: #f5f5f5;
-    padding: 6px 16px;
-    border-radius: 20px;
-    display: inline-block;
-}
-
-/* Hide icons for list items */
-.detail-icon {
-    display: none;
-}
-
-/* Detail Content */
-.detail-content {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    padding: clamp(10px, 2.5vw, 14px) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
 }
 
 .detail-label {
-    font-size: clamp(14px, 4vw, 16px);
-    font-weight: 700;
-    color: #888;
+    font-size: clamp(13px, 3.5vw, 15px);
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .detail-value {
-    font-size: clamp(14px, 4.5vw, 18px);
-    font-weight: 800;
-    color: #333;
-    text-align: right;
-}
-
-.cards-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-
-/* Responsive adjustments removed as they are now handled by fluid units */
-
-/* Loading State */
-.cards-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    gap: 12px;
-    color: var(--text-secondary);
-}
-
-.cards-loading .loading-spinner {
-    width: 32px;
-    height: 32px;
-    border: 3px solid rgba(0, 0, 0, 0.1);
-    border-top-color: var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Error State */
-.cards-error {
-    text-align: center;
-    padding: 30px 20px;
-    color: var(--danger-color);
-    background: rgba(233, 30, 99, 0.05);
-    border-radius: 12px;
-    border: 1px solid rgba(233, 30, 99, 0.1);
-}
-
-/* Empty State */
-.cards-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    gap: 16px;
-    color: var(--text-secondary);
-    text-align: center;
-}
-
-.cards-empty .btn-buycard {
-    background: var(--primary-gradient);
-    color: white;
-    border: none;
-    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
-    padding: 12px 24px;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.cards-empty .btn-buycard:hover {
-    transform: translateY(-2px);
+    font-size: clamp(14px, 3.5vw, 16px);
+    font-weight: 700;
+    color: var(--text-primary);
 }
 
 /* Toggle Switch */
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 50px;
-    height: 28px;
+    width: 44px;
+    height: 24px;
     cursor: pointer;
 }
 
@@ -355,17 +386,16 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: #ddd;
-    border-radius: 34px;
+    background: #ccc;
+    border-radius: 24px;
     transition: all 0.3s ease;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .toggle-slider:before {
     position: absolute;
     content: "";
-    height: 22px;
-    width: 22px;
+    height: 18px;
+    width: 18px;
     left: 3px;
     bottom: 3px;
     background: white;
@@ -375,17 +405,52 @@
 }
 
 .toggle-switch input:checked+.toggle-slider {
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+    background: #4CAF50;
 }
 
 .toggle-switch input:checked+.toggle-slider:before {
-    transform: translateX(22px);
+    transform: translateX(20px);
 }
 
-.toggle-switch input:disabled+.toggle-slider {
-    opacity: 0.6;
-    cursor: not-allowed;
+/* Empty & Loading States */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+    text-align: center;
+}
+
+.btn-buycard {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    gap: 16px;
+}
+
+.loading-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {

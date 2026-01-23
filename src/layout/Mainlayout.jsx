@@ -87,13 +87,7 @@ function MainLayout({ children, activeTab, onTabChange }) {
                         <HistoryIcon />
                         <span>{t('menu.history')}</span>
                     </button>
-                    <button
-                        className={`nav-item ${activeTab === 'yourcard' ? 'active' : ''}`}
-                        onClick={() => onTabChange('yourcard')}
-                    >
-                        <CardIcon active={activeTab === 'yourcard'} />
-                        <span>{t('menu.yourcard') || 'บัตรของฉัน'}</span>
-                    </button>
+
                     <button
                         className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
                         onClick={() => onTabChange('profile')}

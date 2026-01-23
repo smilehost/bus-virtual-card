@@ -1,16 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useCardStore } from '../store/cardStore';
 import { useLiff } from '../context/LiffContext';
 import { useTranslation } from 'react-i18next';
 import './home.css';
-import '../page/authentic-card.css';
+import CardImage from '../assets/FREE_SHUTTLE_Card.png';
+import CardBusAdult from '../assets/card_bus_adult.png';
+import CardBusStudent from '../assets/card_bus_student.png';
+import CardBusOneDayPass from '../assets/card_bus_onedaypass.png';
+
+// Static card data for display (UI only - Mock data) - Matches YourCard.jsx
+const staticCards = [
+    {
+        card_id: 'mock-adult-001',
+        card_name: 'บัตรซิ่ง ผู้ใหญ่',
+        image: CardBusAdult,
+        card_type: 0,
+        card_balance: 30,
+        card_hash: 'MOCK-ADULT-HASH-001',
+        card_firstuse: '2026-01-15T10:00:00Z',
+        card_expire_date: '2026-02-15T23:59:59Z',
+    },
+    {
+        card_id: 'mock-student-002',
+        card_name: 'บัตรซิ่ง นักเรียน',
+        image: CardBusStudent,
+        card_type: 0,
+        card_balance: 50,
+        card_hash: 'MOCK-STUDENT-HASH-002',
+        card_firstuse: '2026-01-10T08:00:00Z',
+        card_expire_date: '2026-03-10T23:59:59Z',
+    },
+    {
+        card_id: 'mock-onedaypass-003',
+        card_name: 'บัตรซิ่ง One-Day Pass',
+        image: CardBusOneDayPass,
+        card_type: 1,
+        card_balance: 100,
+        card_hash: 'MOCK-ONEDAYPASS-HASH-003',
+        card_firstuse: null, // ยังไม่เคยใช้
+        card_expire: '24', // อายุ 24 ชั่วโมงหลังใช้ครั้งแรก
+    },
+];
 
 const Home = ({ onNavigate }) => {
     const { t, i18n } = useTranslation();
     const { cards, isLoading, fetchCardsByUuid } = useCardStore();
     const { profile } = useLiff();
+    const sliderRef = useRef(null);
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
+    const [isFlipped, setIsFlipped] = useState(false);
     const [isLocked, setIsLocked] = useState(false);
 
     // Fetch cards when profile is loaded
@@ -20,40 +59,28 @@ const Home = ({ onNavigate }) => {
         }
     }, [profile?.userId, fetchCardsByUuid]);
 
-    // Filter out expired cards with zero balance
     // Filter out expired cards and sort
-    const activeCards = cards
+    const activeApiCards = cards
         .filter(card => {
-            // 1. Check strict expiry date
             const expiryDateStr = card.card_expire_date || card.card_expiredate;
             if (expiryDateStr) {
                 const expiry = new Date(expiryDateStr);
                 if (expiry < new Date()) return false;
             }
-
-            // 2. Check round card balance
             if (card.card_type === 0 && card.card_balance <= 0) {
                 return false;
             }
-
             return true;
         })
         .sort((a, b) => {
-            // Sort: New Cards (null firstuse) -> Recent First Use -> Old First Use
-            // Treat null/undefined firstuse as "Future/New" (Max Date)
             const getSortDate = (c) => c.card_firstuse ? new Date(c.card_firstuse) : new Date(8640000000000000);
             return getSortDate(b) - getSortDate(a);
         });
 
-    const currentCard = activeCards[currentCardIndex];
+    // Combine active API cards with static mock cards
+    const displayCards = [...activeApiCards, ...staticCards];
 
-    // Format balance based on card type
-    const formatBalance = (balance, cardType) => {
-        if (cardType === 1) { // Money card
-            return `฿${balance}`;
-        }
-        return `${balance} ${t('buy_card.rounds')}`;
-    };
+    const currentCard = displayCards[currentCardIndex];
 
     // Helper to safely parse date
     const parseDate = (dateString) => {
@@ -62,43 +89,10 @@ const Home = ({ onNavigate }) => {
         return isNaN(date.getTime()) ? null : date;
     };
 
-    // Calculate time remaining (matches Home logic)
-    const getTimeRemaining = (card) => {
-        // Case 1: Card NOT used yet - show validity period
-        if (!card.card_firstuse) {
-            if (card.card_expire) {
-                const hours = parseInt(card.card_expire);
-                if (hours >= 24) {
-                    const days = Math.floor(hours / 24);
-                    return t('home.days_before_use', { days });
-                }
-                return t('home.hours_before_use', { hours });
-            }
-            return '-';
-        }
-
-        // Case 2: Card used - show days remaining until expiry
-        const expiryDateStr = card.card_expire_date || card.card_expiredate; // Handle both potential keys
-        const expiryDate = parseDate(expiryDateStr);
-
-        if (!expiryDate) {
-            return '-';
-        }
-
-        const now = new Date();
-        const diffMs = expiryDate - now;
-
-        if (diffMs <= 0) {
-            return t('card_detail.expired');
-        }
-
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        return `${diffDays} ${t('home.days_plural')} ${t('card_detail.left')}`;
-    };
-
     // Get card status
     const getCardStatus = (card) => {
-        // Logic from Home: Filter New vs Active
+        if (!card) return { label: '-', color: '#888' };
+
         if (!card.card_firstuse) {
             return { label: t('card_detail.new'), color: '#4CAF50' };
         }
@@ -115,11 +109,12 @@ const Home = ({ onNavigate }) => {
             return { label: t('card_detail.expired'), color: '#F44336' };
         }
 
-        return { label: t('card_detail.active'), color: '#2196F3' };
+        return { label: t('card_detail.active'), color: '#4CAF50' };
     };
 
     // Format expiry date
     const formatExpiryDate = (card) => {
+        if (!card) return '-';
         if (!card.card_firstuse) {
             return t('home.no_expiry');
         }
@@ -127,9 +122,7 @@ const Home = ({ onNavigate }) => {
         const expiryDateStr = card.card_expire_date || card.card_expiredate;
         const date = parseDate(expiryDateStr);
 
-        if (!date) {
-            return '-';
-        }
+        if (!date) return '-';
 
         return date.toLocaleDateString(i18n.language, {
             year: 'numeric',
@@ -138,28 +131,121 @@ const Home = ({ onNavigate }) => {
         });
     };
 
-    const handleCardChange = (index) => {
-        setCurrentCardIndex(index);
+    // Calculate time remaining
+    const getTimeRemaining = (card) => {
+        if (!card) return '-';
+
+        if (!card.card_firstuse) {
+            if (card.card_expire) {
+                const hours = parseInt(card.card_expire);
+                if (hours >= 24) {
+                    const days = Math.floor(hours / 24);
+                    return t('home.days_before_use', { days });
+                }
+                return t('home.hours_before_use', { hours });
+            }
+            return '-';
+        }
+
+        const expiryDateStr = card.card_expire_date || card.card_expiredate;
+        const expiryDate = parseDate(expiryDateStr);
+
+        if (!expiryDate) return '-';
+
+        const now = new Date();
+        const diffMs = expiryDate - now;
+
+        if (diffMs <= 0) {
+            return t('card_detail.expired');
+        }
+
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        if (diffDays > 0) {
+            return `${diffDays} ${t('home.days_plural')} ${diffHours} ${t('home.hours_plural')}`;
+        }
+        return `${diffHours} ${t('home.hours_plural')}`;
     };
 
-    // Detect scroll position and auto-update current card
+    // Format balance based on card type
+    const formatBalance = (card) => {
+        if (!card) return { value: '-', unit: '' };
+        if (card.card_type === 1) {
+            return { value: `฿${card.card_balance}`, unit: 'THB' };
+        }
+        return { value: card.card_balance, unit: t('buy_card.rounds') };
+    };
+
+    // Get card image based on card type
+    const getCardImage = (card) => {
+        if (!card) return CardImage;
+        if (card.image) return card.image;
+
+        // Determine image based on card_type
+        if (card.card_type === 1) {
+            const name = (card.card_name || '').toLowerCase();
+            if (name.includes('one-day') || name.includes('oneday')) return CardBusOneDayPass;
+            return CardBusAdult; // Money card defaults to adult if not one-day
+        }
+
+        // For round cards, check card name or default to student
+        const name = (card.card_name || '').toLowerCase();
+        if (name.includes('adult') || name.includes('ผู้ใหญ่')) return CardBusAdult;
+        if (name.includes('student') || name.includes('นักเรียน')) return CardBusStudent;
+
+        return CardImage; // Default Free Shuttle/General
+    };
+
+    // Get card gradient class
+    const getCardGradientClass = (card) => {
+        if (!card) return '';
+        if (card.card_type === 1) return 'oneday';
+
+        const name = (card.card_name || '').toLowerCase();
+        if (name.includes('adult') || name.includes('ผู้ใหญ่')) return 'adult';
+        if (name.includes('student') || name.includes('นักเรียน')) return 'student';
+
+        return '';
+    };
+
+    const scrollToCard = (index) => {
+        if (sliderRef.current) {
+            const card = sliderRef.current.children[index];
+            if (card) {
+                const scrollLeft = card.offsetLeft - (sliderRef.current.clientWidth / 2) + (card.offsetWidth / 2);
+                sliderRef.current.scrollTo({
+                    left: scrollLeft,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    };
+
+    const handleCardChange = (index) => {
+        setCurrentCardIndex(index);
+        setIsFlipped(false);
+        scrollToCard(index);
+    };
+
+    const handleFlip = () => {
+        setIsFlipped(!isFlipped);
+    };
+
     const handleScroll = (e) => {
         const slider = e.target;
         const scrollLeft = slider.scrollLeft;
-        const cardWidth = slider.offsetWidth * 0.9 + 16; // 90% width + gap
+
+        const firstCard = slider.querySelector('.card-wrapper');
+        const cardWidth = firstCard ? firstCard.offsetWidth + 16 : slider.offsetWidth * 0.8;
+
         const newIndex = Math.round(scrollLeft / cardWidth);
 
-        if (newIndex !== currentCardIndex && newIndex >= 0 && newIndex < activeCards.length) {
+        if (newIndex !== currentCardIndex && newIndex >= 0 && newIndex < displayCards.length) {
             setCurrentCardIndex(newIndex);
+            setIsFlipped(false);
         }
     };
-
-    // Fetch/update card data when current card changes
-    useEffect(() => {
-        if (currentCard && profile?.userId) {
-            // console.log('Current card changed:', currentCard.card_id);
-        }
-    }, [currentCardIndex, currentCard, profile?.userId]);
 
     if (isLoading) {
         return (
@@ -172,7 +258,7 @@ const Home = ({ onNavigate }) => {
         );
     }
 
-    if (activeCards.length === 0) {
+    if (displayCards.length === 0) {
         return (
             <div className="home-container">
                 <header className="home-header">
@@ -180,15 +266,7 @@ const Home = ({ onNavigate }) => {
                 </header>
                 <div className="empty-state">
                     <p>{t('home.no_cards')}</p>
-                    <button className="btn-buycard" onClick={() => onNavigate('buycard')} style={{
-                        marginTop: '16px',
-                        padding: '12px 24px',
-                        borderRadius: '12px',
-                        border: 'none',
-                        background: 'var(--primary-color)',
-                        color: 'white',
-                        fontWeight: '600'
-                    }}>
+                    <button className="btn-buycard" onClick={() => onNavigate('buycard')}>
                         {t('home.buy_new_card')}
                     </button>
                 </div>
@@ -197,6 +275,7 @@ const Home = ({ onNavigate }) => {
     }
 
     const status = currentCard ? getCardStatus(currentCard) : null;
+    const isSingleCard = displayCards.length === 1;
 
     return (
         <div className="home-container">
@@ -205,50 +284,59 @@ const Home = ({ onNavigate }) => {
                 <h1>{t('home.title')}</h1>
             </header>
 
-            {/* Card Slider */}
-            <div className="card-slider-section">
-                <div className="card-slider" onScroll={handleScroll}>
-                    {activeCards.map((card, index) => (
+            {/* Card Display - Centered */}
+            <div className="card-display-section">
+                <div
+                    ref={sliderRef}
+                    className={`card-slider-vertical ${isSingleCard ? 'single-card' : ''}`}
+                    onScroll={handleScroll}
+                >
+                    {displayCards.map((card, index) => (
                         <div
                             key={card.card_id}
-                            className={`slider-card-wrapper ${index === currentCardIndex ? 'active' : ''}`}
-                            onClick={() => handleCardChange(index)}
+                            className={`card-wrapper ${index === currentCardIndex ? 'active' : ''}`}
+                            onClick={() => {
+                                if (index === currentCardIndex) {
+                                    handleFlip();
+                                } else {
+                                    handleCardChange(index);
+                                }
+                            }}
                         >
-                            <div className={`authentic-card ${card.card_type === 1 ? 'authentic-card-adult' : 'authentic-card-student'}`}>
-                                <div className="authentic-card-sunburst"></div>
-                                <div className="authentic-card-content">
-                                    <div className="authentic-card-bus-top">
-                                        <svg width="100%" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="40" y="10" width="120" height="30" rx="3" fill="rgba(0,0,0,0.3)" />
-                                            <rect x="50" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
-                                            <rect x="75" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
-                                            <rect x="105" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
-                                            <rect x="130" y="15" width="20" height="12" rx="1" fill="rgba(255,255,255,0.4)" />
-                                            <circle cx="60" cy="42" r="6" fill="rgba(0,0,0,0.5)" />
-                                            <circle cx="140" cy="42" r="6" fill="rgba(0,0,0,0.5)" />
-                                        </svg>
-                                    </div>
-                                    <div className="authentic-card-center">
-                                        <div className="authentic-shape authentic-shape-1"></div>
-                                        <div className="authentic-shape authentic-shape-2"></div>
-                                        <span className="authentic-text">
-                                            {card.card_type === 1 ? t('home.authentic-card-adult') : t('home.authentic-card-student')}
-                                        </span>
-                                    </div>
-                                    <div className="authentic-card-bottom">
-                                        <span className="authentic-brand">บัตรซิ่ง</span>
-                                    </div>
-                                    <div className="authentic-info-badge">
-                                        <div className="authentic-info-row">
-                                            <span className="authentic-info-label">{t('home.balance')}</span>
-                                            <span className="authentic-info-value">{formatBalance(card.card_balance, card.card_type)}</span>
-                                        </div>
-                                    </div>
+                            <div className={`flip-card ${index === currentCardIndex && isFlipped ? 'flipped' : ''}`}>
+                                {/* Front Side - Card Image */}
+                                <div className="flip-card-front">
+                                    <img
+                                        src={getCardImage(card)}
+                                        alt="Card"
+                                        className="card-image"
+                                    />
                                 </div>
-                                <div className="authentic-card-strip">
-                                    <span className="authentic-strip-text">
-                                        {card.card_type === 1 ? 'e-THAI ADULT' : 'NRMS STUDENT'}
-                                    </span>
+
+                                {/* Back Side - QR Code */}
+                                <div className="flip-card-back">
+                                    <div className="card-back-blur">
+                                        <img
+                                            src={getCardImage(card)}
+                                            alt="Card Background"
+                                            className="card-image-blurred"
+                                        />
+                                    </div>
+                                    <div className="card-back-qr">
+                                        <h3>{t('card_detail.your_qr_code')}</h3>
+                                        <div className="qr-wrapper">
+                                            <QRCodeSVG
+                                                value={card.card_hash || 'default-hash'}
+                                                size={200}
+                                                level="M"
+                                                bgColor="#ffffff"
+                                                fgColor="#000000"
+                                            />
+                                        </div>
+                                        <button className="flip-btn" onClick={(e) => { e.stopPropagation(); handleFlip(); }}>
+                                            ↺ {t('card_detail.flip_back')}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -256,9 +344,9 @@ const Home = ({ onNavigate }) => {
                 </div>
 
                 {/* Slider Indicators */}
-                {activeCards.length > 1 && (
+                {displayCards.length > 1 && (
                     <div className="slider-indicators">
-                        {activeCards.map((_, index) => (
+                        {displayCards.map((_, index) => (
                             <button
                                 key={index}
                                 className={`indicator-dot ${index === currentCardIndex ? 'active' : ''}`}
@@ -267,67 +355,45 @@ const Home = ({ onNavigate }) => {
                         ))}
                     </div>
                 )}
+
+                <p className="tap-hint">{t('home.tap_to_see_qr')}</p>
             </div>
 
-            {/* Card Details */}
+            {/* Card Info Section - Below Card */}
             {currentCard && (
-                <div className="card-details-section">
-                    {/* QR Code */}
-                    <div className="detail-card qr-card">
-                        <div className="qr-scanner-frame">
-                            <div className="qr-code-wrapper">
-                                <QRCodeSVG
-                                    value={currentCard.card_hash || '4b1a97a120061ffac3f3b77abdd3c0ae842981ab84928a11572a5e8341280a7c'}
-                                    size={160}
-                                    level="M"
-                                    includeMargin={false}
-                                    bgColor="#ffffff"
-                                    fgColor="#000000"
-                                />
+                <div className="card-info-panel">
+                    {/* Balance Card */}
+                    <div className={`info-card balance-card ${getCardGradientClass(currentCard)}`}>
+                        <div className="balance-content">
+                            <span className="balance-label">{t('home.balance')}</span>
+                            <div className="balance-value-group">
+                                <span className="balance-number">{formatBalance(currentCard).value}</span>
+                                <span className="balance-unit">{formatBalance(currentCard).unit}</span>
                             </div>
-                            <div className="scanner-corner top-left"></div>
-                            <div className="scanner-corner top-right"></div>
-                            <div className="scanner-corner bottom-left"></div>
-                            <div className="scanner-corner bottom-right"></div>
                         </div>
-                        <p className="qr-label">{t('card_detail.scan_to_use')}</p>
-                    </div>
-
-                    {/* Balance */}
-                    <div className="detail-card">
-                        <div className="detail-content">
-                            <span className="detail-label">{t('home.balance')}</span>
-                            <span className="detail-value">{formatBalance(currentCard.card_balance, currentCard.card_type)}</span>
+                        <div className="balance-icon-bg">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fillOpacity="0.2" />
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fillOpacity="0.1" />
+                            </svg>
                         </div>
                     </div>
 
-                    {/* Status */}
-                    <div className="detail-card">
-                        <div className="detail-content">
+                    {/* Status & Details */}
+                    <div className="info-card details-card">
+                        <div className="detail-row">
                             <span className="detail-label">{t('card_detail.status')}</span>
                             <span className="detail-value" style={{ color: status?.color }}>{status?.label}</span>
                         </div>
-                    </div>
-
-                    {/* Expiry Date */}
-                    <div className="detail-card">
-                        <div className="detail-content">
+                        <div className="detail-row">
                             <span className="detail-label">{t('card_detail.expires_on')}</span>
                             <span className="detail-value">{formatExpiryDate(currentCard)}</span>
                         </div>
-                    </div>
-
-                    {/* Time Remaining */}
-                    <div className="detail-card">
-                        <div className="detail-content">
+                        <div className="detail-row">
                             <span className="detail-label">{t('card_detail.time_remaining')}</span>
                             <span className="detail-value">{getTimeRemaining(currentCard)}</span>
                         </div>
-                    </div>
-
-                    {/* Lock Card */}
-                    <div className="detail-card">
-                        <div className="detail-content">
+                        <div className="detail-row">
                             <span className="detail-label">{t('card_detail.lock_card')}</span>
                             <label className="toggle-switch">
                                 <input
@@ -339,7 +405,6 @@ const Home = ({ onNavigate }) => {
                             </label>
                         </div>
                     </div>
-
                 </div>
             )}
         </div>
