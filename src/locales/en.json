@@ -44,7 +44,8 @@
         "hours_singular": "Hour",
         "authentic-card-adult": "ADULT",
         "authentic-card-student": "STUDENT",
-        "scan": "Scan"
+        "scan": "Scan",
+        "tap_to_see_qr": "Tap card to see QR Code"
     },
     "register": {
         "welcome": "Welcome",
@@ -54,7 +55,7 @@
         "female": "Female",
         "other": "Unknown",
         "birth_year": "Birth Year (B.E.)",
-        "birth_year_placeholder": "e.g. 2540",
+        "birth_year_placeholder": "Select Birth Year",
         "submit": "Complete Registration",
         "registering": "Registering...",
         "error_birth_year": "Please enter your birth year",
@@ -68,7 +69,9 @@
         "edit_profile": "Edit Profile",
         "save_changes": "Save Changes",
         "scan_qr": "Scan QR Code",
-        "scan_description": "Scan to add a new card to your wallet"
+        "scan_description": "Scan to add a new card to your wallet",
+        "error_card_owned_title": "Card Unavailable",
+        "error_card_owned_message": "This card already has an owner."
     },
     "topup": {
         "title": "Top Up Wallet",
@@ -99,6 +102,7 @@
         "select_rounds": "Select Rounds",
         "quantity": "Quantity",
         "valid_until": "Valid until {{date}}",
+        "valid_until_label": "Valid Until",
         "order_summary": "Order Summary",
         "card_type": "Card Type",
         "details": "Details",
@@ -117,6 +121,7 @@
         "active": "Active",
         "new": "New",
         "expired": "Expired",
+        "locked": "Locked",
         "validity": "Validity",
         "starts_on_first_use": "Starts on first use ({{hours}} hours)",
         "expires_on": "Expires On",
@@ -124,13 +129,16 @@
         "recent_usage": "Recent Usage",
         "scanning": "Scanning...",
         "simulate_scan": "Simulate Scan",
+        "lock_card": "Lock Card",
         "rounds_plural": "Rounds",
         "rounds_singular": "Round",
         "credit": "Credit",
         "left": "left",
         "bus_ride": "Bus Ride",
         "scan_failed": "Scan Failed",
-        "scan_error": "Scan Error"
+        "scan_error": "Scan Error",
+        "your_qr_code": "Your QR Code",
+        "flip_back": "Flip Back"
     },
     "success_modal": {
         "title": "Top Up Successful!",
@@ -170,6 +178,7 @@
         "home": "Home",
         "buy_card": "Buy Card",
         "history": "History",
+        "yourcard": "My Card",
         "scan": "Scan",
         "profile": "Profile"
     }

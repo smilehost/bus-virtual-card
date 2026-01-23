@@ -17,16 +17,20 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--bg-primary);
+    background-image: url('../assets/bg-bussing-kkc.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.1;
+    pointer-events: none;
     z-index: -1;
 }
 
-.register-lang-btn {
+.register-lang-btn,
+.register-theme-btn {
     position: absolute;
     top: clamp(16px, 5vw, 24px);
-    right: clamp(16px, 5vw, 24px);
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     width: clamp(36px, 10vw, 44px);
     height: clamp(36px, 10vw, 44px);
@@ -39,11 +43,22 @@
     cursor: pointer;
     backdrop-filter: blur(10px);
     z-index: 10;
-    transition: background 0.2s;
+    transition: all 0.2s;
+    box-shadow: var(--card-shadow);
 }
 
-.register-lang-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+.register-lang-btn {
+    right: clamp(16px, 5vw, 24px);
+}
+
+.register-theme-btn {
+    right: calc(clamp(16px, 5vw, 24px) + clamp(36px, 10vw, 44px) + 12px);
+}
+
+.register-lang-btn:hover,
+.register-theme-btn:hover {
+    background: var(--bg-secondary);
+    transform: translateY(-2px);
 }
 
 .register-header {
@@ -84,6 +99,13 @@
     color: var(--text-secondary);
 }
 
+.form-helper-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    margin-left: 4px;
+}
+
 .form-input {
     padding: clamp(12px, 3.5vw, 14px) 16px;
     border-radius: 12px;
@@ -97,6 +119,37 @@
 
 .form-input:focus {
     border-color: var(--primary-color);
+}
+
+/* Gender Selector Buttons */
+.gender-selector {
+    display: flex;
+    gap: 12px;
+}
+
+.gender-btn {
+    flex: 1;
+    padding: clamp(12px, 3.5vw, 14px);
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border-radius: 12px;
+    font-size: clamp(13px, 3.5vw, 15px);
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.gender-btn:hover:not(.active) {
+    border-color: var(--primary-color);
+    background: rgba(33, 150, 243, 0.05);
+}
+
+.gender-btn.active {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
 }
 
 .btn-submit {

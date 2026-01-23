@@ -44,7 +44,8 @@
         "hours_singular": "ชั่วโมง",
         "authentic-card-adult": "บุคคลทั่วไป",
         "authentic-card-student": "นักเรียน",
-        "scan": "สแกน"
+        "scan": "สแกน",
+        "tap_to_see_qr": "แตะบัตรเพื่อดู QR Code"
     },
     "register": {
         "welcome": "ยินดีต้อนรับ",
@@ -54,7 +55,7 @@
         "female": "หญิง",
         "other": "ไม่ระบุ",
         "birth_year": "ปีเกิด (พ.ศ.)",
-        "birth_year_placeholder": "ตัวอย่าง 2540",
+        "birth_year_placeholder": "ระบุปีเกิด (2500 - ปัจจุบัน)",
         "submit": "ลงทะเบียน",
         "registering": "กำลังลงทะเบียน...",
         "error_birth_year": "กรุณากรอกปีเกิด",
@@ -68,7 +69,9 @@
         "edit_profile": "แก้ไขโปรไฟล์",
         "save_changes": "บันทึกการเปลี่ยนแปลง",
         "scan_qr": "สแกน QR Code",
-        "scan_description": "สแกนเพื่อเพิ่มบัตรใหม่เข้ากระเป๋า"
+        "scan_description": "สแกนเพื่อเพิ่มบัตรใหม่เข้ากระเป๋า",
+        "error_card_owned_title": "ไม่สามารถเพิ่มบัตรได้",
+        "error_card_owned_message": "การ์ดนี้มีเจ้าของแล้ว ไม่สามารถเปลี่ยนแปลงได้"
     },
     "history": {
         "title": "ประวัติการใช้งาน",
@@ -89,6 +92,7 @@
         "select_rounds": "เลือกจำนวนเที่ยว",
         "quantity": "จำนวน",
         "valid_until": "ใช้ได้ถึง {{date}}",
+        "valid_until_label": "ใช้ได้ถึง",
         "order_summary": "สรุปคำสั่งซื้อ",
         "card_type": "ประเภทบัตร",
         "details": "รายละเอียด",
@@ -107,6 +111,7 @@
         "active": "ใช้งานได้",
         "new": "ใหม่",
         "expired": "หมดอายุ",
+        "locked": "ล็อค",
         "validity": "อายุการใช้งาน",
         "starts_on_first_use": "เริ่มนับเมื่อใช้งานครั้งแรก ({{hours}} ชั่วโมง)",
         "expires_on": "หมดอายุวันที่",
@@ -114,13 +119,16 @@
         "recent_usage": "ใช้งานล่าสุด",
         "scanning": "กำลังสแกน...",
         "simulate_scan": "จำลองการสแกน",
+        "lock_card": "ล็อคบัตร",
         "rounds_plural": "เที่ยว",
         "rounds_singular": "เที่ยว",
         "credit": "เครดิต",
         "left": "ที่เหลือ",
         "bus_ride": "ค่าโดยสารรถประจำทาง",
         "scan_failed": "สแกนไม่สำเร็จ",
-        "scan_error": "เกิดข้อผิดพลาดในการสแกน"
+        "scan_error": "เกิดข้อผิดพลาดในการสแกน",
+        "your_qr_code": "QR Code ของคุณ",
+        "flip_back": "พลิกกลับ"
     },
     "success_modal": {
         "title": "เติมเงินสำเร็จ!",
@@ -154,6 +162,7 @@
         "home": "หน้าหลัก",
         "buy_card": "ซื้อบัตร",
         "history": "ประวัติ",
+        "yourcard": "บัตรของฉัน",
         "scan": "สแกน",
         "profile": "โปรไฟล์"
     }

@@ -6,30 +6,35 @@ import './MainLayout.css';
 // Navigation Icons
 
 // Navigation Icons
+// Navigation Icons (Filled / Flaticon Style)
 const HomeIcon = ({ active }) => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 12L5 10M5 10L12 3L19 10M5 10V20C5 20.5523 5.44772 21 6 21H9M19 10L21 12M19 10V20C19 20.5523 18.5523 21 18 21H15M9 21C9.55228 21 10 20.5523 10 20V16C10 15.4477 10.4477 15 11 15H13C13.5523 15 14 15.4477 14 16V20C14 20.5523 14.4477 21 15 21M9 21H15"
-            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? "currentColor" : "currentColor"} xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2.1L1 12H4V21H9V14H15V21H20V12H23L12 2.1ZM12 4.35L19 10.65V19H17V12H7V19H5V10.65L12 4.35Z" fillOpacity={active ? 1 : 0.8} />
     </svg>
 );
 
-const BuyCardIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="4" width="20" height="16" rx="3" stroke="currentColor" strokeWidth="2" />
-        <path d="M2 10H22" stroke="currentColor" strokeWidth="2" />
+const BuyCardIcon = ({ active }) => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? "currentColor" : "currentColor"} xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 4C1.895 4 1 4.895 1 6V18C1 19.105 1.895 20 3 20H21C22.105 20 23 19.105 23 18V6C23 4.895 22.105 4 21 4H3ZM3 6H21V8H3V6ZM3 12H21V18H3V12ZM4 13H8V16H4V13Z" fillOpacity={active ? 1 : 0.8} />
     </svg>
 );
 
-const HistoryIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
-        <path d="M12 7V12L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+const HistoryIcon = ({ active }) => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? "currentColor" : "currentColor"} xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fillOpacity={active ? 1 : 0.8} />
+        <path d="M11 7H13V13H17V15H11V7Z" fill={active ? "currentColor" : "currentColor"} />
     </svg>
 );
 
 const ProfileIcon = ({ active }) => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} xmlns="http://www.w3.org/2000/svg">
-        <path d="M20 21C20 19.6044 20 18.9067 19.8278 18.3389C19.44 17.0605 18.4395 16.06 17.1611 15.6722C16.5933 15.5 15.8956 15.5 14.5 15.5H9.5C8.10444 15.5 7.40665 15.5 6.83886 15.6722C5.56045 16.06 4.56004 17.0605 4.17224 18.3389C4 18.9067 4 19.6044 4 21M16.5 7.5C16.5 9.98528 14.4853 12 12 12C9.51472 12 7.5 9.98528 7.5 7.5C7.5 5.01472 9.51472 3 12 3C14.4853 3 16.5 5.01472 16.5 7.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? "currentColor" : "currentColor"} xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 12C14.761 12 17 9.761 17 7C17 4.239 14.761 2 12 2C9.239 2 7 4.239 7 7C7 9.761 9.239 12 12 12ZM12 14C9.33 14 4 15.34 4 18V22H20V18C20 15.34 14.67 14 12 14Z" fillOpacity={active ? 1 : 0.8} />
+    </svg>
+);
+
+const CardIcon = ({ active }) => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill={active ? "currentColor" : "currentColor"} xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 4H4C2.89 4 2.01 4.89 2.01 6L2 18C2 19.11 2.89 20 4 20H20C21.11 20 22 19.11 22 18V6C22 4.89 21.11 4 20 4ZM20 18H4V12H20V18ZM20 8H4V6H20V8Z" fillOpacity={active ? 1 : 0.8} />
     </svg>
 );
 
@@ -82,6 +87,7 @@ function MainLayout({ children, activeTab, onTabChange }) {
                         <HistoryIcon />
                         <span>{t('menu.history')}</span>
                     </button>
+
                     <button
                         className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
                         onClick={() => onTabChange('profile')}

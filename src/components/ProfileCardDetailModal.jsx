@@ -17,7 +17,7 @@ const formatBalance = (balance, cardType, t) => {
     if (cardType === 0) {
         return `${balance} ${balance > 1 ? t('card_detail.rounds_plural') : t('card_detail.rounds_singular')}`;
     }
-    return `$${balance.toFixed(2)}`;
+    return `฿${balance.toFixed(2)}`;
 };
 
 // Calculate days left until expiry
@@ -44,6 +44,19 @@ const formatExpiry = (expireHours) => {
     });
 };
 
+// Format Last Used Date
+const formatLastUsed = (dateStr) => {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? '-' : date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
+
 // Get card status
 const getCardStatus = (card, remainingBalance) => {
     // Round cards with 0 balance are expired
@@ -66,11 +79,13 @@ function ProfileCardDetailModal({ card, onClose, isOpen }) {
     const { profile } = useLiff();
 
     const [remainingBalance, setRemainingBalance] = useState(card?.card_balance || 0);
+    const [isLocked, setIsLocked] = useState(false);
 
     // Sync state with card prop
     useEffect(() => {
         if (card) {
             setRemainingBalance(card.card_balance || 0);
+            setIsLocked(card.is_locked || false);
         }
     }, [card]);
 
@@ -86,6 +101,12 @@ function ProfileCardDetailModal({ card, onClose, isOpen }) {
     const handleBackClick = () => {
         if (profile?.userId) fetchCardsByUuid(profile.userId);
         onClose();
+    };
+
+    const handleLockToggle = (checked) => {
+        setIsLocked(checked);
+        // Integrate API call here if available, e.g., updateCardLock(card.card_id, checked)
+        console.log('Toggled lock:', checked);
     };
 
     return (
@@ -149,8 +170,29 @@ function ProfileCardDetailModal({ card, onClose, isOpen }) {
                                     </span>
                                 </div>
                             )}
+
+                            {/* Last Used Date - New Feature */}
+                            <div className="detail-row">
+                                <span className="detail-label">{t('card_detail.recent_usage')}</span>
+                                <span className="detail-value">
+                                    {formatLastUsed(card.card_last_use)}
+                                </span>
+                            </div>
                         </>
                     )}
+
+                    {/* Lock Card Toggle - New Feature */}
+                    <div className="detail-row">
+                        <span className="detail-label">{t('card_detail.lock_card')}</span>
+                        <label className="toggle-switch">
+                            <input
+                                type="checkbox"
+                                checked={isLocked}
+                                onChange={(e) => handleLockToggle(e.target.checked)}
+                            />
+                            <span className="toggle-slider round"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
