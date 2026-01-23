@@ -8,6 +8,7 @@ import CardImage from '../assets/FREE_SHUTTLE_Card.png';
 import CardBusAdult from '../assets/card_bus_adult.png';
 import CardBusStudent from '../assets/card_bus_student.png';
 import CardBusOneDayPass from '../assets/card_bus_onedaypass.png';
+import useImageColor from '../hooks/useImageColor';
 
 // Static card data for display (UI only - Mock data) - Matches YourCard.jsx
 const staticCards = [
@@ -42,6 +43,38 @@ const staticCards = [
         card_expire: '24', // อายุ 24 ชั่วโมงหลังใช้ครั้งแรก
     },
 ];
+
+// Get card image based on card type
+const getCardImage = (card) => {
+    if (!card) return CardImage;
+    if (card.image) return card.image;
+
+    // Determine image based on card_type
+    if (card.card_type === 1) {
+        const name = (card.card_name || '').toLowerCase();
+        if (name.includes('one-day') || name.includes('oneday')) return CardBusOneDayPass;
+        return CardBusAdult; // Money card defaults to adult if not one-day
+    }
+
+    // For round cards, check card name or default to student
+    const name = (card.card_name || '').toLowerCase();
+    if (name.includes('adult') || name.includes('ผู้ใหญ่')) return CardBusAdult;
+    if (name.includes('student') || name.includes('นักเรียน')) return CardBusStudent;
+
+    return CardImage; // Default Free Shuttle/General
+};
+
+// Get card gradient class
+const getCardGradientClass = (card) => {
+    if (!card) return '';
+    if (card.card_type === 1) return 'oneday';
+
+    const name = (card.card_name || '').toLowerCase();
+    if (name.includes('adult') || name.includes('ผู้ใหญ่')) return 'adult';
+    if (name.includes('student') || name.includes('นักเรียน')) return 'student';
+
+    return '';
+};
 
 const Home = ({ onNavigate }) => {
     const { t, i18n } = useTranslation();
@@ -81,6 +114,16 @@ const Home = ({ onNavigate }) => {
     const displayCards = [...activeApiCards, ...staticCards];
 
     const currentCard = displayCards[currentCardIndex];
+
+    // Dynamic Color Extraction
+    const activeCardImage = currentCard ? getCardImage(currentCard) : null;
+    const { color: extractedColor } = useImageColor(activeCardImage);
+
+    // Dynamic style for balance card
+    const balanceCardStyle = currentCard ? {
+        background: `linear-gradient(135deg, ${extractedColor} 0%, rgba(0,0,0,0.8) 120%)`,
+        border: '1px solid rgba(255,255,255,0.1)'
+    } : {};
 
     // Helper to safely parse date
     const parseDate = (dateString) => {
@@ -175,38 +218,6 @@ const Home = ({ onNavigate }) => {
             return { value: `฿${card.card_balance}`, unit: 'THB' };
         }
         return { value: card.card_balance, unit: t('buy_card.rounds') };
-    };
-
-    // Get card image based on card type
-    const getCardImage = (card) => {
-        if (!card) return CardImage;
-        if (card.image) return card.image;
-
-        // Determine image based on card_type
-        if (card.card_type === 1) {
-            const name = (card.card_name || '').toLowerCase();
-            if (name.includes('one-day') || name.includes('oneday')) return CardBusOneDayPass;
-            return CardBusAdult; // Money card defaults to adult if not one-day
-        }
-
-        // For round cards, check card name or default to student
-        const name = (card.card_name || '').toLowerCase();
-        if (name.includes('adult') || name.includes('ผู้ใหญ่')) return CardBusAdult;
-        if (name.includes('student') || name.includes('นักเรียน')) return CardBusStudent;
-
-        return CardImage; // Default Free Shuttle/General
-    };
-
-    // Get card gradient class
-    const getCardGradientClass = (card) => {
-        if (!card) return '';
-        if (card.card_type === 1) return 'oneday';
-
-        const name = (card.card_name || '').toLowerCase();
-        if (name.includes('adult') || name.includes('ผู้ใหญ่')) return 'adult';
-        if (name.includes('student') || name.includes('นักเรียน')) return 'student';
-
-        return '';
     };
 
     const scrollToCard = (index) => {
@@ -363,7 +374,10 @@ const Home = ({ onNavigate }) => {
             {currentCard && (
                 <div className="card-info-panel">
                     {/* Balance Card */}
-                    <div className={`info-card balance-card ${getCardGradientClass(currentCard)}`}>
+                    <div
+                        className={`info-card balance-card ${getCardGradientClass(currentCard)}`}
+                        style={balanceCardStyle}
+                    >
                         <div className="balance-content">
                             <span className="balance-label">{t('home.balance')}</span>
                             <div className="balance-value-group">
