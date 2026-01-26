@@ -10,8 +10,49 @@ import Register from './page/Register';
 
 import { useLiff } from './context/LiffContext';
 import { getMemberByUserId } from './services/memberService';
+import { ToastProvider, useToast } from './context/ToastContext';
+import useSSE from './hooks/useSSE';
 
-function App() {
+// Component to run the hook inside the provider
+const SSEListener = () => {
+  useSSE();
+  const { showToast } = useToast();
+
+  // Test button to verify toast works (remove after testing)
+  const handleTestToast = () => {
+    showToast({
+      type: 'success',
+      title: 'สแกนบัตรสำเร็จ!',
+      data: {
+        remaining_balance: 84,
+        expire_date: '2026-03-30 09:14:25'
+      }
+    });
+  };
+
+  return (
+    <button
+      onClick={handleTestToast}
+      style={{
+        position: 'fixed',
+        bottom: '80px',
+        right: '20px',
+        zIndex: 9999,
+        padding: '10px 15px',
+        background: '#4CAF50',
+        color: 'white',
+        border: 'none',
+        borderRadius: '8px',
+        cursor: 'pointer'
+      }}
+    >
+      Test Toast
+    </button>
+  );
+};
+
+
+function AppContent() {
   const [activeTab, setActiveTab] = useState('home');
   const { profile, isLoggedIn } = useLiff();
   const [isCheckingMember, setIsCheckingMember] = useState(false);
@@ -64,10 +105,18 @@ function App() {
 
   return (
     <MainLayout activeTab={activeTab} onTabChange={handleTabChange}>
+      <SSEListener />
       {renderPage()}
     </MainLayout>
   );
 }
 
-export default App;
+function App() {
+  return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
+  );
+}
 
+export default App;
