@@ -1,0 +1,122 @@
+/* SSE Notification Modal - Centered */
+.sse-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.sse-modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 32px 24px;
+    width: 90%;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sse-modal-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sse-modal-icon svg {
+    width: 32px;
+    height: 32px;
+    color: white;
+}
+
+.sse-modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 20px 0;
+}
+
+.sse-modal-details {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.sse-modal-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.sse-modal-row:not(:last-child) {
+    border-bottom: 1px solid #eee;
+}
+
+.sse-modal-label {
+    color: #888;
+    font-size: 14px;
+}
+
+.sse-modal-value {
+    color: #4CAF50;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.sse-modal-message {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.sse-modal-btn {
+    width: 100%;
+    padding: 14px 24px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.sse-modal-btn:hover {
+    background: #eee;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
