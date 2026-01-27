@@ -1,0 +1,161 @@
+/* Verify Card Modal - Premium Popup Style */
+.verify-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease-out;
+    padding: 20px;
+}
+
+.verify-modal-content {
+    background: #ffffff;
+    /* Explicit white to match image */
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 360px;
+    padding: 24px;
+    position: relative;
+    animation: scaleUp 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Close Button */
+/* Close Button (Screen Level) */
+.verify-modal-close-btn-screen {
+    position: absolute;
+    top: 30px;
+    left: 24px;
+    /* Top Left of Screen */
+    background: white;
+    border: 1px solid #e0e0e0;
+    width: 40px;
+    /* Slightly larger for easier tap */
+    height: 40px;
+    border-radius: 8px;
+    /* Boxy look */
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.2s;
+    z-index: 1200;
+    /* Higher than content to be safe */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.verify-modal-close-btn-screen:hover {
+    background: #f5f5f5;
+    transform: scale(1.05);
+}
+
+/* Typography */
+.verify-modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-top: 40px;
+    /* Space for close button if it overlaps, or just separation */
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+.verify-modal-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+/* Form Elements */
+.verify-input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    color: #333;
+    background: #f9f9f9;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    box-sizing: border-box;
+    /* Important for padding */
+}
+
+.verify-input:focus {
+    border-color: #FFA726;
+    /* Orange tint */
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255, 167, 38, 0.1);
+}
+
+.verify-error-msg {
+    color: #FF5252;
+    font-size: 13px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+/* Action Button */
+.verify-btn-confirm {
+    width: 100%;
+    margin-top: 24px;
+    background: #FFA726;
+    /* Specific orange from image roughly */
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+}
+
+.verify-btn-confirm:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 167, 38, 0.4);
+}
+
+.verify-btn-confirm:active {
+    transform: translateY(0);
+}
+
+/* Dark mode support if needed, but image is light mode specific. 
+   We will keep it light for now to match exactly. */
+
+@keyframes scaleUp {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

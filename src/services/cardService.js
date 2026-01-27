@@ -58,8 +58,58 @@ export const linkCardToUser = async (cardHash, memberId) => {
     }
 };
 
+/**
+ * Verify Card QR Code and Bind to User
+ * @param {string} cardHash - Card Hash
+ * @param {string} cardQrcode - Code printed on card
+ * @param {number} memberId - Member ID to bind card to
+ * @returns {Promise<object>} Verification result
+ */
+export const verifyCardQrCode = async (cardHash, cardQrcode, memberId) => {
+    try {
+        const response = await post('/card/verify-qrcode', {
+            card_hash: cardHash,
+            card_qrcode: cardQrcode,
+            member_id: memberId
+        }, {
+            headers: {
+                com_id: 1
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error('Error verifying card:', error);
+        throw error;
+    }
+};
+
+/**
+ * Find card by hash to check existence
+ * @param {string} cardHash 
+ * @returns {Promise<object>} Card data
+ */
+export const findCardByHash = async (cardHash) => {
+    try {
+        // Assuming GET /card/:hash or similar exists. 
+        // Based on typical REST conventions and the need to check existence.
+        // If this fails, we might need to adjust the endpoint.
+        const response = await get(`/card/getCard/${cardHash}`, {
+            headers: {
+                com_id: 1
+            }
+        });
+        return response;
+    } catch (error) {
+        // If 404, it means card not found.
+        console.error('Error finding card by hash:', error);
+        throw error;
+    }
+};
+
 export default {
     checkCardByUuid,
     useCard,
     linkCardToUser,
+    verifyCardQrCode,
+    findCardByHash,
 };

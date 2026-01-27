@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import './CardDetailModal.css'; // Reusing styles
+import './VerifyCardModal.css';
 
 const VerifyCardModal = ({ isOpen, onClose, onVerify }) => {
     const { t } = useTranslation();
@@ -21,14 +21,17 @@ const VerifyCardModal = ({ isOpen, onClose, onVerify }) => {
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={e => e.stopPropagation()}>
-                <button className="modal-close-btn" onClick={onClose}>&times;</button>
+        <div className="verify-modal-overlay">
+            {/* Close button moved outside content, top-left of screen */}
+            <button className="verify-modal-close-btn-screen" onClick={onClose}>
+                <span>&times;</span>
+            </button>
 
-                <h3 className="modal-title">{t('verify_modal.title') || 'Verify Card'}</h3>
-                <p className="modal-subtitle">{t('verify_modal.instruction') || 'Please enter the code printed on your card'}</p>
+            <div className="verify-modal-content" onClick={e => e.stopPropagation()}>
+                <h3 className="verify-modal-title">{t('verify_modal.title') || 'ยืนยันข้อมูลบัตร'}</h3>
+                <p className="verify-modal-subtitle">{t('verify_modal.instruction') || 'กรุณากรอกรหัสหลังบัตรเพื่อยืนยัน'}</p>
 
-                <form onSubmit={handleSubmit} className="verify-form" style={{ marginTop: '20px' }}>
+                <form onSubmit={handleSubmit} className="verify-form">
                     <input
                         type="text"
                         value={code}
@@ -36,25 +39,16 @@ const VerifyCardModal = ({ isOpen, onClose, onVerify }) => {
                             setCode(e.target.value);
                             setError('');
                         }}
-                        placeholder={t('verify_modal.placeholder') || 'Enter card code logic...'}
+                        placeholder={t('verify_modal.placeholder') || 'กรอกรหัสยืนยัน'}
                         className="verify-input"
-                        style={{
-                            width: '100%',
-                            padding: '12px',
-                            borderRadius: '12px',
-                            border: '1px solid #ddd',
-                            fontSize: '16px',
-                            marginBottom: '10px'
-                        }}
                     />
-                    {error && <p style={{ color: 'red', fontSize: '14px', marginBottom: '10px' }}>{error}</p>}
+                    {error && <p className="verify-error-msg">{error}</p>}
 
                     <button
                         type="submit"
-                        className="btn-buycard"
-                        style={{ width: '100%', marginTop: '10px' }}
+                        className="verify-btn-confirm"
                     >
-                        {t('common.verify') || 'Verify'}
+                        {t('common.verify') || 'ยืนยัน'}
                     </button>
                 </form>
             </div>

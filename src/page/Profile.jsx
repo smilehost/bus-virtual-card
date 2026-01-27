@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
 import { useTranslation } from 'react-i18next';
-import { linkCardToUser } from '../services/cardService';
+import { linkCardToUser, findCardByHash, verifyCardQrCode } from '../services/cardService';
 import liff from '@line/liff';
 import { Html5Qrcode } from 'html5-qrcode';
 import './Profile.css';
@@ -18,6 +18,7 @@ import { getMemberByUserId } from '../services/memberService';
 import { useTheme } from '../context/ThemeContext';
 // Import Modal
 import ProfileCardDetailModal from '../components/ProfileCardDetailModal';
+import VerifyCardModal from '../components/VerifyCardModal';
 import AlertModal from '../components/AlertModal';
 
 // Format card balance display
@@ -77,8 +78,13 @@ const Profile = ({ onNavigate }) => {
     const sliderRef = useRef(null);
 
     // Detail Modal State
+    // Detail Modal State
     const [selectedCard, setSelectedCard] = useState(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+    // Verify Modal State
+    const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
+    const [verifyingHash, setVerifyingHash] = useState(null);
 
     // Fetch cards
     useEffect(() => {
@@ -229,20 +235,55 @@ const Profile = ({ onNavigate }) => {
         setIsProcessing(true);
         try {
             const lastPart = hash.split('/').pop();
-            await linkCardToUser(lastPart, memberData.member_id);
-            showAlert('success', 'Success', 'Card added!');
-            fetchCardsByUuid(profile.userId);
+
+            console.log("Processing Scan Hash:", lastPart);
+
+            // 1. Check if card exists
+            await findCardByHash(lastPart);
+
+            // 2. If exists, open verify modal
+            setVerifyingHash(lastPart);
+            setIsVerifyModalOpen(true);
+
         } catch (error) {
-            console.error("Link Card Error:", error);
-            const errorMessage = error?.message || "";
-            if (errorMessage.includes("การ์ดนี้มีเจ้าของแล้ว")) {
-                showAlert('error', t('profile.error_card_owned_title'), t('profile.error_card_owned_message'));
-            } else {
-                showAlert('error', 'Failed', 'Invalid card');
-            }
+            console.error("Scan Process Error:", error);
+            const errorMessage = error?.message || error?.data?.message || t('profile.error_card_not_found') || 'Card not found';
+            showAlert('error', t('common.error'), errorMessage);
         } finally {
             setIsProcessing(false);
         }
+    };
+
+    const handleVerifyCard = async (code) => {
+        if (!verifyingHash || !memberData?.member_id) return;
+
+        try {
+            // 3. Verify Code & Link (Handled by backend now)
+            await verifyCardQrCode(verifyingHash, code, memberData.member_id);
+
+            setIsVerifyModalOpen(false);
+            setVerifyingHash(null);
+
+            showAlert('success', t('common.success'), t('profile.card_added_success') || 'Card added successfully!');
+            fetchCardsByUuid(profile.userId);
+
+        } catch (error) {
+            console.error("Verification Error:", error);
+            const errorMessage = error?.data?.message || error?.message || "Verification Failed";
+
+            if (errorMessage.includes("มีเจ้าของแล้ว") || errorMessage.includes("owned")) {
+                showAlert('error', t('profile.error_card_owned_title'), errorMessage);
+            } else {
+                showAlert('error', t('common.error'), errorMessage);
+            }
+        }
+    };
+
+    const handleCloseVerifyModal = () => {
+        setIsVerifyModalOpen(false);
+        setVerifyingHash(null);
+        // Explicitly treating exit as failure/cancellation as requested
+        showAlert('error', t('common.error') || 'Error', t('profile.verify_cancelled') || 'Card addition cancelled');
     };
 
     return (
@@ -355,6 +396,13 @@ const Profile = ({ onNavigate }) => {
                 isOpen={isDetailModalOpen}
                 onClose={() => setIsDetailModalOpen(false)}
                 card={selectedCard}
+            />
+
+            {/* Verify Modal */}
+            <VerifyCardModal
+                isOpen={isVerifyModalOpen}
+                onClose={handleCloseVerifyModal}
+                onVerify={handleVerifyCard}
             />
 
             <AlertModal isOpen={alertState.isOpen} onClose={closeAlert} type={alertState.type} title={alertState.title} message={alertState.message} />
