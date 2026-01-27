@@ -71,7 +71,16 @@
         "scan_qr": "Scan QR Code",
         "scan_description": "Scan to add a new card to your wallet",
         "error_card_owned_title": "Card Unavailable",
-        "error_card_owned_message": "This card already has an owner."
+        "error_card_owned_message": "This card already has an owner.",
+        "card_added_success": "Card added successfully!",
+        "error_card_not_found": "Card not found",
+        "verify_cancelled": "Card addition cancelled"
+    },
+    "verify_modal": {
+        "title": "Verify Card Details",
+        "instruction": "Please enter the code printed in card",
+        "placeholder": "Enter verification code",
+        "error_empty": "Code cannot be empty"
     },
     "topup": {
         "title": "Top Up Wallet",

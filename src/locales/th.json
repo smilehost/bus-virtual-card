@@ -71,7 +71,16 @@
         "scan_qr": "สแกน QR Code",
         "scan_description": "สแกนเพื่อเพิ่มบัตรใหม่เข้ากระเป๋า",
         "error_card_owned_title": "ไม่สามารถเพิ่มบัตรได้",
-        "error_card_owned_message": "การ์ดนี้มีเจ้าของแล้ว ไม่สามารถเปลี่ยนแปลงได้"
+        "error_card_owned_message": "การ์ดนี้มีเจ้าของแล้ว ไม่สามารถเปลี่ยนแปลงได้",
+        "card_added_success": "เพิ่มบัตรสำเร็จ!",
+        "error_card_not_found": "ไม่พบข้อมูลบัตร",
+        "verify_cancelled": "ยกเลิกการเพิ่มบัตร"
+    },
+    "verify_modal": {
+        "title": "ยืนยันข้อมูลบัตร",
+        "instruction": "กรุณากรอกรหัสหลังบัตรเพื่อยืนยัน",
+        "placeholder": "กรอกรหัสยืนยัน",
+        "error_empty": "กรุณากรอกรหัส"
     },
     "history": {
         "title": "ประวัติการใช้งาน",
