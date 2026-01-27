@@ -58,8 +58,56 @@ export const linkCardToUser = async (cardHash, memberId) => {
     }
 };
 
+/**
+ * Lock or unlock a card
+ * @param {string|number} cardId - Card ID
+ * @param {number} lockStatus - 0 = locked, 1 = unlocked
+ * @returns {Promise<object>} Response data
+ */
+export const lockCard = async (cardId, lockStatus) => {
+    try {
+        const response = await put(`/card/lock/${cardId}`, 
+            { card_lock: lockStatus },
+            {
+                headers: {
+                    'com_id': '1'
+                }
+            }
+        );
+        return response;
+    } catch (error) {
+        console.error('Error locking/unlocking card:', error);
+        throw error;
+    }
+};
+
+/**
+ * Set a card as main card
+ * @param {string|number} cardId - Card ID
+ * @param {string|number} cardUserId - Card User ID (member_id)
+ * @returns {Promise<object>} Response data
+ */
+export const setCardMain = async (cardId, cardUserId) => {
+    try {
+        const response = await put(`/card/main/${cardId}`, 
+            { card_user_id: cardUserId },
+            {
+                headers: {
+                    'com_id': '1'
+                }
+            }
+        );
+        return response;
+    } catch (error) {
+        console.error('Error setting main card:', error);
+        throw error;
+    }
+};
+
 export default {
     checkCardByUuid,
     useCard,
     linkCardToUser,
+    lockCard,
+    setCardMain,
 };

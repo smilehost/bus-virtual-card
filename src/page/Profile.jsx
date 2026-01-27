@@ -103,8 +103,9 @@ const Profile = ({ onNavigate }) => {
     // Filter Logic
     const filteredCards = cards.filter(card => {
         const status = getCardStatus(card);
+        const isLocked = card.card_lock === 0;
         if (filter === 'all') return true;
-        if (filter === 'active') return status === 'active'; // 'new' is also active effectively
+        if (filter === 'active') return status === 'active' && !isLocked; // Exclude locked cards from active
         if (filter === 'expired') return status === 'expired';
         return true;
     });
@@ -301,21 +302,44 @@ const Profile = ({ onNavigate }) => {
                             <div className="profile-carousel" onScroll={handleScroll} ref={sliderRef}>
                                 {filteredCards.map((card, index) => {
                                     const status = getCardStatus(card);
+                                    const isLocked = card.card_lock === 0;
+                                    const isMainCard = card.card_main === 1;
                                     return (
                                         <div
                                             key={card.card_id}
-                                            className={`profile-card-wrapper ${index === currentCardIndex ? 'focused' : ''}`}
-                                            onClick={() => handleCardClick(card)}
+                                            className={`profile-card-wrapper ${index === currentCardIndex ? 'focused' : ''} ${isLocked ? 'locked' : ''}`}
+                                            onClick={() => !isLocked && handleCardClick(card)}
                                         >
                                             <div className={`profile-card ${status}`}>
                                                 <div className="card-image-container">
                                                     <img src={getCardImage(card)} alt="Card" className="p-card-img" />
-                                                    {status !== 'active' && <div className="card-overlay">{status}</div>}
+                                                    {/* Main Card Star */}
+                                                    <div className={`profile-main-star ${isMainCard ? 'is-main' : ''}`}>
+                                                        {isMainCard ? (
+                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                                            </svg>
+                                                        ) : (
+                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    {/* Lock Overlay */}
+                                                    {isLocked && (
+                                                        <div className="profile-lock-overlay">
+                                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                                                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                                                            </svg>
+                                                            <span>{t('card_detail.card_is_locked')}</span>
+                                                        </div>
+                                                    )}
+                                                    {status !== 'active' && !isLocked && <div className="card-overlay">{status}</div>}
                                                 </div>
                                                 <div className="card-mini-details">
                                                     <span className="p-card-name">{card.card_name || 'Card'}</span>
                                                     <span className="p-card-balance">
-                                                        {formatBalance(card.card_balance, card.card_type).value}
+                                                        {isLocked ? '***' : formatBalance(card.card_balance, card.card_type).value}
                                                         <small>{card.card_type === 0 ? t('buy_card.rounds') : 'THB'}</small>
                                                     </span>
                                                 </div>

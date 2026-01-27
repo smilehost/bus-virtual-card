@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import MainLayout from './layout/Mainlayout';
-import Home from './page/home';
+import Home from './page/Home';
 import History from './page/History';
 import './App.css';
 import BuyCardRound from './page/BuyCardRound';
@@ -16,39 +16,6 @@ import useSSE from './hooks/useSSE';
 // Component to run the hook inside the provider
 const SSEListener = () => {
   useSSE();
-  const { showToast } = useToast();
-
-  // Test button to verify toast works (remove after testing)
-  const handleTestToast = () => {
-    showToast({
-      type: 'success',
-      title: 'สแกนบัตรสำเร็จ!',
-      data: {
-        remaining_balance: 84,
-        expire_date: '2026-03-30 09:14:25'
-      }
-    });
-  };
-
-  return (
-    <button
-      onClick={handleTestToast}
-      style={{
-        position: 'fixed',
-        bottom: '80px',
-        right: '20px',
-        zIndex: 9999,
-        padding: '10px 15px',
-        background: '#4CAF50',
-        color: 'white',
-        border: 'none',
-        borderRadius: '8px',
-        cursor: 'pointer'
-      }}
-    >
-      Test Toast
-    </button>
-  );
 };
 
 
