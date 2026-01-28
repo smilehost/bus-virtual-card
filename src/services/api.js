@@ -91,8 +91,28 @@ export const put = (endpoint, data, options = {}) => {
  * @param {string} endpoint - API endpoint
  * @returns {Promise<any>} Response data
  */
+// ... (previous exports remain unchanged)
+
 export const del = (endpoint) => {
     return apiRequest(endpoint, { method: 'DELETE' });
+};
+
+/**
+ * Get full URL for uploaded files
+ * Strips '/api' from base URL if present, as uploads are usually served from root
+ * @param {string} path - Relative path (e.g., /uploadCardGroup/...)
+ * @returns {string} Full URL
+ */
+export const getUploadUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+
+    // Remove '/api' from the end of BASE_URL if it exists
+    const baseUrl = BASE_URL.endsWith('/api')
+        ? BASE_URL.slice(0, -4)
+        : BASE_URL;
+
+    return `${baseUrl}${path}`;
 };
 
 export default {
@@ -101,5 +121,6 @@ export default {
     put,
     del,
     apiRequest,
+    getUploadUrl,
     BASE_URL,
 };

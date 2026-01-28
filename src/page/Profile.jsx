@@ -3,16 +3,17 @@ import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
 import { useTranslation } from 'react-i18next';
 import { linkCardToUser, findCardByHash, verifyCardQrCode } from '../services/cardService';
+import { getUploadUrl } from '../services/api';
 import liff from '@line/liff';
 import { Html5Qrcode } from 'html5-qrcode';
 import './Profile.css';
 import '../page/authentic-card.css';
 
-// Import Card Images
-import CardImage from '../assets/FREE_SHUTTLE_Card.png';
-import CardBusAdult from '../assets/card_bus_adult.png';
-import CardBusStudent from '../assets/card_bus_student.png';
-import CardBusOneDayPass from '../assets/card_bus_onedaypass.png';
+// Import Card Images - Removed as requested
+// import CardImage from '../assets/FREE_SHUTTLE_Card.png';
+// import CardBusAdult from '../assets/card_bus_adult.png';
+// import CardBusStudent from '../assets/card_bus_student.png';
+// import CardBusOneDayPass from '../assets/card_bus_onedaypass.png';
 
 import { getMemberByUserId } from '../services/memberService';
 import { useTheme } from '../context/ThemeContext';
@@ -46,24 +47,14 @@ const getCardStatus = (card) => {
 
 // Helper to determine image
 const getCardImage = (card) => {
-    if (!card) return CardImage;
-
-    // Type 1: Money Card / One-Day Pass (if distinguished)
-    if (card.card_type === 1) {
-        // Could distinguish One Day Pass if needed, for now use Adult or generic
-        const name = (card.card_name || '').toLowerCase();
-        if (name.includes('one-day') || name.includes('oneday')) return CardBusOneDayPass;
-        return CardBusAdult;
+    if (!card) return '';
+    // Use API image if available
+    const imagePath = card.card_group_image || card.card_group?.card_group_image;
+    if (imagePath) {
+        return getUploadUrl(imagePath);
     }
-
-    const name = (card.card_name || '').toLowerCase();
-
-    // Check specific names
-    if (name.includes('adult') || name.includes('ผู้ใหญ่')) return CardBusAdult;
-    if (name.includes('student') || name.includes('นักเรียน')) return CardBusStudent;
-
-    // "forline" or default -> Free Shuttle Image
-    return CardImage;
+    // No fallback to local assets
+    return '';
 };
 
 const getCardBadgeStatus = (card) => {

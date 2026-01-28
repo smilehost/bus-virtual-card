@@ -5,66 +5,25 @@ import { useLiff } from '../context/LiffContext';
 import { useTranslation } from 'react-i18next';
 import { lockCard, setCardMain } from '../services/cardService';
 import './home.css';
-import CardImage from '../assets/FREE_SHUTTLE_Card.png';
-import CardBusAdult from '../assets/card_bus_adult.png';
-import CardBusStudent from '../assets/card_bus_student.png';
-import CardBusOneDayPass from '../assets/card_bus_onedaypass.png';
 import useImageColor from '../hooks/useImageColor';
 import AsyncImage from '../components/AsyncImage'; // Import AsyncImage
+import { getUploadUrl } from '../services/api';
 
 
 // Static card data for display (UI only - Mock data) - Matches YourCard.jsx
-const staticCards = [
-    {
-        card_id: 'mock-adult-001',
-        card_name: 'บัตรซิ่ง ผู้ใหญ่',
-        image: CardBusAdult,
-        card_type: 0,
-        card_balance: 30,
-        card_hash: 'MOCK-ADULT-HASH-001',
-        card_firstuse: '2026-01-15T10:00:00Z',
-        card_expire_date: '2026-02-15T23:59:59Z',
-    },
-    {
-        card_id: 'mock-student-002',
-        card_name: 'บัตรซิ่ง นักเรียน',
-        image: CardBusStudent,
-        card_type: 0,
-        card_balance: 50,
-        card_hash: 'MOCK-STUDENT-HASH-002',
-        card_firstuse: '2026-01-10T08:00:00Z',
-        card_expire_date: '2026-03-10T23:59:59Z',
-    },
-    {
-        card_id: 'mock-onedaypass-003',
-        card_name: 'บัตรซิ่ง One-Day Pass',
-        image: CardBusOneDayPass,
-        card_type: 1,
-        card_balance: 100,
-        card_hash: 'MOCK-ONEDAYPASS-HASH-003',
-        card_firstuse: null, // ยังไม่เคยใช้
-        card_expire: '24', // อายุ 24 ชั่วโมงหลังใช้ครั้งแรก
-    },
-];
+// Static card data removed
+
 
 // Get card image based on card type
 const getCardImage = (card) => {
-    if (!card) return CardImage;
-    if (card.image) return card.image;
-
-    // Determine image based on card_type
-    if (card.card_type === 1) {
-        const name = (card.card_name || '').toLowerCase();
-        if (name.includes('one-day') || name.includes('oneday')) return CardBusOneDayPass;
-        return CardBusAdult; // Money card defaults to adult if not one-day
+    if (!card) return '';
+    // Use API image if available
+    const imagePath = card.card_group_image || card.card_group?.card_group_image;
+    if (imagePath) {
+        return getUploadUrl(imagePath);
     }
-
-    // For round cards, check card name or default to student
-    const name = (card.card_name || '').toLowerCase();
-    if (name.includes('adult') || name.includes('ผู้ใหญ่')) return CardBusAdult;
-    if (name.includes('student') || name.includes('นักเรียน')) return CardBusStudent;
-
-    return CardImage; // Default Free Shuttle/General
+    // No fallback to local assets anymore
+    return '';
 };
 
 // Get card gradient class
@@ -142,7 +101,8 @@ const Home = ({ onNavigate }) => {
     const existingMainCard = activeApiCards.find(card => card.card_main === 1);
 
     // Combine active API cards with static mock cards
-    const displayCards = [...activeApiCards, ...staticCards];
+    // Combine active API cards with static mock cards
+    const displayCards = [...activeApiCards];
 
     const currentCard = displayCards[currentCardIndex];
 
@@ -318,10 +278,10 @@ const Home = ({ onNavigate }) => {
             const newLockStatus = lockAction === 'lock' ? 0 : 1;
 
             // Skip API call for mock cards (card_id could be number from API)
-            const cardIdStr = String(currentCard.card_id);
-            if (!cardIdStr.startsWith('mock-')) {
-                await lockCard(currentCard.card_id, newLockStatus);
-            }
+            // const cardIdStr = String(currentCard.card_id);
+            // if (!cardIdStr.startsWith('mock-')) {
+            await lockCard(currentCard.card_id, newLockStatus);
+            // }
 
             // Update local state
             setCardLockStates(prev => ({
@@ -370,13 +330,13 @@ const Home = ({ onNavigate }) => {
 
         setIsSettingMain(true);
         try {
-            const cardIdStr = String(currentCard.card_id);
-            // Skip API call for mock cards
-            if (!cardIdStr.startsWith('mock-')) {
-                // Use member_id from member context
-                const cardUserId = member?.member_id || currentCard.card_user_id;
-                await setCardMain(currentCard.card_id, cardUserId);
-            }
+            // const cardIdStr = String(currentCard.card_id);
+            // // Skip API call for mock cards
+            // if (!cardIdStr.startsWith('mock-')) {
+            // Use member_id from member context
+            const cardUserId = member?.member_id || currentCard.card_user_id;
+            await setCardMain(currentCard.card_id, cardUserId);
+            // }
 
             // Refresh cards data from server
             if (profile?.userId) {
@@ -472,7 +432,7 @@ const Home = ({ onNavigate }) => {
                                             className="card-image"
                                         />
                                         {/* Main Card Star Icon */}
-                                        {!String(card.card_id).startsWith('mock-') && (
+                                        {true && (
                                             <div
                                                 className={`main-card-star ${card.card_main === 1 ? 'is-main' : ''}`}
                                                 onClick={(e) => {

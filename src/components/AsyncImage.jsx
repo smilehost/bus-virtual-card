@@ -4,10 +4,13 @@ import './AsyncImage.css';
 const AsyncImage = ({ src, alt, className, style }) => {
     const [isLoaded, setIsLoaded] = useState(false);
 
+    // Treat empty string as null to avoid React warning
+    const validSrc = src || null;
+
     return (
         <div className={`async-img-wrapper ${className || ''}`} style={{ position: 'relative', overflow: 'hidden', ...style }}>
-            {/* Skeleton Loader */}
-            {!isLoaded && (
+            {/* Skeleton Loader - Only show if validSrc exists and not loaded */}
+            {validSrc && !isLoaded && (
                 <div className="skeleton-loader" style={{
                     position: 'absolute',
                     top: 0,
@@ -19,20 +22,22 @@ const AsyncImage = ({ src, alt, className, style }) => {
             )}
 
             {/* Actual Image */}
-            <img
-                src={src}
-                alt={alt}
-                onLoad={() => setIsLoaded(true)}
-                className={className} /* Pass class to img tag as well if needed, or handle via wrapper */
-                style={{
-                    opacity: isLoaded ? 1 : 0,
-                    transition: 'opacity 0.5s ease-in-out',
-                    width: '100%',
-                    height: '100%',
-                    display: 'block',
-                    objectFit: 'cover'
-                }}
-            />
+            {validSrc && (
+                <img
+                    src={validSrc}
+                    alt={alt}
+                    onLoad={() => setIsLoaded(true)}
+                    className={className} /* Pass class to img tag as well if needed, or handle via wrapper */
+                    style={{
+                        opacity: isLoaded ? 1 : 0,
+                        transition: 'opacity 0.5s ease-in-out',
+                        width: '100%',
+                        height: '100%',
+                        display: 'block',
+                        objectFit: 'cover'
+                    }}
+                />
+            )}
         </div>
     );
 };
