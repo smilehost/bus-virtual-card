@@ -5,8 +5,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* Clean gradient using project colors */
-    background: var(--bg-primary);
+    /* Cool Transit gradient - uses theme variable */
+    background: var(--bg-gradient);
     position: relative;
     z-index: 1;
 }

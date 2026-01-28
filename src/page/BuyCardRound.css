@@ -1,8 +1,8 @@
 /* Buy Virtual Card Page - Friendly Light Theme */
 .buy-card-container {
     min-height: 100vh;
-    /* Clean gradient using project colors */
-    background: var(--bg-primary);
+    /* Cool Transit gradient - uses theme variable */
+    background: var(--bg-gradient);
     color: var(--text-primary);
     padding: clamp(16px, 5vw, 24px);
     padding-bottom: 90px;
