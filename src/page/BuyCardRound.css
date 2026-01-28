@@ -1,8 +1,8 @@
 /* Buy Virtual Card Page - Friendly Light Theme */
 .buy-card-container {
     min-height: 100vh;
-    background-color: transparent;
-    /* Allows global bg to show, or use ::after */
+    /* Clean gradient using project colors */
+    background: linear-gradient(180deg, #FFF8E1 0%, var(--bg-secondary) 100%);
     color: var(--text-primary);
     padding: clamp(16px, 5vw, 24px);
     padding-bottom: 90px;
@@ -17,7 +17,7 @@
     z-index: 1;
 }
 
-/* Background Image Removed - Uses Global Theme */
+/* Background Image Layer Removed */
 
 /* Sky Blue Header Background Removed */
 

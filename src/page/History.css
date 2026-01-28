@@ -8,8 +8,8 @@
     flex-direction: column;
     position: relative;
     z-index: 1;
-    background: var(--bg-primary);
-    /* Ensure consistent background */
+    /* Clean gradient using project colors */
+    background: linear-gradient(180deg, #FFF8E1 0%, var(--bg-secondary) 100%);
 }
 
 /* Header Text - Dark now */

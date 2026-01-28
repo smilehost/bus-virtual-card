@@ -5,12 +5,13 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: transparent;
+    /* Clean gradient using project colors */
+    background: linear-gradient(180deg, #FFF8E1 0%, var(--bg-secondary) 100%);
     position: relative;
     z-index: 1;
 }
 
-/* Background Image Removed - Uses Global Theme */
+/* Background Image Layer Removed */
 
 .register-lang-btn,
 .register-theme-btn {
@@ -60,7 +61,6 @@
     margin-bottom: 8px;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
-    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 

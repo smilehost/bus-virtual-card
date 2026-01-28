@@ -1,8 +1,8 @@
 /* Profile Page Redesign */
 
 .profile-page {
-    background-color: var(--bg-primary);
-    /* Light/Dark theme background */
+    /* Clean gradient using project colors */
+    background: linear-gradient(180deg, #FFF8E1 0%, var(--bg-secondary) 100%);
     min-height: 100vh;
     color: var(--text-primary);
     padding-bottom: 40px;
