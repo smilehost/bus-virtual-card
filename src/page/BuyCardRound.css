@@ -17,23 +17,7 @@
     z-index: 1;
 }
 
-/* Background Image Layer - Like Home */
-.buy-card-container::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 400px;
-    background-image: url('../assets/bg-bussing-kkc.png');
-    background-size: cover;
-    background-position: center top;
-    opacity: 0.8;
-    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-    z-index: -2;
-    pointer-events: none;
-}
+/* Background Image Removed - Uses Global Theme */
 
 /* Sky Blue Header Background Removed */
 

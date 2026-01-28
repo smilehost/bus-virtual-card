@@ -14,23 +14,7 @@
     z-index: 1;
 }
 
-/* Global Background */
-.main-layout::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 400px;
-    background-image: url('../assets/bg-bussing-kkc.png');
-    background-size: cover;
-    background-position: center top;
-    opacity: 0.5;
-    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-    z-index: -1;
-    pointer-events: none;
-}
+/* Global Background Removed - Uses App.css Gradient */
 
 /* For larger screens, keep the mobile app feel */
 @media (min-width: 768px) {

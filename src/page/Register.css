@@ -10,20 +10,7 @@
     z-index: 1;
 }
 
-.register-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('../assets/bg-bussing-kkc.png');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.1;
-    pointer-events: none;
-    z-index: -1;
-}
+/* Background Image Removed - Uses Global Theme */
 
 .register-lang-btn,
 .register-theme-btn {
@@ -73,6 +60,7 @@
     margin-bottom: 8px;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
