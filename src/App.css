@@ -19,6 +19,8 @@
   --primary-color-alpha: rgba(255, 165, 0, 0.5);
   --nav-bg: #FFFFFF;
   --nav-border: rgba(0, 0, 0, 0.05);
+  /* Cool Transit gradient for light mode */
+  --bg-gradient: linear-gradient(180deg, #E3F2FD 0%, #F5F7FA 100%);
 }
 
 /* Dark Mode Variables */
@@ -34,6 +36,8 @@
   --primary-color-alpha: rgba(255, 165, 0, 0.3);
   --nav-bg: rgba(22, 27, 34, 0.95);
   --nav-border: rgba(240, 246, 252, 0.1);
+  /* Cool Transit gradient for dark mode (dark blue tint) */
+  --bg-gradient: linear-gradient(180deg, #0d1a26 0%, #0a0e14 100%);
 }
 
 /* Base Styles */

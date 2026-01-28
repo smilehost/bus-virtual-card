@@ -1,8 +1,8 @@
 /* Profile Page Redesign */
 
 .profile-page {
-    background-color: var(--bg-primary);
-    /* Light/Dark theme background */
+    /* Cool Transit gradient - uses theme variable */
+    background: var(--bg-gradient);
     min-height: 100vh;
     color: var(--text-primary);
     padding-bottom: 40px;
@@ -105,7 +105,7 @@
 /* Primary Scan Button */
 .scan-primary-btn {
     margin: 0 24px;
-    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
     color: white;
     border: none;
     border-radius: 20px;
@@ -113,9 +113,27 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+    box-shadow: 0 8px 20px rgba(6, 182, 212, 0.4);
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.scan-primary-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    z-index: 1;
+}
+
+.scan-primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(6, 182, 212, 0.5);
 }
 
 .scan-primary-btn:active {
@@ -157,7 +175,7 @@
 .btn-arrow {
     font-size: 24px;
     background: white;
-    color: #1976D2;
+    color: #06b6d4;
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -165,6 +183,8 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 2;
 }
 
 /* Filter Tabs - Sticky */
@@ -265,17 +285,16 @@
     border-radius: 24px;
     overflow: hidden;
     position: relative;
-    aspect-ratio: 3/4.5;
-    /* Tall Portrait */
+    /* Remove fixed aspect ratio to fit image naturally */
+    height: auto;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     border: 4px solid white;
-    /* Border like a physical card holder */
 }
 
 .card-image-container {
-    flex: 1;
+    width: 100%;
     position: relative;
     overflow: hidden;
     background: #f0f0f0;
@@ -283,8 +302,8 @@
 
 .p-card-img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    display: block;
 }
 
 .card-overlay {
@@ -480,4 +499,128 @@
 
 .toggle-switch input:checked+.toggle-slider:before {
     transform: translateX(20px);
+}
+
+/* Profile Lock Overlay */
+.profile-lock-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: white;
+    z-index: 5;
+}
+
+.profile-lock-overlay svg {
+    opacity: 0.9;
+}
+
+.profile-lock-overlay span {
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.profile-card-wrapper.locked {
+    cursor: not-allowed;
+}
+
+.profile-card-wrapper.locked .card-mini-details {
+    opacity: 0.6;
+}
+
+/* Profile Main Star */
+.profile-main-star {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.profile-main-star.is-main {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+/* Badge Styling */
+.profile-card-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    color: white;
+    z-index: 4;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.profile-card-badge.warning {
+    background: linear-gradient(135deg, #FF5252 0%, #FF1744 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.profile-card-badge:before {
+    content: '!';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    background: white;
+    color: #FF1744;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+/* Skeleton Loader Animation */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton-loader {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    /* border-radius: inherit; handled inline or by parent */
+}
+
+/* Dark Mode Skeleton */
+[data-theme='dark'] .skeleton-loader {
+    background: linear-gradient(90deg, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%);
 }

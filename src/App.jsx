@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import MainLayout from './layout/Mainlayout';
-import Home from './page/home';
+import Home from './page/Home';
 import History from './page/History';
 import './App.css';
 import BuyCardRound from './page/BuyCardRound';
@@ -10,8 +10,16 @@ import Register from './page/Register';
 
 import { useLiff } from './context/LiffContext';
 import { getMemberByUserId } from './services/memberService';
+import { ToastProvider, useToast } from './context/ToastContext';
+import useSSE from './hooks/useSSE';
 
-function App() {
+// Component to run the hook inside the provider
+const SSEListener = () => {
+  useSSE();
+};
+
+
+function AppContent() {
   const [activeTab, setActiveTab] = useState('home');
   const { profile, isLoggedIn } = useLiff();
   const [isCheckingMember, setIsCheckingMember] = useState(false);
@@ -64,10 +72,18 @@ function App() {
 
   return (
     <MainLayout activeTab={activeTab} onTabChange={handleTabChange}>
+      <SSEListener />
       {renderPage()}
     </MainLayout>
   );
 }
 
-export default App;
+function App() {
+  return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
+  );
+}
 
+export default App;

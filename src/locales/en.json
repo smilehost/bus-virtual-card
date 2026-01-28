@@ -7,6 +7,7 @@
         "close": "Close",
         "confirm": "Confirm",
         "success": "Success",
+        "verify": "Verify",
         "purchase": "Purchase",
         "topup": "Top Up",
         "minutes": "minutes",
@@ -71,7 +72,17 @@
         "scan_qr": "Scan QR Code",
         "scan_description": "Scan to add a new card to your wallet",
         "error_card_owned_title": "Card Unavailable",
-        "error_card_owned_message": "This card already has an owner."
+        "error_card_owned_message": "This card already has an owner.",
+        "card_added_success": "Card added successfully!",
+        "error_card_not_found": "Card not found",
+        "verify_cancelled": "Card addition cancelled",
+        "expiring_soon": "Expiring Soon"
+    },
+    "verify_modal": {
+        "title": "Verify Card Details",
+        "instruction": "Please enter the code printed in card",
+        "placeholder": "Enter verification code",
+        "error_empty": "Code cannot be empty"
     },
     "topup": {
         "title": "Top Up Wallet",
@@ -138,7 +149,20 @@
         "scan_failed": "Scan Failed",
         "scan_error": "Scan Error",
         "your_qr_code": "Your QR Code",
-        "flip_back": "Flip Back"
+        "flip_back": "Flip Back",
+        "lock_confirm_title": "Confirm Lock Card",
+        "lock_confirm_message": "Are you sure you want to lock this card? Once locked, you will not be able to view the QR Code or card information until you unlock it.",
+        "unlock_confirm_title": "Confirm Unlock Card",
+        "unlock_confirm_message": "Do you want to unlock this card?",
+        "card_is_locked": "This card is locked",
+        "card_locked_description": "Please unlock to view card details and use",
+        "unlock_button": "Unlock Card",
+        "set_main_card": "Set as Main Card",
+        "main_card": "Main Card",
+        "main_card_confirm_title": "Set as Main Card?",
+        "main_card_confirm_message": "Do you want to set this card as your main card?",
+        "main_card_replace_title": "Change Main Card?",
+        "main_card_replace_message": "You already have a main card. Do you want to change it to this card?"
     },
     "success_modal": {
         "title": "Top Up Successful!",

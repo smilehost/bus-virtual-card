@@ -2,23 +2,26 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
 import { useTranslation } from 'react-i18next';
-import { linkCardToUser } from '../services/cardService';
+import { linkCardToUser, findCardByHash, verifyCardQrCode } from '../services/cardService';
+import { getUploadUrl } from '../services/api';
 import liff from '@line/liff';
 import { Html5Qrcode } from 'html5-qrcode';
 import './Profile.css';
 import '../page/authentic-card.css';
 
-// Import Card Images
-import CardImage from '../assets/FREE_SHUTTLE_Card.png';
-import CardBusAdult from '../assets/card_bus_adult.png';
-import CardBusStudent from '../assets/card_bus_student.png';
-import CardBusOneDayPass from '../assets/card_bus_onedaypass.png';
+// Import Card Images - Removed as requested
+// import CardImage from '../assets/FREE_SHUTTLE_Card.png';
+// import CardBusAdult from '../assets/card_bus_adult.png';
+// import CardBusStudent from '../assets/card_bus_student.png';
+// import CardBusOneDayPass from '../assets/card_bus_onedaypass.png';
 
 import { getMemberByUserId } from '../services/memberService';
 import { useTheme } from '../context/ThemeContext';
 // Import Modal
 import ProfileCardDetailModal from '../components/ProfileCardDetailModal';
+import VerifyCardModal from '../components/VerifyCardModal';
 import AlertModal from '../components/AlertModal';
+import AsyncImage from '../components/AsyncImage'; // Shared component
 
 // Format card balance display
 const formatBalance = (balance, cardType) => {
@@ -44,24 +47,35 @@ const getCardStatus = (card) => {
 
 // Helper to determine image
 const getCardImage = (card) => {
-    if (!card) return CardImage;
+    if (!card) return '';
+    // Use API image if available
+    const imagePath = card.card_group_image || card.card_group?.card_group_image;
+    if (imagePath) {
+        return getUploadUrl(imagePath);
+    }
+    // No fallback to local assets
+    return '';
+};
 
-    // Type 1: Money Card / One-Day Pass (if distinguished)
-    if (card.card_type === 1) {
-        // Could distinguish One Day Pass if needed, for now use Adult or generic
-        const name = (card.card_name || '').toLowerCase();
-        if (name.includes('one-day') || name.includes('oneday')) return CardBusOneDayPass;
-        return CardBusAdult;
+const getCardBadgeStatus = (card) => {
+    // Only check active cards that have an expiration date
+    if (card.card_type === 0 && card.card_balance === 0) return null; // Expired by rounds
+    if (!card.card_expire_date) return null;
+
+    const expiryDate = new Date(card.card_expire_date);
+    const now = new Date();
+
+    // Already expired - logic handled by getCardStatus, but we might want a distinct badge if needed.
+    // However, goal is "Expiring Soon".
+    if (expiryDate < now) return null;
+
+    // Check if within 3 days
+    const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+    if (expiryDate - now < threeDaysInMs) {
+        return 'expiring_soon';
     }
 
-    const name = (card.card_name || '').toLowerCase();
-
-    // Check specific names
-    if (name.includes('adult') || name.includes('ผู้ใหญ่')) return CardBusAdult;
-    if (name.includes('student') || name.includes('นักเรียน')) return CardBusStudent;
-
-    // "forline" or default -> Free Shuttle Image
-    return CardImage;
+    return null;
 };
 
 const Profile = ({ onNavigate }) => {
@@ -77,8 +91,13 @@ const Profile = ({ onNavigate }) => {
     const sliderRef = useRef(null);
 
     // Detail Modal State
+    // Detail Modal State
     const [selectedCard, setSelectedCard] = useState(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+    // Verify Modal State
+    const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
+    const [verifyingHash, setVerifyingHash] = useState(null);
 
     // Fetch cards
     useEffect(() => {
@@ -103,8 +122,9 @@ const Profile = ({ onNavigate }) => {
     // Filter Logic
     const filteredCards = cards.filter(card => {
         const status = getCardStatus(card);
+        const isLocked = card.card_lock === 0;
         if (filter === 'all') return true;
-        if (filter === 'active') return status === 'active'; // 'new' is also active effectively
+        if (filter === 'active') return status === 'active' && !isLocked; // Exclude locked cards from active
         if (filter === 'expired') return status === 'expired';
         return true;
     });
@@ -229,27 +249,62 @@ const Profile = ({ onNavigate }) => {
         setIsProcessing(true);
         try {
             const lastPart = hash.split('/').pop();
-            await linkCardToUser(lastPart, memberData.member_id);
-            showAlert('success', 'Success', 'Card added!');
-            fetchCardsByUuid(profile.userId);
+
+            console.log("Processing Scan Hash:", lastPart);
+
+            // 1. Check if card exists
+            await findCardByHash(lastPart);
+
+            // 2. If exists, open verify modal
+            setVerifyingHash(lastPart);
+            setIsVerifyModalOpen(true);
+
         } catch (error) {
-            console.error("Link Card Error:", error);
-            const errorMessage = error?.message || "";
-            if (errorMessage.includes("การ์ดนี้มีเจ้าของแล้ว")) {
-                showAlert('error', t('profile.error_card_owned_title'), t('profile.error_card_owned_message'));
-            } else {
-                showAlert('error', 'Failed', 'Invalid card');
-            }
+            console.error("Scan Process Error:", error);
+            const errorMessage = error?.message || error?.data?.message || t('profile.error_card_not_found') || 'Card not found';
+            showAlert('error', t('common.error'), errorMessage);
         } finally {
             setIsProcessing(false);
         }
+    };
+
+    const handleVerifyCard = async (code) => {
+        if (!verifyingHash || !memberData?.member_id) return;
+
+        try {
+            // 3. Verify Code & Link (Handled by backend now)
+            await verifyCardQrCode(verifyingHash, code, memberData.member_id);
+
+            setIsVerifyModalOpen(false);
+            setVerifyingHash(null);
+
+            showAlert('success', t('common.success'), t('profile.card_added_success') || 'Card added successfully!');
+            fetchCardsByUuid(profile.userId);
+
+        } catch (error) {
+            console.error("Verification Error:", error);
+            const errorMessage = error?.data?.message || error?.message || "Verification Failed";
+
+            if (errorMessage.includes("มีเจ้าของแล้ว") || errorMessage.includes("owned")) {
+                showAlert('error', t('profile.error_card_owned_title'), errorMessage);
+            } else {
+                showAlert('error', t('common.error'), errorMessage);
+            }
+        }
+    };
+
+    const handleCloseVerifyModal = () => {
+        setIsVerifyModalOpen(false);
+        setVerifyingHash(null);
+        // Explicitly treating exit as failure/cancellation as requested
+        showAlert('error', t('common.error') || 'Error', t('profile.verify_cancelled') || 'Card addition cancelled');
     };
 
     return (
         <div className="profile-page">
             <header className="profile-header">
                 <div className="avatar-small">
-                    {profile?.pictureUrl ? <img src={profile.pictureUrl} alt="Avatar" /> : <div className="avatar-placeholder">?</div>}
+                    {profile?.pictureUrl ? <AsyncImage src={profile.pictureUrl} alt="Avatar" /> : <div className="avatar-placeholder">?</div>}
                 </div>
                 <div className="header-info">
                     <h1>{profile?.displayName || 'Guest'}</h1>
@@ -301,21 +356,52 @@ const Profile = ({ onNavigate }) => {
                             <div className="profile-carousel" onScroll={handleScroll} ref={sliderRef}>
                                 {filteredCards.map((card, index) => {
                                     const status = getCardStatus(card);
+                                    const isLocked = card.card_lock === 0;
+                                    const isMainCard = card.card_main === 1;
                                     return (
                                         <div
                                             key={card.card_id}
-                                            className={`profile-card-wrapper ${index === currentCardIndex ? 'focused' : ''}`}
-                                            onClick={() => handleCardClick(card)}
+                                            className={`profile-card-wrapper ${index === currentCardIndex ? 'focused' : ''} ${isLocked ? 'locked' : ''}`}
+                                            onClick={() => !isLocked && handleCardClick(card)}
                                         >
                                             <div className={`profile-card ${status}`}>
                                                 <div className="card-image-container">
-                                                    <img src={getCardImage(card)} alt="Card" className="p-card-img" />
-                                                    {status !== 'active' && <div className="card-overlay">{status}</div>}
+                                                    <AsyncImage src={getCardImage(card)} alt="Card" className="p-card-img" />
+                                                    {/* Main Card Star */}
+                                                    <div className={`profile-main-star ${isMainCard ? 'is-main' : ''}`}>
+                                                        {isMainCard ? (
+                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                                            </svg>
+                                                        ) : (
+                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    {/* Lock Overlay */}
+                                                    {isLocked && (
+                                                        <div className="profile-lock-overlay">
+                                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                                                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                                                            </svg>
+                                                            <span>{t('card_detail.card_is_locked')}</span>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Expiry Badge */}
+                                                    {!isLocked && getCardBadgeStatus(card) === 'expiring_soon' && (
+                                                        <div className="profile-card-badge warning">
+                                                            {t('profile.expiring_soon')}
+                                                        </div>
+                                                    )}
+
+                                                    {status !== 'active' && !isLocked && <div className="card-overlay">{status}</div>}
                                                 </div>
                                                 <div className="card-mini-details">
                                                     <span className="p-card-name">{card.card_name || 'Card'}</span>
                                                     <span className="p-card-balance">
-                                                        {formatBalance(card.card_balance, card.card_type).value}
+                                                        {isLocked ? '***' : formatBalance(card.card_balance, card.card_type).value}
                                                         <small>{card.card_type === 0 ? t('buy_card.rounds') : 'THB'}</small>
                                                     </span>
                                                 </div>
@@ -355,6 +441,13 @@ const Profile = ({ onNavigate }) => {
                 isOpen={isDetailModalOpen}
                 onClose={() => setIsDetailModalOpen(false)}
                 card={selectedCard}
+            />
+
+            {/* Verify Modal */}
+            <VerifyCardModal
+                isOpen={isVerifyModalOpen}
+                onClose={handleCloseVerifyModal}
+                onVerify={handleVerifyCard}
             />
 
             <AlertModal isOpen={alertState.isOpen} onClose={closeAlert} type={alertState.type} title={alertState.title} message={alertState.message} />

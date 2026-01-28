@@ -8,8 +8,8 @@
     flex-direction: column;
     position: relative;
     z-index: 1;
-    background: var(--bg-primary);
-    /* Ensure consistent background */
+    /* Cool Transit gradient - uses theme variable */
+    background: var(--bg-gradient);
 }
 
 /* Header Text - Dark now */
