@@ -75,7 +75,8 @@
         "error_card_owned_message": "การ์ดนี้มีเจ้าของแล้ว ไม่สามารถเปลี่ยนแปลงได้",
         "card_added_success": "เพิ่มบัตรสำเร็จ!",
         "error_card_not_found": "ไม่พบข้อมูลบัตร",
-        "verify_cancelled": "ยกเลิกการเพิ่มบัตร"
+        "verify_cancelled": "ยกเลิกการเพิ่มบัตร",
+        "expiring_soon": "ใกล้หมดอายุ"
     },
     "verify_modal": {
         "title": "ยืนยันข้อมูลบัตร",

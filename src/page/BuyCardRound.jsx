@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import './BuyCardRound.css';
 import '../page/authentic-card.css';
 import FreeShuttleCard from '../assets/FREE_SHUTTLE_Card.png';
+import AsyncImage from '../components/AsyncImage'; // Import AsyncImage
+
 
 const BackIcon = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -188,13 +190,13 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                                 <div className="preview-container" style={{ display: 'flex', justifyContent: 'center', marginBottom: '0px', paddingBottom: '0px' }}>
                                     {isFreeShuttle ? (
                                         <div className="preview-card-image-wrapper">
-                                            <img
+                                            <AsyncImage
                                                 src={FreeShuttleCard}
                                                 alt={selectedCardGroup.card_group_name}
                                                 className="preview-card-img"
                                                 style={{
                                                     width: '100%',
-                                                    maxWidth: '100px', // Reduced from 240px
+                                                    maxWidth: '100px',
                                                     borderRadius: '16px',
                                                     boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
                                                 }}

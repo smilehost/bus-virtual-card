@@ -20,6 +20,7 @@ import { useTheme } from '../context/ThemeContext';
 import ProfileCardDetailModal from '../components/ProfileCardDetailModal';
 import VerifyCardModal from '../components/VerifyCardModal';
 import AlertModal from '../components/AlertModal';
+import AsyncImage from '../components/AsyncImage'; // Shared component
 
 // Format card balance display
 const formatBalance = (balance, cardType) => {
@@ -63,6 +64,27 @@ const getCardImage = (card) => {
 
     // "forline" or default -> Free Shuttle Image
     return CardImage;
+};
+
+const getCardBadgeStatus = (card) => {
+    // Only check active cards that have an expiration date
+    if (card.card_type === 0 && card.card_balance === 0) return null; // Expired by rounds
+    if (!card.card_expire_date) return null;
+
+    const expiryDate = new Date(card.card_expire_date);
+    const now = new Date();
+
+    // Already expired - logic handled by getCardStatus, but we might want a distinct badge if needed.
+    // However, goal is "Expiring Soon".
+    if (expiryDate < now) return null;
+
+    // Check if within 3 days
+    const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+    if (expiryDate - now < threeDaysInMs) {
+        return 'expiring_soon';
+    }
+
+    return null;
 };
 
 const Profile = ({ onNavigate }) => {
@@ -291,7 +313,7 @@ const Profile = ({ onNavigate }) => {
         <div className="profile-page">
             <header className="profile-header">
                 <div className="avatar-small">
-                    {profile?.pictureUrl ? <img src={profile.pictureUrl} alt="Avatar" /> : <div className="avatar-placeholder">?</div>}
+                    {profile?.pictureUrl ? <AsyncImage src={profile.pictureUrl} alt="Avatar" /> : <div className="avatar-placeholder">?</div>}
                 </div>
                 <div className="header-info">
                     <h1>{profile?.displayName || 'Guest'}</h1>
@@ -353,7 +375,7 @@ const Profile = ({ onNavigate }) => {
                                         >
                                             <div className={`profile-card ${status}`}>
                                                 <div className="card-image-container">
-                                                    <img src={getCardImage(card)} alt="Card" className="p-card-img" />
+                                                    <AsyncImage src={getCardImage(card)} alt="Card" className="p-card-img" />
                                                     {/* Main Card Star */}
                                                     <div className={`profile-main-star ${isMainCard ? 'is-main' : ''}`}>
                                                         {isMainCard ? (
@@ -375,6 +397,14 @@ const Profile = ({ onNavigate }) => {
                                                             <span>{t('card_detail.card_is_locked')}</span>
                                                         </div>
                                                     )}
+
+                                                    {/* Expiry Badge */}
+                                                    {!isLocked && getCardBadgeStatus(card) === 'expiring_soon' && (
+                                                        <div className="profile-card-badge warning">
+                                                            {t('profile.expiring_soon')}
+                                                        </div>
+                                                    )}
+
                                                     {status !== 'active' && !isLocked && <div className="card-overlay">{status}</div>}
                                                 </div>
                                                 <div className="card-mini-details">

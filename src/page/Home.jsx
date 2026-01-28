@@ -10,6 +10,8 @@ import CardBusAdult from '../assets/card_bus_adult.png';
 import CardBusStudent from '../assets/card_bus_student.png';
 import CardBusOneDayPass from '../assets/card_bus_onedaypass.png';
 import useImageColor from '../hooks/useImageColor';
+import AsyncImage from '../components/AsyncImage'; // Import AsyncImage
+
 
 // Static card data for display (UI only - Mock data) - Matches YourCard.jsx
 const staticCards = [
@@ -464,7 +466,7 @@ const Home = ({ onNavigate }) => {
                                 <div className={`flip-card ${index === currentCardIndex && isFlipped && !cardIsLocked ? 'flipped' : ''}`}>
                                     {/* Front Side - Card Image */}
                                     <div className="flip-card-front">
-                                        <img
+                                        <AsyncImage
                                             src={getCardImage(card)}
                                             alt="Card"
                                             className="card-image"
@@ -511,7 +513,7 @@ const Home = ({ onNavigate }) => {
                                     {/* Back Side - QR Code */}
                                     <div className="flip-card-back">
                                         <div className="card-back-blur">
-                                            <img
+                                            <AsyncImage
                                                 src={getCardImage(card)}
                                                 alt="Card Background"
                                                 className="card-image-blurred"

@@ -75,7 +75,8 @@
         "error_card_owned_message": "This card already has an owner.",
         "card_added_success": "Card added successfully!",
         "error_card_not_found": "Card not found",
-        "verify_cancelled": "Card addition cancelled"
+        "verify_cancelled": "Card addition cancelled",
+        "expiring_soon": "Expiring Soon"
     },
     "verify_modal": {
         "title": "Verify Card Details",
