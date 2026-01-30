@@ -7,6 +7,7 @@ import CooldownModal from './CooldownModal';
 import { useCardStore } from '../store/cardStore';
 import { useLiff } from '../context/LiffContext';
 import { useTranslation } from 'react-i18next';
+import { getMemberData } from '../services/authService';
 
 // Back Arrow Icon
 const BackIcon = () => (
@@ -158,7 +159,8 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
 
     const handleCloseSuccess = () => {
         setShowSuccess(false);
-        if (profile?.userId) fetchCardsByUuid(profile.userId);
+        const memberData = getMemberData();
+        if (memberData?.member_id) fetchCardsByUuid(memberData.member_id);
         onClose();
         if (onScanSuccess) onScanSuccess();
     };
@@ -166,7 +168,8 @@ function CardDetailModal({ card, onClose, onScanSuccess, isOpen }) {
     const cardName = card.card_type === 1 ? t('home.money_card') : t('home.round_card');
 
     const handleBackClick = () => {
-        if (profile?.userId) fetchCardsByUuid(profile.userId);
+        const memberData = getMemberData();
+        if (memberData?.member_id) fetchCardsByUuid(memberData.member_id);
         onClose();
     };
 

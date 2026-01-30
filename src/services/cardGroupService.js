@@ -12,6 +12,7 @@ export const getVirtualCardGroups = async (companyId = 1) => {
         const response = await apiRequest(`/cardGroup/virtual/${companyId}`, {
             method: 'GET',
             headers: {
+                'com_id': companyId.toString(),
                 'Authorization': `Bearer ${getToken()}`
             }
         });

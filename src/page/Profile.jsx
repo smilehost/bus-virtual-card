@@ -4,6 +4,7 @@ import { useCardStore } from '../store/cardStore';
 import { useTranslation } from 'react-i18next';
 import { linkCardToUser, findCardByHash, verifyCardQrCode } from '../services/cardService';
 import { getUploadUrl } from '../services/api';
+import { getMemberData } from '../services/authService';
 import liff from '@line/liff';
 import { Html5Qrcode } from 'html5-qrcode';
 import './Profile.css';
@@ -101,10 +102,11 @@ const Profile = ({ onNavigate }) => {
 
     // Fetch cards
     useEffect(() => {
-        if (profile?.userId) {
-            fetchCardsByUuid(profile.userId);
+        const storedMember = getMemberData();
+        if (storedMember?.member_id) {
+            fetchCardsByUuid(storedMember.member_id);
         }
-    }, [profile?.userId, fetchCardsByUuid]);
+    }, [fetchCardsByUuid]);
 
     // Member Data
     useEffect(() => {
@@ -279,7 +281,10 @@ const Profile = ({ onNavigate }) => {
             setVerifyingHash(null);
 
             showAlert('success', t('common.success'), t('profile.card_added_success') || 'Card added successfully!');
-            fetchCardsByUuid(profile.userId);
+            const storedMember = getMemberData();
+            if (storedMember?.member_id) {
+                fetchCardsByUuid(storedMember.member_id);
+            }
 
         } catch (error) {
             console.error("Verification Error:", error);

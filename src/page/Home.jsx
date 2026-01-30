@@ -4,6 +4,7 @@ import { useCardStore } from '../store/cardStore';
 import { useLiff } from '../context/LiffContext';
 import { useTranslation } from 'react-i18next';
 import { lockCard, setCardMain } from '../services/cardService';
+import { getMemberData } from '../services/authService';
 import './home.css';
 import useImageColor from '../hooks/useImageColor';
 import AsyncImage from '../components/AsyncImage'; // Import AsyncImage
@@ -59,10 +60,11 @@ const Home = ({ onNavigate }) => {
 
     // Fetch cards when profile is loaded
     useEffect(() => {
-        if (profile?.userId) {
-            fetchCardsByUuid(profile.userId);
+        const memberData = getMemberData();
+        if (memberData?.member_id) {
+            fetchCardsByUuid(memberData.member_id);
         }
-    }, [profile?.userId, fetchCardsByUuid]);
+    }, [fetchCardsByUuid]);
 
     // Filter out expired cards and sort
     const activeApiCards = cards
@@ -295,8 +297,9 @@ const Home = ({ onNavigate }) => {
             }
 
             // Refresh cards data from server
-            if (profile?.userId) {
-                await fetchCardsByUuid(profile.userId);
+            const memberData = getMemberData();
+            if (memberData?.member_id) {
+                await fetchCardsByUuid(memberData.member_id);
             }
         } catch (error) {
             console.error('Failed to lock/unlock card:', error);
@@ -333,14 +336,15 @@ const Home = ({ onNavigate }) => {
             // const cardIdStr = String(currentCard.card_id);
             // // Skip API call for mock cards
             // if (!cardIdStr.startsWith('mock-')) {
-            // Use member_id from member context
-            const cardUserId = member?.member_id || currentCard.card_user_id;
+            // Use member_id from localStorage
+            const memberData = getMemberData();
+            const cardUserId = memberData?.member_id || currentCard.card_user_id;
             await setCardMain(currentCard.card_id, cardUserId);
             // }
 
             // Refresh cards data from server
-            if (profile?.userId) {
-                await fetchCardsByUuid(profile.userId);
+            if (memberData?.member_id) {
+                await fetchCardsByUuid(memberData.member_id);
                 // Reset to first card since main card will be at the front
                 setCurrentCardIndex(0);
             }

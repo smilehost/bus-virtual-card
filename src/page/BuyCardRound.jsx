@@ -5,6 +5,7 @@ import { getVirtualCardGroups, createCardByLine } from '../services/cardGroupSer
 import { useLiff } from '../context/LiffContext';
 import { useCardStore } from '../store/cardStore';
 import { useTranslation } from 'react-i18next';
+import { getMemberData } from '../services/authService';
 import './BuyCardRound.css';
 import AsyncImage from '../components/AsyncImage'; // Import AsyncImage
 import { getUploadUrl } from '../services/api';
@@ -122,8 +123,9 @@ const BuyCardRound = ({ onBack, onBuySuccess }) => {
                 }
 
                 // Fetch latest cards immediately
-                if (profile?.userId) {
-                    fetchCardsByUuid(profile.userId);
+                const memberData = getMemberData();
+                if (memberData?.member_id) {
+                    fetchCardsByUuid(memberData.member_id);
                 }
 
                 setIsSuccess(true);
