@@ -1,5 +1,6 @@
 // Card Service - API calls related to cards
 import { get, post, put } from './api';
+import { getToken } from './authService';
 
 /**
  * Check cards by user UUID (LINE User ID)
@@ -10,7 +11,8 @@ export const checkCardByUuid = async (uuid) => {
     try {
         const response = await get(`/card/check-card/${uuid}`, {
             headers: {
-                com_id: 1
+                com_id: 1,
+                'Authorization': `Bearer ${getToken()}`
             }
         });
         return response;
@@ -46,7 +48,8 @@ export const lockCard = async (cardId, lockStatus) => {
             { card_lock: lockStatus },
             {
                 headers: {
-                    'com_id': '1'
+                    'com_id': '1',
+                    'Authorization': `Bearer ${getToken()}`
                 }
             }
         );
@@ -69,7 +72,8 @@ export const setCardMain = async (cardId, cardUserId) => {
             { card_user_id: cardUserId },
             {
                 headers: {
-                    'com_id': '1'
+                    'com_id': '1',
+                    'Authorization': `Bearer ${getToken()}`
                 }
             }
         );
@@ -91,7 +95,8 @@ export const linkCardToUser = async (cardHash, memberId) => {
             { member_id: memberId },
             {
                 headers: {
-                    'com_id': '1'
+                    'com_id': '1',
+                    'Authorization': `Bearer ${getToken()}`
                 }
             }
         );
@@ -117,7 +122,8 @@ export const verifyCardQrCode = async (cardHash, cardQrcode, memberId) => {
             member_id: memberId
         }, {
             headers: {
-                com_id: 1
+                com_id: 1,
+                'Authorization': `Bearer ${getToken()}`
             }
         });
         return response;
@@ -139,7 +145,8 @@ export const findCardByHash = async (cardHash) => {
         // If this fails, we might need to adjust the endpoint.
         const response = await get(`/card/getCard/${cardHash}`, {
             headers: {
-                com_id: 1
+                com_id: 1,
+                'Authorization': `Bearer ${getToken()}`
             }
         });
         return response;

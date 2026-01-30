@@ -1,4 +1,5 @@
 import { get, post } from './api';
+import { getToken } from './authService';
 
 /**
  * Get member details by User ID
@@ -9,7 +10,8 @@ export const getMemberByUserId = async (userId, comId = 1) => {
     try {
         const response = await get(`/member/getByUserId/${userId}`, {
             headers: {
-                'com_id': comId.toString()
+                'com_id': comId.toString(),
+                'Authorization': `Bearer ${getToken()}`
             }
         });
         return response;

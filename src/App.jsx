@@ -9,7 +9,7 @@ import Profile from './page/Profile';
 import Register from './page/Register';
 
 import { useLiff } from './context/LiffContext';
-import { getMemberByUserId } from './services/memberService';
+import { checkOrRegister } from './services/authService';
 import { ToastProvider, useToast } from './context/ToastContext';
 import useSSE from './hooks/useSSE';
 
@@ -30,14 +30,19 @@ function AppContent() {
       if (isLoggedIn && profile?.userId) {
         try {
           setIsCheckingMember(true);
-          // Try to get member data
-          await getMemberByUserId(profile.userId);
-          // If successful, user is registered. Stay on current tab or default relative to logic
-          // But if they are NOT registered, getMemberByUserId usually throws or returns error?
-          // Based on service implementation: "throw error" on catch.
+          // Call check-or-register API
+          const response = await checkOrRegister(profile.userId);
+
+          // Check member status from response
+          if (response.data?.member?.member_status === 'inactive') {
+            // User needs to complete registration
+            console.log("Member inactive, redirecting to register");
+            setActiveTab('register');
+          }
+          // If active, stay on current tab (home by default)
         } catch (error) {
-          // If error (likely 404 or not found), force register
-          console.log("User not found, redirecting to register");
+          // If error, redirect to register
+          console.log("Auth error, redirecting to register:", error);
           setActiveTab('register');
         } finally {
           setIsCheckingMember(false);

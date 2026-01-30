@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLiff } from '../context/LiffContext';
-import { createMember } from '../services/memberService';
+import { completeProfile } from '../services/authService';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import './Register.css';
@@ -50,18 +50,16 @@ const Register = ({ onNavigate }) => {
                 throw new Error(t('register.error_birth_year'));
             }
 
-            const currentYear = new Date().getFullYear();
-            // Assuming input is Buddhist Era (BE) year as per example "2450" (if user enters 2540) or just pass as is?
-            // The example in user request was "member_age": 2450. Ideally this is Year of Birth.
-            // Let's assume the user enters the year directly.
+            // Calculate age from birth year (assuming Buddhist Era)
+            const currentYearBE = new Date().getFullYear() + 543;
+            const age = currentYearBE - parseInt(formData.birthYear);
 
             const payload = {
-                member_user_id: profile?.userId,
                 member_gender: formData.member_gender,
-                member_age: parseInt(formData.birthYear) // Using birthYear as member_age per API example
+                member_age: age
             };
 
-            const response = await createMember(payload);
+            const response = await completeProfile(payload);
 
             if (response.status === 'success') {
                 onNavigate('home');
@@ -108,22 +106,28 @@ const Register = ({ onNavigate }) => {
 
                 <div className="form-group">
                     <label htmlFor="birthYear">{t('register.birth_year')}</label>
-                    <input
-                        type="text"
+                    <select
                         id="birthYear"
                         name="birthYear"
                         value={formData.birthYear}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^\d*$/.test(value)) {
-                                handleChange(e);
-                            }
-                        }}
-                        placeholder={t('register.birth_year_placeholder')}
+                        onChange={handleChange}
                         className="form-input"
-                        inputMode="numeric"
-                        maxLength={4}
-                    />
+                    >
+                        <option value="">{t('register.birth_year_placeholder')}</option>
+                        {(() => {
+                            const currentYearBE = new Date().getFullYear() + 543;
+                            const years = [];
+                            for (let i = 0; i < 100; i++) {
+                                const year = currentYearBE - i;
+                                years.push(
+                                    <option key={year} value={year}>
+                                        {year}
+                                    </option>
+                                );
+                            }
+                            return years;
+                        })()}
+                    </select>
                 </div>
 
                 {error && <div className="error-message">{error}</div>}

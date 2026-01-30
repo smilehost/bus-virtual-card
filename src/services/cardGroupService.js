@@ -1,5 +1,6 @@
 // Card Group Service - API calls related to card groups
 import { apiRequest } from './api';
+import { getToken } from './authService';
 
 /**
  * Get virtual card groups by company ID
@@ -10,6 +11,9 @@ export const getVirtualCardGroups = async (companyId = 1) => {
     try {
         const response = await apiRequest(`/cardGroup/virtual/${companyId}`, {
             method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
         });
         return response;
     } catch (error) {
@@ -37,6 +41,7 @@ export const createCardByLine = async (cardData) => {
             method: 'POST',
             headers: {
                 'com_id': '1',
+                'Authorization': `Bearer ${getToken()}`
             },
             body: JSON.stringify(cardData),
         });
